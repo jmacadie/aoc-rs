@@ -1,8 +1,6 @@
-use std::fs::File;
-use std::io::{self, BufRead};
-use std::path::Path;
+use crate::common::file::{read_lines, count_lines};
 
-const ROOT: &str = "src/y_2020/d_01/";
+const ROOT: &str = "src/year_2020/day_01/";
 const TARGET: i32 = 2020;
 
 #[allow(clippy::missing_panics_doc)]
@@ -92,21 +90,5 @@ fn read_into_vec(filename: &str) -> Result<Vec<i32>, Box<dyn std::error::Error>>
         out.push(i);
     }
     Ok(out)
-}
-
-// The output is wrapped in a Result to allow matching on errors
-// Returns an Iterator to the Reader of the lines of the file.
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
-}
-
-fn count_lines<P>(filename: P) -> io::Result<usize>
-where P: AsRef<Path>,
-{
-    let lines = read_lines(filename)?;
-    Ok(lines.count())
 }
 

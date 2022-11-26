@@ -1,9 +1,10 @@
 #![warn(clippy::all, clippy::pedantic)]
 
-pub mod y_2020;
+pub mod common;
+pub mod year_2020;
 
-use y_2020::d_01;
+use year_2020::day_02;
 
 fn main() {
-    d_01::run();
+    day_02::run();
 }
