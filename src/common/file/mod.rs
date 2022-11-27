@@ -6,7 +6,8 @@ use std::path::Path;
 // Returns an Iterator to the Reader of the lines of the file.
 #[allow(clippy::missing_errors_doc)]
 pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>,
+where
+    P: AsRef<Path>,
 {
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
@@ -14,9 +15,9 @@ where P: AsRef<Path>,
 
 #[allow(clippy::missing_errors_doc)]
 pub fn count_lines<P>(filename: P) -> io::Result<usize>
-where P: AsRef<Path>,
+where
+    P: AsRef<Path>,
 {
     let lines = read_lines(filename)?;
     Ok(lines.count())
 }
-

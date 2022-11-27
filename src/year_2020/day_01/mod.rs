@@ -1,10 +1,10 @@
-use crate::common::file::{read_lines, count_lines};
+use crate::common::file::{count_lines, read_lines};
 
 const ROOT: &str = "src/year_2020/day_01/";
 const TARGET: i32 = 2020;
 
 #[allow(clippy::missing_panics_doc)]
-pub fn run () {
+pub fn run() {
     let test_data = read_into_vec("test.txt").unwrap();
     let data = read_into_vec("input.txt").unwrap();
 
@@ -12,12 +12,12 @@ pub fn run () {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Test
-    if let Some((a, b ,p)) = run_part_one(&test_data, TARGET) {
+    if let Some((a, b, p)) = run_part_one(&test_data, TARGET) {
         assert_eq!(1721, a);
         assert_eq!(299, b);
         assert_eq!(514_579, p);
     }
-    
+
     // Main
     if let Some((a, b, p)) = run_part_one(&data, TARGET) {
         println!("Part 1 ### val 1: {}, val 2: {}, product: {}", a, b, p);
@@ -33,10 +33,13 @@ pub fn run () {
         assert_eq!(675, c);
         assert_eq!(241_861_950, p);
     }
-    
+
     // Main
     if let Some((a, b, c, p)) = run_part_two(&data, TARGET) {
-        println!("Part 2 ### val 1: {}, val 2: {}, val 3: {}, product: {}", a, b, c, p);
+        println!(
+            "Part 2 ### val 1: {}, val 2: {}, val 3: {}, product: {}",
+            a, b, c, p
+        );
     }
 }
 
@@ -67,7 +70,7 @@ pub fn run_part_one(data: &[i32], target: i32) -> Option<(i32, i32, i32)> {
     None
 }
 
-fn match_at(data: &[i32], start:usize, target: i32) -> Option<(i32, i32)> {
+fn match_at(data: &[i32], start: usize, target: i32) -> Option<(i32, i32)> {
     let (_, search) = data.split_at(start);
     if let Some((val, search)) = search.split_first() {
         for other in search {
@@ -91,4 +94,3 @@ fn read_into_vec(filename: &str) -> Result<Vec<i32>, Box<dyn std::error::Error>>
     }
     Ok(out)
 }
-

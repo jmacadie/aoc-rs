@@ -1,11 +1,19 @@
-use std::io;
 use crate::common::file::read_lines;
+use std::io;
 
 const ROOT: &str = "src/year_2020/day_02/";
 
 enum PasswordPolicy {
-    Policy1 { min: i32, max: i32, character: char },
-    Policy2 { first: i32, second: i32, character: char },
+    Policy1 {
+        min: i32,
+        max: i32,
+        character: char,
+    },
+    Policy2 {
+        first: i32,
+        second: i32,
+        character: char,
+    },
 }
 
 struct Password {
@@ -28,33 +36,50 @@ impl Password {
 
         // Parse out Password char
         let character = char_part.trim_end_matches(':').chars().next().unwrap();
-        
+
         // Convert the password into a String
         let password = pword_part.to_owned();
 
         let policy = match policy_type {
-            1 => PasswordPolicy::Policy1 { min: one, max:two, character },
-            _ => PasswordPolicy::Policy2 { first: one, second: two, character },
+            1 => PasswordPolicy::Policy1 {
+                min: one,
+                max: two,
+                character,
+            },
+            _ => PasswordPolicy::Policy2 {
+                first: one,
+                second: two,
+                character,
+            },
         };
         // return the struct
-        Password { password, policy, }
+        Password { password, policy }
     }
 
     fn is_valid(&self) -> bool {
         match self.policy {
-            PasswordPolicy::Policy1 { min, max, character } => {
+            PasswordPolicy::Policy1 {
+                min,
+                max,
+                character,
+            } => {
                 let count = self.password.chars().filter(|c| c == &character).count();
                 let count: i32 = count.try_into().unwrap();
                 count >= min && count <= max
-            },
-            PasswordPolicy::Policy2 { first, second, character } => {
+            }
+            PasswordPolicy::Policy2 {
+                first,
+                second,
+                character,
+            } => {
                 let first: usize = first.try_into().unwrap();
                 let second: usize = second.try_into().unwrap();
                 let mut chars = self.password.chars();
                 let first_char = chars.nth(first - 1).unwrap();
                 let second_char = chars.nth(second - first - 1).unwrap();
-                (first_char == character && second_char != character) || (first_char != character && second_char == character)
-            },
+                (first_char == character && second_char != character)
+                    || (first_char != character && second_char == character)
+            }
         }
     }
 }
