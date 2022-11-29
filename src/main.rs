@@ -3,8 +3,8 @@
 pub mod common;
 pub mod year_2020;
 
-use year_2020::day_06;
+use year_2020::day_07;
 
 fn main() {
-    day_06::run();
+    day_07::run();
 }

@@ -10,13 +10,19 @@ pub fn run() {
 fn run_part_one() {
     let method = CountType::Or;
     assert_eq!(11, count_questions("test.txt", &method));
-    println!("Part 1: Question count = {}", count_questions("input.txt", &method));
+    println!(
+        "Part 1: Question count = {}",
+        count_questions("input.txt", &method)
+    );
 }
 
 fn run_part_two() {
     let method = CountType::And;
     assert_eq!(6, count_questions("test.txt", &method));
-    println!("Part 2: Question count = {}", count_questions("input.txt", &method));
+    println!(
+        "Part 2: Question count = {}",
+        count_questions("input.txt", &method)
+    );
 }
 
 enum CountType {
@@ -51,7 +57,7 @@ fn count_questions(filename: &str, method: &CountType) -> i32 {
                             }
                         }
                     }
-                },
+                }
             };
             first = false;
         }
@@ -66,14 +72,12 @@ fn process_line(line: &str, questions: &mut [bool]) {
 }
 
 fn count_group(questions: &[bool]) -> i32 {
-    questions.iter().fold(0_i32, |acc, q| if *q { acc + 1 } else { acc } )
+    questions
+        .iter()
+        .fold(0_i32, |acc, q| if *q { acc + 1 } else { acc })
 }
 
 fn char_to_num(c: char) -> usize {
-    let num: usize = c.to_digit(36)
-        .unwrap()
-        .try_into()
-        .unwrap();
+    let num: usize = c.to_digit(36).unwrap().try_into().unwrap();
     num - 10
 }
-
