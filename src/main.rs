@@ -1,4 +1,5 @@
 #![warn(clippy::all, clippy::pedantic)]
+#![allow(unused_imports, dead_code)]
 
 pub mod common;
 pub mod year_2015;
@@ -10,8 +11,8 @@ pub mod year_2020;
 pub mod year_2021;
 pub mod year_2022;
 
-use year_2020::day_10;
+use year_2020::day_11::run;
 
 fn main() {
-    day_10::run();
+    run();
 }
