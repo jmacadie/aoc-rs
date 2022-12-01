@@ -36,6 +36,7 @@ fn find_max(filename: &str) -> i32 {
     max
 }
 
+#[allow(clippy::no_effect)]
 fn find_max3(filename: &str) -> i32 {
     let file = format!("{}{}", ROOT, filename);
     let lines = read_lines(file).unwrap();
