@@ -1,5 +1,7 @@
+#![warn(unused_imports, dead_code)]
+
 use crate::common::file::read_lines;
-use std::{cmp::Ordering, str::Split};
+use std::str::Split;
 
 const ROOT: &str = "src/year_2022/day_02/";
 
