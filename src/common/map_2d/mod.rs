@@ -1,4 +1,5 @@
 use std::{slice, vec};
+use std::fmt::{self, Display};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Point {
@@ -267,5 +268,20 @@ impl<'a, P> IntoIterator for &'a mut Map<P> {
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter_mut()
+    }
+}
+
+impl<P> Display for Map<P> 
+where
+    P: Display,
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for row in &self.data {
+            for elem in row {
+                write!(f, "{}", elem)?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
     }
 }
