@@ -153,32 +153,28 @@ impl<'a, P> Iterator for Iter<'a, P> {
     type Item = (Point, &'a P);
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.curr_row.split_first() {
-            Some((val, tail)) => {
-                let p = Point {
-                    x: self.x,
-                    y: self.y,
-                };
-                self.x += 1;
-                self.curr_row = tail;
-                Some((p, val))
-            }
-            None => match self.rem_rows.split_first() {
-                Some((next_row, tail)) => {
-                    self.x = 0;
-                    self.y += 1;
-                    let p = Point {
-                        x: self.x,
-                        y: self.y,
-                    };
-                    self.x += 1;
-                    self.rem_rows = tail;
-                    let (val, row) = next_row.as_slice().split_first()?;
-                    self.curr_row = row;
-                    Some((p, val))
-                }
-                None => None,
-            },
+        if let Some((val, tail)) = self.curr_row.split_first() {
+            let p = Point {
+                x: self.x,
+                y: self.y,
+            };
+            self.x += 1;
+            self.curr_row = tail;
+            Some((p, val))
+        } else if let Some((next_row, tail)) = self.rem_rows.split_first() {
+            self.x = 0;
+            self.y += 1;
+            let p = Point {
+                x: self.x,
+                y: self.y,
+            };
+            self.x += 1;
+            self.rem_rows = tail;
+            let (val, row) = next_row.as_slice().split_first()?;
+            self.curr_row = row;
+            Some((p, val))
+        } else {
+            None
         }
     }
 }
@@ -205,5 +201,71 @@ impl<'a, P> IntoIterator for &'a Map<P> {
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
+    }
+}
+
+pub struct IterMut<'a, P> {
+    curr_row: &'a mut [P],
+    rem_rows: &'a mut [Vec<P>],
+    x: usize,
+    y: usize,
+}
+
+impl<'a, P> Iterator for IterMut<'a, P> {
+    type Item = (Point, &'a mut P);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let row = std::mem::take(&mut self.curr_row);
+        if let Some((val, tail)) = row.split_first_mut() {
+            let p = Point {
+                x: self.x,
+                y: self.y,
+            };
+            self.x += 1;
+            self.curr_row = tail;
+            Some((p, val))
+        } else {
+            let rows = std::mem::take(&mut self.rem_rows);
+            if let Some((next_row, tail)) = rows.split_first_mut() {
+                self.x = 0;
+                self.y += 1;
+                let p = Point {
+                    x: self.x,
+                    y: self.y,
+                };
+                self.x += 1;
+                self.rem_rows = tail;
+                let (val, row) = next_row.as_mut_slice().split_first_mut()?;
+                self.curr_row = row;
+                Some((p, val))
+            } else {
+                None
+            }
+        }
+    }
+}
+
+impl<'a, P> Map<P> {
+    #[allow(clippy::missing_panics_doc)]
+    #[must_use]
+    pub fn iter_mut(&'a mut self) -> IterMut<'a, P> {
+        let rows = self.data.as_mut_slice();
+        let (curr_row, rem_rows) = rows.split_first_mut().unwrap();
+        let curr_row = curr_row.as_mut_slice();
+        IterMut {
+            curr_row,
+            rem_rows,
+            x: 0,
+            y: 0,
+        }
+    }
+}
+
+impl<'a, P> IntoIterator for &'a mut Map<P> {
+    type Item = (Point, &'a mut P);
+    type IntoIter = IterMut<'a, P>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
     }
 }

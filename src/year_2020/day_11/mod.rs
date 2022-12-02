@@ -24,8 +24,8 @@ fn run_part_two() {
 #[derive(Debug)]
 enum SeatType {
     Floor,
-    Vacant,
-    Occupied,
+    Vacant { changing: bool },
+    Occupied { changing: bool },
 }
 
 struct WaitingRoom {
@@ -42,8 +42,8 @@ impl WaitingRoom {
             for c in line.chars() {
                 match c {
                     '.' => row.push(SeatType::Floor),
-                    'L' => row.push(SeatType::Vacant),
-                    '#' => row.push(SeatType::Occupied),
+                    'L' => row.push(SeatType::Vacant { changing: false }),
+                    '#' => row.push(SeatType::Occupied { changing: false }),
                     _ => unreachable!(),
                 }
             }
