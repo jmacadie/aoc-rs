@@ -11,7 +11,7 @@ pub mod year_2020;
 pub mod year_2021;
 pub mod year_2022;
 
-use year_2022::day_02::run;
+use year_2022::day_03::run;
 
 fn main() {
     run();
