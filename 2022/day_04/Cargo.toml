@@ -1,9 +1,11 @@
 [package]
-name = "aoc-rs"
+name = "day_04"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-itertools = "0.10.5"
+color-eyre = "0.6.2"
+
+[features]

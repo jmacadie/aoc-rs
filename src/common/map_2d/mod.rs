@@ -1,5 +1,5 @@
-use std::{slice, vec};
 use std::fmt::{self, Display};
+use std::{slice, vec};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Point {
@@ -271,7 +271,7 @@ impl<'a, P> IntoIterator for &'a mut Map<P> {
     }
 }
 
-impl<P> Display for Map<P> 
+impl<P> Display for Map<P>
 where
     P: Display,
 {

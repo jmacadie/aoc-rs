@@ -1,14 +1,13 @@
 use itertools::Itertools;
 
 pub fn run() {
-    let test_data = include_str!("test.txt");
-    let data = include_str!("input.txt");
+    let test_data = include_str!("test.txt").trim_end_matches('\n');
+    let data = include_str!("input.txt").trim_end_matches('\n');
     run_part_one(test_data, data);
     run_part_two(test_data, data);
 }
 
 fn run_part_one(test_data: &str, data: &str) {
-    println!("Running Day 3 2022, Part 1!");
     assert_eq!(157, count_priorties(test_data));
     println!("Part 1: {} total priority", count_priorties(data));
 }
@@ -19,8 +18,7 @@ fn run_part_two(test_data: &str, data: &str) {
 }
 
 fn count_priorties(data: &str) -> i32 {
-    data.trim_end_matches('\n')
-        .lines()
+    data.lines()
         .map(split_in_half)
         .map(|(a, b)| find_common((a, b)).unwrap_or('a'))
         .map(priority)
@@ -29,7 +27,7 @@ fn count_priorties(data: &str) -> i32 {
 
 fn count_badges(data: &str) -> i32 {
     let mut sum = 0;
-    for lines in &data.trim_end_matches('\n').lines().chunks(3) {
+    for lines in &data.lines().chunks(3) {
         for (a, b, c) in lines.tuples() {
             let z = find_common_3((a, b, c)).unwrap();
             sum += priority(z);
