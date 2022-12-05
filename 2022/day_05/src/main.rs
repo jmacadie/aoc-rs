@@ -88,9 +88,7 @@ mod stacks {
 
         fn move_top_box(&mut self, from: usize, to: usize) {
             let from_row = self.heads[from] - 1;
-            self.boxes[to][self.heads[to]] = self.boxes[from][from_row];
-            self.boxes[from][from_row] = 0;
-            self.heads[to] += 1;
+            self.move_one_box(from, from_row, to);
             self.heads[from] -= 1;
         }
 
@@ -106,8 +104,7 @@ mod stacks {
             for line in input.lines() {
                 pile = 0;
                 for mut part in &line.bytes().chunks(4) {
-                    let _ = part.next();
-                    boxes[pile][row] = match part.next() {
+                    boxes[pile][row] = match part.nth(1) {
                         Some(value @ b'A'..=b'Z') => value,
                         Some(b' ') => 0_u8,
                         Some(b'1') => break,
