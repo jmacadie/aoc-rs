@@ -53,22 +53,16 @@ mod stacks {
         }
 
         pub(crate) fn crane_move_one(&mut self, data: CraneMove) {
-            let mut moves = data.move_num;
-
-            while moves > 0 {
+            for _ in 0..data.move_num {
                 self.move_top_box(data.from, data.to);
-                moves -= 1;
             }
         }
 
         pub(crate) fn crane_move_all(&mut self, data: CraneMove) {
-            let mut moves = data.move_num;
-            let mut from_row = self.heads[data.from] - moves;
+            let from_row = self.heads[data.from] - data.move_num;
 
-            while moves > 0 {
-                self.move_one_box(data.from, from_row, data.to);
-                moves -= 1;
-                from_row += 1;
+            for i in 0..data.move_num {
+                self.move_one_box(data.from, from_row + i, data.to);
             }
             self.heads[data.from] -= data.move_num;
         }
