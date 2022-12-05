@@ -47,8 +47,7 @@ mod stacks {
     impl Stacks {
         pub(crate) fn new(input: &str) -> Self {
             let mut boxes = [[0_u8; 60]; 9];
-            let row = Self::init_load(&mut boxes, input);
-            Self::move_up(&mut boxes, row);
+            Self::init_load(&mut boxes, input);
             let heads = Self::find_heads(&boxes);
             Self { boxes, heads }
         }
@@ -83,12 +82,11 @@ mod stacks {
                     out.push(self.boxes[pile][self.heads[pile] - 1] as char);
                 }
             }
-            out
+            out.trim().to_owned()
         }
 
         fn move_top_box(&mut self, from: usize, to: usize) {
-            let from_row = self.heads[from] - 1;
-            self.move_one_box(from, from_row, to);
+            self.move_one_box(from, self.heads[from] - 1, to);
             self.heads[from] -= 1;
         }
 
@@ -98,36 +96,15 @@ mod stacks {
             self.heads[to] += 1;
         }
 
-        fn init_load(boxes: &mut Boxes, input: &str) -> usize {
-            let mut pile: usize;
-            let mut row = 50_usize;
-            for line in input.lines() {
-                pile = 0;
-                for mut part in &line.bytes().chunks(4) {
+        fn init_load(boxes: &mut Boxes, input: &str) {
+            for (row, line) in input.lines().rev().skip(1).enumerate() {
+                for (pile, mut part) in line.bytes().chunks(4).into_iter().enumerate() {
                     boxes[pile][row] = match part.nth(1) {
                         Some(value @ b'A'..=b'Z') => value,
                         Some(b' ') => 0_u8,
-                        Some(b'1') => break,
                         _ => unreachable!(),
                     };
-                    pile += 1;
                 }
-                row += 1;
-            }
-            row - 2
-        }
-
-        fn move_up(boxes: &mut Boxes, start_row: usize) {
-            let mut source = start_row;
-            let mut target = 0_usize;
-
-            while source >= 50 {
-                for pile in boxes.iter_mut().take(9) {
-                    pile[target] = pile[source];
-                    pile[source] = 0_u8;
-                }
-                source -= 1;
-                target += 1;
             }
         }
 
@@ -187,12 +164,12 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        assert_eq!("CMZ", part_one(data).unwrap().trim());
+        assert_eq!("CMZ", part_one(data).unwrap());
     }
 
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!("MCD", part_two(data).unwrap().trim());
+        assert_eq!("MCD", part_two(data).unwrap());
     }
 }
