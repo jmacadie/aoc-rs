@@ -1,7 +1,13 @@
-fn main() {
+pub fn main() {
     let data = include_str!("input.txt");
     println!("Part 1: {}", part_one(data));
     println!("Part 2: {}", part_two(data));
+}
+
+pub fn bench() {
+    let data = include_str!("input.txt");
+    let _ = part_one(data);
+    let _ = part_two(data);
 }
 
 fn part_one(data: &str) -> usize {

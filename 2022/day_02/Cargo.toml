@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 color-eyre = "0.6.2"
+
+[lib]
+path = "src/main.rs"

@@ -1,13 +1,15 @@
 use itertools::Itertools;
 
-fn main() -> color_eyre::Result<()> {
-    color_eyre::install()?;
-
+pub fn main() {
     let data = include_str!("input.txt");
     println!("Part 1: Max calories is {}", part_one(data));
     println!("Part 2: Top 3 calories is {}", part_two(data));
+}
 
-    Ok(())
+pub fn bench() {
+    let data = include_str!("input.txt");
+    let _ = part_one(data);
+    let _ = part_two(data);
 }
 
 fn part_one(data: &str) -> u64 {

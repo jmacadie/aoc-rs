@@ -1,6 +1,6 @@
 use stacks::{CraneMove, Stacks};
 
-fn main() -> color_eyre::Result<()> {
+pub fn main() -> color_eyre::Result<()> {
     color_eyre::install()?;
 
     let data = include_str!("input.txt");
@@ -8,6 +8,12 @@ fn main() -> color_eyre::Result<()> {
     println!("Part 2: {}", part_two(data)?);
 
     Ok(())
+}
+
+pub fn bench() {
+    let data = include_str!("input.txt");
+    let _ = part_one(data);
+    let _ = part_two(data);
 }
 
 fn part_one(data: &str) -> color_eyre::Result<String> {

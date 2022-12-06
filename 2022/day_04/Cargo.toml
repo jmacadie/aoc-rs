@@ -9,3 +9,6 @@ edition = "2021"
 color-eyre = "0.6.2"
 
 [features]
+
+[lib]
+path = "src/main.rs"
