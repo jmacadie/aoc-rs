@@ -22,12 +22,11 @@ fn find_window(line: &str, len: usize) -> usize {
 }
 
 fn unique(letters: &[u8]) -> bool {
-    for i in 0..letters.len() - 1 {
-        let (_, rest) = letters.split_at(i);
-        if let Some((first, rest)) = rest.split_first() {
-            if rest.contains(first) {
-                return false;
-            }
+    if let Some((first, rest)) = letters.split_first() {
+        if rest.contains(first) {
+            return false;
+        } else {
+            return unique(rest);
         }
     }
     true
