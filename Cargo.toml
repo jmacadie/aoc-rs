@@ -11,7 +11,7 @@ took = "0.1.2"
 # Days
 day_01 = { path = "2022/day_01" }
 day_02 = { path = "2022/day_02" }
-#day_03 = { path = "2022/day_03"
+day_03 = { path = "2022/day_03" }
 day_04 = { path = "2022/day_04" }
 day_05 = { path = "2022/day_05" }
 day_06 = { path = "2022/day_06" }
