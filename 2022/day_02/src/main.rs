@@ -1,26 +1,29 @@
-use std::str::FromStr;
-
 fn main() -> color_eyre::Result<()> {
     color_eyre::install()?;
 
     let data = include_str!("input.txt");
     println!("Part 1: {}", part_one(data)?);
-    println!("Part 2: {}", part_two(data));
+    println!("Part 2: {}", part_two(data)?);
 
     Ok(())
 }
 
 fn part_one(data: &str) -> color_eyre::Result<u64> {
     let mut total = 0;
-    for round in data.lines().map(|l| l.parse::<Round>()) {
+    for round in data.lines().map(Round::from_moves_str) {
         total += round?.points();
     }
 
     Ok(total)
 }
 
-fn part_two(_data: &str) -> u64 {
-    0
+fn part_two(data: &str) -> color_eyre::Result<u64> {
+    let mut total = 0;
+    for round in data.lines().map(Round::from_outcome_str) {
+        total += round?.points();
+    }
+
+    Ok(total)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -30,7 +33,7 @@ enum Move {
     Scissors,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug)]
 struct Round {
     opp: Move,
     ours: Move,
@@ -51,7 +54,7 @@ impl Move {
             Move::Scissors => 3,
         }
     }
- 
+
     fn beats(&self) -> Self {
         match self {
             Move::Rock => Move::Scissors,
@@ -59,9 +62,50 @@ impl Move {
             Move::Scissors => Move::Paper,
         }
     }
+
+    fn beaten_by(&self) -> Self {
+        match self {
+            Move::Rock => Move::Paper,
+            Move::Paper => Move::Scissors,
+            Move::Scissors => Move::Rock,
+        }
+    }
 }
 
 impl Round {
+    fn from_moves_str(line: &str) -> color_eyre::Result<Self> {
+        let mut parts = line.chars();
+        let (Some(opp), Some(' '), Some(ours), None) = (parts.next(), parts.next(), parts.next(), parts.next()) else {
+            return Err(color_eyre::eyre::eyre!("was expecting opp<SP>ours<EOL>, got {line}"));
+        };
+        let opp = opp.try_into()?;
+        let ours = ours.try_into()?;
+        Ok(Self::from_moves(opp, ours))
+    }
+
+    fn from_moves(opp: Move, ours: Move) -> Self {
+        Self { opp, ours }
+    }
+
+    fn from_outcome_str(line: &str) -> color_eyre::Result<Self> {
+        let mut parts = line.chars();
+        let (Some(opp), Some(' '), Some(outcome), None) = (parts.next(), parts.next(), parts.next(), parts.next()) else {
+            return Err(color_eyre::eyre::eyre!("was expecting opp<SP>outcome<EOL>, got {line}"));
+        };
+        let opp = opp.try_into()?;
+        let outcome = outcome.try_into()?;
+        Ok(Self::from_outcome(opp, outcome))
+    }
+
+    fn from_outcome(opp: Move, outcome: Outcome) -> Self {
+        let ours = match outcome {
+            Outcome::Win => opp.beaten_by(),
+            Outcome::Draw => opp,
+            Outcome::Loss => opp.beats(),
+        };
+        Self { opp, ours }
+    }
+
     fn outcome(&self) -> Outcome {
         if self.ours.beats() == self.opp {
             Outcome::Win
@@ -89,30 +133,27 @@ impl Outcome {
 
 impl TryFrom<char> for Move {
     type Error = color_eyre::Report;
-    
+
     fn try_from(c: char) -> Result<Self, Self::Error> {
         match c {
             'A' | 'X' => Ok(Move::Rock),
             'B' | 'Y' => Ok(Move::Paper),
             'C' | 'Z' => Ok(Move::Scissors),
-            _ => Err(color_eyre::eyre::eyre!("not a valid move: {c:?}"))
+            _ => Err(color_eyre::eyre::eyre!("not a valid move: {c:?}")),
         }
     }
 }
 
-impl FromStr for Round {
-    type Err = color_eyre::Report;
+impl TryFrom<char> for Outcome {
+    type Error = color_eyre::Report;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut chars = s.chars();
-        let (Some(opp), Some(' '), Some(ours), None) = (chars.next(), chars.next(), chars.next(), chars.next()) else {
-            return Err(color_eyre::eyre::eyre!("expected <opp>SP<ours>EOL, got {s:?}"));
-        };
-
-        Ok(Self {
-            opp: opp.try_into()?,
-            ours: ours.try_into()?,
-        })
+    fn try_from(c: char) -> Result<Self, Self::Error> {
+        match c {
+            'X' => Ok(Outcome::Loss),
+            'Y' => Ok(Outcome::Draw),
+            'Z' => Ok(Outcome::Win),
+            _ => Err(color_eyre::eyre::eyre!("not a valid outcome: {c:?}")),
+        }
     }
 }
 
@@ -130,6 +171,6 @@ mod tests {
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(12, part_two(data));
+        assert_eq!(12, part_two(data).unwrap());
     }
 }
