@@ -23,7 +23,8 @@ fn part_two(sizes: &[u64; 200]) -> u64 {
     const TARGET_SPACE: u64 = 30_000_000;
     let free_space = TOTAL_SPACE - sizes[0];
     let target = TARGET_SPACE - free_space;
-    *sizes.iter()
+    *sizes
+        .iter()
         .filter(|&x| x >= &target)
         .sorted_unstable()
         .next()
@@ -40,30 +41,34 @@ fn get_sizes(data: &str) -> [u64; 200] {
         let mut parts = line.split(' ');
         match parts.next() {
             Some("$") => {
+                // it's a command
                 match parts.next() {
-                    Some("ls") => (), //ignore
+                    Some("ls") => (), // ls: ignore
                     Some("cd") => match parts.next() {
                         Some("..") => {
+                            // move one level back up the path tree
                             path_head -= 1;
                         }
                         Some(_) => {
+                            // add a level to the path tree
                             current_path[path_head] = folder_counter;
                             folder_counter += 1;
                             path_head += 1;
                         }
-                        None => unreachable!(),
+                        None => unreachable!(), // there's always a command after cd
                     },
-                    _ => unreachable!(),
+                    _ => unreachable!(), // ls and cd are the only commands we get
                 }
             }
-            Some("dir") => (), // ignore
+            Some("dir") => (), // directory listing: ignore
             Some(file_size) => {
+                // file listing: extract the size, ignore the file name and add to all super folders up the path
                 let file_size = file_size.parse::<u64>().unwrap();
                 for i in 0..path_head {
                     sizes[current_path[i]] += file_size;
                 }
             }
-            _ => unreachable!(),
+            _ => unreachable!(), // No other type of input expected
         }
     }
     sizes
