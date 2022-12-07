@@ -15,3 +15,4 @@ day_03 = { path = "2022/day_03" }
 day_04 = { path = "2022/day_04" }
 day_05 = { path = "2022/day_05" }
 day_06 = { path = "2022/day_06" }
+day_07 = { path = "2022/day_07" }
