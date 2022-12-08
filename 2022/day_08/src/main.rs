@@ -9,10 +9,7 @@ pub fn main() {
 
 fn part_one(map: &Map<u8>, size: usize) -> u32 {
     let mut visible: Map<bool> = [[false; 99]; 99];
-    look_down(map, &mut visible, size, size);
-    look_left(map, &mut visible, size, size);
-    look_up(map, &mut visible, size, size);
-    look_right(map, &mut visible, size, size);
+    look_in(map, &mut visible, size);
     count_visible(&visible)
 }
 
@@ -20,7 +17,7 @@ fn part_two(map: &Map<u8>, size: usize) -> u64 {
     let mut max_score = 0_u64;
     for row in 0..size {
         for col in 0..size {
-            let score = scenic_score(map, row, col, size, size);
+            let score = scenic_score(map, row, col, size);
             if score > max_score {
                 max_score = score;
             }
@@ -74,12 +71,12 @@ fn count_visible(visible: &Map<bool>) -> u32 {
     count
 }
 
-fn scenic_score(map: &Map<u8>, row: usize, col: usize, height: usize, width: usize) -> u64 {
+fn scenic_score(map: &Map<u8>, row: usize, col: usize, size: usize) -> u64 {
     let curr = map[row][col];
     let (mut up, mut down, mut left, mut right) = (0_u64, 0_u64, 0_u64, 0_u64);
 
     // Quit out on boundaries
-    if row == 0 || row == height - 1 || col == 0 || col == width - 1 {
+    if row == 0 || row == size - 1 || col == 0 || col == size - 1 {
         return 0;
     }
 
@@ -92,8 +89,8 @@ fn scenic_score(map: &Map<u8>, row: usize, col: usize, height: usize, width: usi
     }
 
     // Look down
-    for (dist, i) in (row + 1..height).enumerate() {
-        if i == height - 1 || map[i][col] >= curr {
+    for (dist, i) in (row + 1..size).enumerate() {
+        if i == size - 1 || map[i][col] >= curr {
             down = (dist + 1).try_into().unwrap();
             break;
         }
@@ -108,8 +105,8 @@ fn scenic_score(map: &Map<u8>, row: usize, col: usize, height: usize, width: usi
     }
 
     // Look right
-    for (dist, i) in (col + 1..width).enumerate() {
-        if i == width - 1 || map[row][i] >= curr {
+    for (dist, i) in (col + 1..size).enumerate() {
+        if i == size - 1 || map[row][i] >= curr {
             right = (dist + 1).try_into().unwrap();
             break;
         }
@@ -118,11 +115,18 @@ fn scenic_score(map: &Map<u8>, row: usize, col: usize, height: usize, width: usi
     up * down * left * right
 }
 
-fn look_down(map: &Map<u8>, visible: &mut Map<bool>, height: usize, width: usize) {
+fn look_in(map: &Map<u8>, visible: &mut Map<bool>, size: usize) {
+    look_in_down(map, visible, size);
+    look_in_left(map, visible, size);
+    look_in_up(map, visible, size);
+    look_in_right(map, visible, size);
+}
+
+fn look_in_down(map: &Map<u8>, visible: &mut Map<bool>, size: usize) {
     let mut max;
-    for col in 0..width {
+    for col in 0..size {
         max = 0_u8;
-        for row in 0..height {
+        for row in 0..size {
             if map[row][col] > max {
                 max = map[row][col];
                 visible[row][col] = true;
@@ -134,11 +138,11 @@ fn look_down(map: &Map<u8>, visible: &mut Map<bool>, height: usize, width: usize
     }
 }
 
-fn look_left(map: &Map<u8>, visible: &mut Map<bool>, height: usize, width: usize) {
+fn look_in_left(map: &Map<u8>, visible: &mut Map<bool>, size: usize) {
     let mut max;
-    for row in 0..height {
+    for row in 0..size {
         max = 0_u8;
-        for col in (0..width).rev() {
+        for col in (0..size).rev() {
             if map[row][col] > max {
                 max = map[row][col];
                 visible[row][col] = true;
@@ -150,11 +154,11 @@ fn look_left(map: &Map<u8>, visible: &mut Map<bool>, height: usize, width: usize
     }
 }
 
-fn look_up(map: &Map<u8>, visible: &mut Map<bool>, height: usize, width: usize) {
+fn look_in_up(map: &Map<u8>, visible: &mut Map<bool>, size: usize) {
     let mut max;
-    for col in 0..width {
+    for col in 0..size {
         max = 0_u8;
-        for row in (0..height).rev() {
+        for row in (0..size).rev() {
             if map[row][col] > max {
                 max = map[row][col];
                 visible[row][col] = true;
@@ -166,11 +170,11 @@ fn look_up(map: &Map<u8>, visible: &mut Map<bool>, height: usize, width: usize) 
     }
 }
 
-fn look_right(map: &Map<u8>, visible: &mut Map<bool>, height: usize, width: usize) {
+fn look_in_right(map: &Map<u8>, visible: &mut Map<bool>, size: usize) {
     let mut max;
-    for row in 0..height {
+    for row in 0..size {
         max = 0_u8;
-        for col in 0..width {
+        for col in 0..size {
             if map[row][col] > max {
                 max = map[row][col];
                 visible[row][col] = true;
