@@ -8,16 +8,11 @@ pub fn main() {
     println!("Part 2: {}", part_two(&map, &visible, size, 8));
 }
 
-fn part_one(visible: &Map<bool>) -> u32 {
-    let mut count = 0;
-    for row in visible {
-        for &elem in row {
-            if elem {
-                count += 1;
-            }
-        }
-    }
-    count
+fn part_one(visible: &Map<bool>) -> usize {
+    visible.iter()
+        .flatten()
+        .filter(|&b| *b)
+        .count()
 }
 
 fn part_two(map: &Map<u8>, visible: &Map<bool>, size: usize, lim: u8) -> u64 {
