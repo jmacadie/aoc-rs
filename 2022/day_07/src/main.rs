@@ -7,13 +7,6 @@ pub fn main() {
     println!("Part 2: {}", part_two(&sizes));
 }
 
-pub fn bench() {
-    let data = include_str!("input.txt");
-    let sizes = get_sizes(data);
-    let _ = part_one(&sizes);
-    let _ = part_two(&sizes);
-}
-
 fn part_one(sizes: &[u64; 200]) -> u64 {
     sizes.iter().filter(|&x| x <= &100_000).sum()
 }

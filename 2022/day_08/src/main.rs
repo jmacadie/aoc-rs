@@ -6,12 +6,6 @@ pub fn main() {
     println!("Part 2: {}", part_two(data, 99));
 }
 
-pub fn bench() {
-    let data = include_str!("input.txt");
-    let _ = part_one(data, 99);
-    let _ = part_two(data, 99);
-}
-
 fn part_one(data: &str, size: usize) -> u32 {
     let map = get_map(data);
     let mut visible: Map<bool> = [[false; 99]; 99];

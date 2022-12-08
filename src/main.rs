@@ -1,11 +1,13 @@
 #![warn(clippy::all, clippy::pedantic)]
 
+use gag::Gag;
 use took::{Timer, Took};
 
 const RUNS: usize = 100;
 
 fn main() {
     println!("Benchmarking all days with {} runs...", RUNS);
+    let print_gag = Gag::stdout().unwrap();
 
     let times: Vec<_> = jobs()
         .iter()
@@ -24,19 +26,20 @@ fn main() {
         })
         .collect();
 
+    drop(print_gag);
     times.iter().for_each(|t| Took::from_std(t.1).describe(t.0));
     Took::from_std(times.into_iter().map(|(_, t)| t).sum()).describe("everything");
 }
 
 fn jobs() -> &'static [(fn(), &'static str)] {
     &[
-        (day_01::bench, "Day 1"),
-        (day_02::bench, "Day 2"),
-        (day_03::bench, "Day 3"),
-        (day_04::bench, "Day 4"),
-        (day_05::bench, "Day 5"),
-        (day_06::bench, "Day 6"),
-        (day_07::bench, "Day 7"),
-        (day_08::bench, "Day 8"),
+        (day_01::main, "Day 1"),
+        (day_02::main, "Day 2"),
+        (day_03::main, "Day 3"),
+        (day_04::main, "Day 4"),
+        (day_05::main, "Day 5"),
+        (day_06::main, "Day 6"),
+        (day_07::main, "Day 7"),
+        (day_08::main, "Day 8"),
     ]
 }

@@ -6,12 +6,6 @@ pub fn main() {
     println!("Part 2: Top 3 calories is {}", part_two(data));
 }
 
-pub fn bench() {
-    let data = include_str!("input.txt");
-    let _ = part_one(data);
-    let _ = part_two(data);
-}
-
 fn part_one(data: &str) -> u64 {
     data.lines()
         .map(|v| v.parse::<u64>().ok())

@@ -17,3 +17,4 @@ day_05 = { path = "2022/day_05" }
 day_06 = { path = "2022/day_06" }
 day_07 = { path = "2022/day_07" }
 day_08 = { path = "2022/day_08" }
+gag = "1.0.0"

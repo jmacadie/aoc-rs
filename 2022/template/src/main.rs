@@ -4,12 +4,6 @@ pub fn main() {
     println!("Part 2: {}", part_two(data));
 }
 
-pub fn bench() {
-    let data = include_str!("input.txt");
-    let _ = part_one(data);
-    let _ = part_two(data);
-}
-
 fn part_one(_data: &str) -> usize {
     0
 }
