@@ -2,26 +2,25 @@ use std::fmt::{self, Display, Formatter};
 
 pub fn main() {
     let data = include_str!("input.txt");
-    println!("Part 1: {}", part_one(data, 99));
-    println!("Part 2: {}", part_two(data, 99));
+    let (map, size) = get_map(data);
+    println!("Part 1: {}", part_one(&map, size));
+    println!("Part 2: {}", part_two(&map, size));
 }
 
-fn part_one(data: &str, size: usize) -> u32 {
-    let map = get_map(data);
+fn part_one(map: &Map<u8>, size: usize) -> u32 {
     let mut visible: Map<bool> = [[false; 99]; 99];
-    look_down(&map, &mut visible, size, size);
-    look_left(&map, &mut visible, size, size);
-    look_up(&map, &mut visible, size, size);
-    look_right(&map, &mut visible, size, size);
+    look_down(map, &mut visible, size, size);
+    look_left(map, &mut visible, size, size);
+    look_up(map, &mut visible, size, size);
+    look_right(map, &mut visible, size, size);
     count_visible(&visible)
 }
 
-fn part_two(data: &str, size: usize) -> u64 {
-    let map = get_map(data);
+fn part_two(map: &Map<u8>, size: usize) -> u64 {
     let mut max_score = 0_u64;
     for row in 0..size {
         for col in 0..size {
-            let score = scenic_score(&map, row, col, size, size);
+            let score = scenic_score(map, row, col, size, size);
             if score > max_score {
                 max_score = score;
             }
@@ -50,15 +49,17 @@ impl Display for MapWrap<bool> {
     }
 }
 
-fn get_map(data: &str) -> Map<u8> {
-    let mut out: Map<u8> = [[0; 99]; 99];
+fn get_map(data: &str) -> (Map<u8>, usize) {
+    let mut map: Map<u8> = [[0; 99]; 99];
+    let mut size: usize = 0;
     for (row, line) in data.lines().enumerate() {
         for (col, ascii_digit) in line.bytes().enumerate() {
             // Add one so the zero hieght trees aren't zero any more
-            out[row][col] = ascii_digit - b'0' + 1;
+            map[row][col] = ascii_digit - b'0' + 1;
         }
+        size = row;
     }
-    out
+    (map, size + 1)
 }
 
 fn count_visible(visible: &Map<bool>) -> u32 {
@@ -189,12 +190,14 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        assert_eq!(21, part_one(data, 5));
+        let (map, size) = get_map(data);
+        assert_eq!(21, part_one(&map, size));
     }
 
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(8, part_two(data, 5));
+        let (map, size) = get_map(data);
+        assert_eq!(8, part_two(&map, size));
     }
 }
