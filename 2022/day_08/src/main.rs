@@ -3,23 +3,32 @@ use std::fmt::{self, Display, Formatter};
 pub fn main() {
     let data = include_str!("input.txt");
     let (map, size) = get_map(data);
-    println!("Part 1: {}", part_one(&map, size));
-    println!("Part 2: {}", part_two(&map, size));
+    let visible = look_in(&map, size);
+    println!("Part 1: {}", part_one(&visible));
+    println!("Part 2: {}", part_two(&map, &visible, size, 8));
 }
 
-fn part_one(map: &Map<u8>, size: usize) -> u32 {
-    let mut visible: Map<bool> = [[false; 99]; 99];
-    look_in(map, &mut visible, size);
-    count_visible(&visible)
+fn part_one(visible: &Map<bool>) -> u32 {
+    let mut count = 0;
+    for row in visible {
+        for &elem in row {
+            if elem {
+                count += 1;
+            }
+        }
+    }
+    count
 }
 
-fn part_two(map: &Map<u8>, size: usize) -> u64 {
+fn part_two(map: &Map<u8>, visible: &Map<bool>, size: usize, lim: u8) -> u64 {
     let mut max_score = 0_u64;
     for row in 0..size {
         for col in 0..size {
-            let score = scenic_score(map, row, col, size);
-            if score > max_score {
-                max_score = score;
+            if visible[row][col] && map[row][col] > lim {
+                let score = scenic_score(map, row, col, size);
+                if score > max_score {
+                    max_score = score;
+                }
             }
         }
     }
@@ -57,18 +66,6 @@ fn get_map(data: &str) -> (Map<u8>, usize) {
         size = row;
     }
     (map, size + 1)
-}
-
-fn count_visible(visible: &Map<bool>) -> u32 {
-    let mut count = 0;
-    for row in visible {
-        for &elem in row {
-            if elem {
-                count += 1;
-            }
-        }
-    }
-    count
 }
 
 fn scenic_score(map: &Map<u8>, row: usize, col: usize, size: usize) -> u64 {
@@ -115,11 +112,13 @@ fn scenic_score(map: &Map<u8>, row: usize, col: usize, size: usize) -> u64 {
     up * down * left * right
 }
 
-fn look_in(map: &Map<u8>, visible: &mut Map<bool>, size: usize) {
-    look_in_down(map, visible, size);
-    look_in_left(map, visible, size);
-    look_in_up(map, visible, size);
-    look_in_right(map, visible, size);
+fn look_in(map: &Map<u8>, size: usize) -> Map<bool> {
+    let mut visible: Map<bool> = [[false; 99]; 99];
+    look_in_down(map, &mut visible, size);
+    look_in_left(map, &mut visible, size);
+    look_in_up(map, &mut visible, size);
+    look_in_right(map, &mut visible, size);
+    visible
 }
 
 fn look_in_down(map: &Map<u8>, visible: &mut Map<bool>, size: usize) {
@@ -195,13 +194,15 @@ mod tests {
     fn one() {
         let data = include_str!("test.txt");
         let (map, size) = get_map(data);
-        assert_eq!(21, part_one(&map, size));
+        let visible = look_in(&map, size);
+        assert_eq!(21, part_one(&visible));
     }
 
     #[test]
     fn two() {
         let data = include_str!("test.txt");
         let (map, size) = get_map(data);
-        assert_eq!(8, part_two(&map, size));
+        let visible = look_in(&map, size);
+        assert_eq!(8, part_two(&map, &visible, size, 5));
     }
 }
