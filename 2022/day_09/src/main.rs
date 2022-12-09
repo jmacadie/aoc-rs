@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashSet;
 
 pub fn main() {
@@ -12,12 +13,8 @@ fn part_one(data: &str) -> usize {
     let mut visited = HashSet::with_capacity(10_000);
     visited.insert(tail);
     for line in data.lines() {
-        let mut parts = line.split(' ');
-        let (Some(dir), Some(val), None) = (parts.next(), parts.next(), parts.next()) else {
-            unreachable!();
-        };
-        let val = val.parse().unwrap();
-        for _ in 0..val {
+        let (dir, num) = parse_line(line);
+        for _ in 0..num {
             let last = head;
             head.move_dir(dir);
             if !head.is_touching(tail) {
@@ -34,32 +31,31 @@ fn part_two(data: &str) -> usize {
     let mut visited = HashSet::with_capacity(10_000);
     visited.insert(rope[9]);
     for line in data.lines() {
-        //println!("*******************");
-        //println!("Move: {line}");
-        let mut parts = line.split(' ');
-        let (Some(dir), Some(val), None) = (parts.next(), parts.next(), parts.next()) else {
-            unreachable!();
-        };
-        let val = val.parse().unwrap();
-        for _ in 0..val {
+        let (dir, num) = parse_line(line);
+        for _ in 0..num {
             rope[0].move_dir(dir);
             for i in 0..9 {
                 if rope[i].is_touching(rope[i + 1]) {
                     break;
                 }
                 rope[i + 1].move_child(rope[i]);
-                //std::mem::swap(&mut rope[i + 1], &mut last);
                 if i == 8 {
-                    //println!("Updating Rope: {rope:?}");
                     visited.insert(rope[9]);
                 }
             }
         }
-        //println!("New rope: {rope:?}");
-        //println!("*******************");
-        //println!();
     }
     visited.len()
+}
+
+fn parse_line(line: &str) -> (char, u8) {
+    let mut parts = line.split(' ');
+    let (Some(dir), Some(val), None) = (parts.next(), parts.next(), parts.next()) else {
+        unreachable!();
+    };
+    let dir = dir.chars().next().unwrap();
+    let val = val.parse().unwrap();
+    (dir, val)
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Copy)]
@@ -68,8 +64,7 @@ struct Point(i16, i16);
 type Rope = [Point; 10];
 
 impl Point {
-    fn move_dir(&mut self, dir: &str) {
-        let dir = dir.chars().next().unwrap();
+    fn move_dir(&mut self, dir: char) {
         match dir {
             'U' => self.0 += 1,
             'D' => self.0 -= 1,
@@ -80,15 +75,15 @@ impl Point {
     }
 
     fn move_child(&mut self, parent: Self) {
-        if parent.0 > self.0 {
-            self.0 += 1
-        } else if parent.0 < self.0 {
-            self.0 -= 1
+        match parent.0.cmp(&self.0) {
+            Ordering::Greater => self.0 += 1,
+            Ordering::Less => self.0 -= 1,
+            Ordering::Equal => (),
         }
-        if parent.1 > self.1 {
-            self.1 += 1
-        } else if parent.1 < self.1 {
-            self.1 -= 1
+        match parent.1.cmp(&self.1) {
+            Ordering::Greater => self.1 += 1,
+            Ordering::Less => self.1 -= 1,
+            Ordering::Equal => (),
         }
     }
 
