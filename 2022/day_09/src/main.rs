@@ -3,33 +3,25 @@ use std::collections::HashSet;
 
 pub fn main() {
     let data = include_str!("input.txt");
-    println!("Part 1: {}", part_one(data));
-    println!("Part 2: {}", part_two(data));
+    let (child, tail) = compute_visited(data);
+    println!("Part 1: {}", part_one(&child));
+    println!("Part 2: {}", part_two(&tail));
 }
 
-fn part_one(data: &str) -> usize {
-    let mut head = Point(0, 0);
-    let mut tail = head;
-    let mut visited = HashSet::with_capacity(10_000);
-    visited.insert(tail);
-    for line in data.lines() {
-        let (dir, num) = parse_line(line);
-        for _ in 0..num {
-            let last = head;
-            head.move_dir(dir);
-            if !head.is_touching(tail) {
-                tail = last;
-                visited.insert(tail);
-            }
-        }
-    }
+fn part_one(visited: &HashSet<Point>) -> usize {
     visited.len()
 }
 
-fn part_two(data: &str) -> usize {
+fn part_two(visited: &HashSet<Point>) -> usize {
+    visited.len()
+}
+
+fn compute_visited(data: &str) -> (HashSet<Point>, HashSet<Point>) {
     let mut rope: Rope = [Point(0, 0); 10];
-    let mut visited = HashSet::with_capacity(10_000);
-    visited.insert(rope[9]);
+    let mut child_visited = HashSet::with_capacity(10_000);
+    let mut tail_visited = HashSet::with_capacity(10_000);
+    child_visited.insert(rope[9]);
+    tail_visited.insert(rope[9]);
     for line in data.lines() {
         let (dir, num) = parse_line(line);
         for _ in 0..num {
@@ -39,13 +31,16 @@ fn part_two(data: &str) -> usize {
                     break;
                 }
                 rope[i + 1].move_child(rope[i]);
+                if i == 0 {
+                    child_visited.insert(rope[1]);
+                }
                 if i == 8 {
-                    visited.insert(rope[9]);
+                    tail_visited.insert(rope[9]);
                 }
             }
         }
     }
-    visited.len()
+    (child_visited, tail_visited)
 }
 
 fn parse_line(line: &str) -> (char, u8) {
@@ -100,18 +95,21 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        assert_eq!(13, part_one(data));
+        let (child, _) = compute_visited(data);
+        assert_eq!(13, part_one(&child));
     }
 
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(1, part_two(data));
+        let (_, tail) = compute_visited(data);
+        assert_eq!(1, part_two(&tail));
     }
 
     #[test]
     fn two_v2() {
         let data = include_str!("test2.txt");
-        assert_eq!(36, part_two(data));
+        let (_, tail) = compute_visited(data);
+        assert_eq!(36, part_two(&tail));
     }
 }
