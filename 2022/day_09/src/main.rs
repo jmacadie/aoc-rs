@@ -1,5 +1,4 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
 
 pub fn main() {
     let data = include_str!("input.txt");
@@ -8,21 +7,21 @@ pub fn main() {
     println!("Part 2: {}", part_two(&tail));
 }
 
-fn part_one(visited: &HashSet<Point>) -> usize {
-    visited.len()
+fn part_one(visited: &Map) -> usize {
+    visited.iter().flatten().filter(|&b| *b).count()
 }
 
-fn part_two(visited: &HashSet<Point>) -> usize {
-    visited.len()
+fn part_two(visited: &Map) -> usize {
+    visited.iter().flatten().filter(|&b| *b).count()
 }
 
-fn compute_visited(data: &str) -> (HashSet<Point>, HashSet<Point>) {
+fn compute_visited(data: &str) -> (Map, Map) {
     let mut rope = [Point(0, 0); 10];
     let len = rope.len();
-    let mut child_visited = HashSet::with_capacity(10_000);
-    let mut tail_visited = HashSet::with_capacity(10_000);
-    child_visited.insert(rope[1]);
-    tail_visited.insert(rope[9]);
+    let mut child_visited: Map = [[false; 400]; 400];
+    let mut tail_visited: Map = [[false; 400]; 400];
+    child_visited.visit(rope[1]);
+    tail_visited.visit(rope[9]);
     for line in data.lines() {
         let (dir, num) = parse_line(line);
         for _ in 0..num {
@@ -33,10 +32,10 @@ fn compute_visited(data: &str) -> (HashSet<Point>, HashSet<Point>) {
                 }
                 rope[i].child_move(rope[i - 1]);
                 if i == 1 {
-                    child_visited.insert(rope[i]);
+                    child_visited.visit(rope[i]);
                 }
                 if i == (len - 1) {
-                    tail_visited.insert(rope[i]);
+                    tail_visited.visit(rope[i]);
                 }
             }
         }
@@ -52,6 +51,19 @@ fn parse_line(line: &str) -> (char, u8) {
     let dir = dir.chars().next().unwrap();
     let val = val.parse().unwrap();
     (dir, val)
+}
+
+trait Visitable {
+    fn visit(&mut self, loc: Point);
+}
+
+type Map = [[bool; 400]; 400];
+impl Visitable for Map {
+    fn visit(&mut self, loc: Point) {
+        let x: usize = (loc.0 + 200).try_into().unwrap();
+        let y: usize = (loc.1 + 200).try_into().unwrap();
+        self[x][y] = true;
+    }
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Copy)]
