@@ -17,7 +17,8 @@ fn part_two(visited: &HashSet<Point>) -> usize {
 }
 
 fn compute_visited(data: &str) -> (HashSet<Point>, HashSet<Point>) {
-    let mut rope: Rope = [Point(0, 0); 10];
+    let mut rope = [Point(0, 0); 10];
+    let len = rope.len();
     let mut child_visited = HashSet::with_capacity(10_000);
     let mut tail_visited = HashSet::with_capacity(10_000);
     child_visited.insert(rope[1]);
@@ -26,16 +27,16 @@ fn compute_visited(data: &str) -> (HashSet<Point>, HashSet<Point>) {
         let (dir, num) = parse_line(line);
         for _ in 0..num {
             rope[0].move_head(dir);
-            for i in 1..=9 {
+            for i in 1..len {
                 if rope[i].is_touching(rope[i - 1]) {
                     break;
                 }
-                rope[i].move_child(rope[i - 1]);
+                rope[i].child_move(rope[i - 1]);
                 if i == 1 {
-                    child_visited.insert(rope[1]);
+                    child_visited.insert(rope[i]);
                 }
-                if i == 9 {
-                    tail_visited.insert(rope[9]);
+                if i == (len - 1) {
+                    tail_visited.insert(rope[i]);
                 }
             }
         }
@@ -56,8 +57,6 @@ fn parse_line(line: &str) -> (char, u8) {
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Copy)]
 struct Point(i16, i16);
 
-type Rope = [Point; 10];
-
 impl Point {
     fn move_head(&mut self, dir: char) {
         match dir {
@@ -69,7 +68,7 @@ impl Point {
         }
     }
 
-    fn move_child(&mut self, parent: Self) {
+    fn child_move(&mut self, parent: Self) {
         match parent.0.cmp(&self.0) {
             Ordering::Greater => self.0 += 1,
             Ordering::Less => self.0 -= 1,
