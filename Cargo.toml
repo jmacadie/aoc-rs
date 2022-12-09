@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 took = "0.1.2"
+gag = "1.0.0"
 
 # Days
 day_01 = { path = "2022/day_01" }
@@ -17,4 +18,4 @@ day_05 = { path = "2022/day_05" }
 day_06 = { path = "2022/day_06" }
 day_07 = { path = "2022/day_07" }
 day_08 = { path = "2022/day_08" }
-gag = "1.0.0"
+day_09 = { path = "2022/day_09" }
