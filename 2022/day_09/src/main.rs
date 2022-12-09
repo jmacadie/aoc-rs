@@ -20,21 +20,21 @@ fn compute_visited(data: &str) -> (HashSet<Point>, HashSet<Point>) {
     let mut rope: Rope = [Point(0, 0); 10];
     let mut child_visited = HashSet::with_capacity(10_000);
     let mut tail_visited = HashSet::with_capacity(10_000);
-    child_visited.insert(rope[9]);
+    child_visited.insert(rope[1]);
     tail_visited.insert(rope[9]);
     for line in data.lines() {
         let (dir, num) = parse_line(line);
         for _ in 0..num {
-            rope[0].move_dir(dir);
-            for i in 0..9 {
-                if rope[i].is_touching(rope[i + 1]) {
+            rope[0].move_head(dir);
+            for i in 1..=9 {
+                if rope[i].is_touching(rope[i - 1]) {
                     break;
                 }
-                rope[i + 1].move_child(rope[i]);
-                if i == 0 {
+                rope[i].move_child(rope[i - 1]);
+                if i == 1 {
                     child_visited.insert(rope[1]);
                 }
-                if i == 8 {
+                if i == 9 {
                     tail_visited.insert(rope[9]);
                 }
             }
@@ -59,7 +59,7 @@ struct Point(i16, i16);
 type Rope = [Point; 10];
 
 impl Point {
-    fn move_dir(&mut self, dir: char) {
+    fn move_head(&mut self, dir: char) {
         match dir {
             'U' => self.0 += 1,
             'D' => self.0 -= 1,
