@@ -79,7 +79,7 @@ enum Operation {
 }
 
 struct Data {
-    items: [[u64; 36]; 8],
+    items: Items,
     operations: [Operation; 8],
     tests: [u64; 8],
     next: [(usize, usize); 8],
