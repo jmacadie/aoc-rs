@@ -43,5 +43,6 @@ fn jobs() -> &'static [(fn(), &'static str)] {
         (day_08::main, "Day 8"),
         (day_09::main, "Day 9"),
         (day_10::main, "Day 10"),
+        (day_11::main, "Day 11"),
     ]
 }
