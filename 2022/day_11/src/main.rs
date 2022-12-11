@@ -7,20 +7,8 @@ pub fn main() {
 }
 
 fn part_one(data: &'static str) -> u64 {
-    let (mut items, operations, tests, next) = parse_monkeys(data);
-    let lim: u64 = tests.iter().filter(|&v| v > &0).product();
-    let mut inspections = [0_u64; 8];
-    for _ in 0..20 {
-        inspect_round(
-            &mut items,
-            &mut inspections,
-            operations,
-            tests,
-            next,
-            3,
-            lim,
-        );
-    }
+    let data = parse_monkeys(data);
+    let inspections = solve::<20, 3>(data);
     inspections
         .into_iter()
         .sorted_unstable_by_key(|&v| std::cmp::Reverse(v))
@@ -28,21 +16,9 @@ fn part_one(data: &'static str) -> u64 {
         .product()
 }
 
-fn part_two(data: &'static str) -> u64 {
-    let (mut items, operations, tests, next) = parse_monkeys(data);
-    let lim: u64 = tests.iter().filter(|&v| v > &0).product();
-    let mut inspections = [0_u64; 8];
-    for _ in 0..10_000 {
-        inspect_round(
-            &mut items,
-            &mut inspections,
-            operations,
-            tests,
-            next,
-            1,
-            lim,
-        );
-    }
+fn part_two(data: &str) -> u64 {
+    let data = parse_monkeys(data);
+    let inspections = solve::<10_000, 1>(data);
     inspections
         .into_iter()
         .sorted_unstable_by_key(|&v| std::cmp::Reverse(v))
@@ -50,29 +26,26 @@ fn part_two(data: &'static str) -> u64 {
         .product()
 }
 
-fn inspect_round(
-    items: &mut Items,
-    inspections: &mut [u64; 8],
-    operations: [&str; 8],
-    tests: [u64; 8],
-    next: [(usize, usize); 8],
-    divisor: u64,
-    limit: u64,
-) {
-    for monkey in 0_usize..8 {
-        for item_num in 0_usize..36 {
-            if items[monkey][item_num] == 0 {
-                break;
-            }
-            inspections[monkey] += 1;
-            let new = update_worry(operations[monkey], items[monkey][item_num], divisor) % limit;
-            if test_worry(tests[monkey], new) {
-                pass_item(items, (monkey, item_num), next[monkey].0, new);
-            } else {
-                pass_item(items, (monkey, item_num), next[monkey].1, new);
+fn solve<const ROUNDS: usize, const DIVISOR: u64>(mut data: Data) -> [u64; 8] {
+    let mut inspections = [0_u64; 8];
+    let lim: u64 = data.tests.iter().filter(|&v| v > &0).product();
+    for _ in 0..ROUNDS {
+        for (monkey, item) in inspections.iter_mut().enumerate() {
+            for item_num in 0_usize..36 {
+                if data.items[monkey][item_num] == 0 {
+                    break;
+                }
+                *item += 1;
+                let new = (update_worry(data.operations[monkey], data.items[monkey][item_num]) / DIVISOR) % lim;
+                if test_worry(data.tests[monkey], new) {
+                    pass_item(&mut data.items, (monkey, item_num), data.next[monkey].0, new);
+                } else {
+                    pass_item(&mut data.items, (monkey, item_num), data.next[monkey].1, new);
+                }
             }
         }
     }
+    inspections
 }
 
 fn pass_item(items: &mut Items, from: (usize, usize), to: usize, item: u64) {
@@ -84,19 +57,12 @@ fn pass_item(items: &mut Items, from: (usize, usize), to: usize, item: u64) {
     items[from.0][from.1] = 0;
 }
 
-fn update_worry(operation: &str, item: u64, divisor: u64) -> u64 {
-    let mut operation_parts = operation.split(' ');
-    let (Some("old"), Some(operator), Some(lhs), None) = (operation_parts.next(), operation_parts.next(), operation_parts.next(), operation_parts.next()) else {
-        panic!("Invalid operation strinf: {operation}");
-    };
-    let new_worry = match (operator, lhs) {
-        ("+", "old") => item + item,
-        ("+", val) => item + val.parse::<u64>().unwrap(),
-        ("*", "old") => item * item,
-        ("*", val) => item * val.parse::<u64>().unwrap(),
-        _ => unreachable!(),
-    };
-    new_worry / divisor
+fn update_worry(operation: Operation, item: u64) -> u64 {
+    match operation {
+        Operation::Add(x) => item + x,
+        Operation::Mul(x) => item * x,
+        Operation::Sqr => item * item,
+    }
 }
 
 fn test_worry(test: u64, worry: u64) -> bool {
@@ -105,9 +71,23 @@ fn test_worry(test: u64, worry: u64) -> bool {
 
 type Items = [[u64; 36]; 8];
 
-fn parse_monkeys(data: &'static str) -> (Items, [&'static str; 8], [u64; 8], [(usize, usize); 8]) {
+#[derive(Clone, Copy)]
+enum Operation {
+    Add(u64),
+    Mul(u64),
+    Sqr,
+}
+
+struct Data {
+    items: [[u64; 36]; 8],
+    operations: [Operation; 8],
+    tests: [u64; 8],
+    next: [(usize, usize); 8],
+}
+
+fn parse_monkeys(data: &str) -> Data {
     let mut items: Items = [[0; 36]; 8];
-    let mut operations: [&str; 8] = [""; 8];
+    let mut operations: [Operation; 8] = [Operation::Mul(1); 8];
     let mut tests: [u64; 8] = [0; 8];
     let mut next: [(usize, usize); 8] = [(0, 0); 8];
     let parts = data.split("\n\n");
@@ -117,12 +97,12 @@ fn parse_monkeys(data: &'static str) -> (Items, [&'static str; 8], [u64; 8], [(u
         tests[idx] = test;
         next[idx] = pass;
     }
-    (items, operations, tests, next)
+    Data { items, operations, tests, next }
 }
 
-fn parse_monkey(data: &'static str, items: &mut Items) -> (&'static str, u64, (usize, usize)) {
+fn parse_monkey(data: &str, items: &mut Items) -> (Operation, u64, (usize, usize)) {
     let mut monkey: usize = 0;
-    let mut operation: &str = "";
+    let mut operation: Operation = Operation::Mul(1);
     let mut test: u64 = 0;
     let mut pass_true: usize = 0;
     let mut pass_false: usize = 0;
@@ -143,7 +123,17 @@ fn parse_monkey(data: &'static str, items: &mut Items) -> (&'static str, u64, (u
                 let (Some("new "), Some(op), None) = (data_parts.next(), data_parts.next(), data_parts.next()) else {
                     panic!("Operation line is not well formatted: {data}");
                 };
-                operation = op.trim();
+                let mut operation_parts = op.trim().split(' ');
+                let (Some("old"), Some(operator), Some(lhs), None) = (operation_parts.next(), operation_parts.next(), operation_parts.next(), operation_parts.next()) else {
+                    panic!("Invalid operation string: {op}");
+                };
+                operation = match (operator, lhs) {
+                    ("+", "old") => Operation::Mul(2),
+                    ("+", val) => Operation::Add(val.parse::<u64>().unwrap()),
+                    ("*", "old") => Operation::Sqr,
+                    ("*", val) => Operation::Mul(val.parse::<u64>().unwrap()),
+                    _ => unreachable!(),
+                };
             }
             "Test" => {
                 let mut data_parts = data.trim().split(' ');
