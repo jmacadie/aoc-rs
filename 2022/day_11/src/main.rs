@@ -2,45 +2,44 @@ use itertools::Itertools;
 
 pub fn main() {
     let data = include_str!("input.txt");
-    println!("Part 1: {}", part_one(data));
-    println!("Part 2: {}", part_two(data));
+    let (monkey_data, items) = parse_monkeys(data);
+    println!("Part 1: {}", part_one(&monkey_data, items));
+    println!("Part 2: {}", part_two(&monkey_data, items));
 }
 
-fn part_one(data: &'static str) -> u64 {
-    let data = parse_monkeys(data);
-    let inspections = solve::<20, 3>(data);
-    inspections
+fn part_one(data: &Data, items: Items) -> u64 {
+    solve::<20, 3>(data, items)
         .into_iter()
         .sorted_unstable_by_key(|&v| std::cmp::Reverse(v))
         .take(2)
         .product()
 }
 
-fn part_two(data: &str) -> u64 {
-    let data = parse_monkeys(data);
-    let inspections = solve::<10_000, 1>(data);
-    inspections
+fn part_two(data: &Data, items: Items) -> u64 {
+    solve::<10_000, 1>(data, items)
         .into_iter()
         .sorted_unstable_by_key(|&v| std::cmp::Reverse(v))
         .take(2)
         .product()
 }
 
-fn solve<const ROUNDS: usize, const DIVISOR: u64>(mut data: Data) -> [u64; 8] {
+fn solve<const ROUNDS: usize, const DIVISOR: u64>(data: &Data, mut items: Items) -> [u64; 8] {
     let mut inspections = [0_u64; 8];
     let lim: u64 = data.tests.iter().filter(|&v| v > &0).product();
     for _ in 0..ROUNDS {
         for (monkey, item) in inspections.iter_mut().enumerate() {
             for item_num in 0_usize..36 {
-                if data.items[monkey][item_num] == 0 {
+                if items[monkey][item_num] == 0 {
                     break;
                 }
                 *item += 1;
-                let new = (update_worry(data.operations[monkey], data.items[monkey][item_num]) / DIVISOR) % lim;
-                if test_worry(data.tests[monkey], new) {
-                    pass_item(&mut data.items, (monkey, item_num), data.next[monkey].0, new);
+                let new = (update_worry(data.operations[monkey], items[monkey][item_num])
+                    / DIVISOR)
+                    % lim;
+                if new % data.tests[monkey] == 0 {
+                    pass_item(&mut items, (monkey, item_num), data.next[monkey].0, new);
                 } else {
-                    pass_item(&mut data.items, (monkey, item_num), data.next[monkey].1, new);
+                    pass_item(&mut items, (monkey, item_num), data.next[monkey].1, new);
                 }
             }
         }
@@ -65,10 +64,6 @@ fn update_worry(operation: Operation, item: u64) -> u64 {
     }
 }
 
-fn test_worry(test: u64, worry: u64) -> bool {
-    worry % test == 0
-}
-
 type Items = [[u64; 36]; 8];
 
 #[derive(Clone, Copy)]
@@ -79,13 +74,12 @@ enum Operation {
 }
 
 struct Data {
-    items: Items,
     operations: [Operation; 8],
     tests: [u64; 8],
     next: [(usize, usize); 8],
 }
 
-fn parse_monkeys(data: &str) -> Data {
+fn parse_monkeys(data: &str) -> (Data, Items) {
     let mut items: Items = [[0; 36]; 8];
     let mut operations: [Operation; 8] = [Operation::Mul(1); 8];
     let mut tests: [u64; 8] = [0; 8];
@@ -97,7 +91,14 @@ fn parse_monkeys(data: &str) -> Data {
         tests[idx] = test;
         next[idx] = pass;
     }
-    Data { items, operations, tests, next }
+    (
+        Data {
+            operations,
+            tests,
+            next,
+        },
+        items,
+    )
 }
 
 fn parse_monkey(data: &str, items: &mut Items) -> (Operation, u64, (usize, usize)) {
@@ -176,12 +177,14 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        assert_eq!(10_605, part_one(data));
+        let (monkey_data, items) = parse_monkeys(data);
+        assert_eq!(10_605, part_one(&monkey_data, items));
     }
 
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(2_713_310_158, part_two(data));
+        let (monkey_data, items) = parse_monkeys(data);
+        assert_eq!(2_713_310_158, part_two(&monkey_data, items));
     }
 }
