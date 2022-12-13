@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use std::cmp::Ordering;
 
 pub fn main() {
@@ -11,28 +10,37 @@ fn part_one(data: &'static str) -> usize {
     data.split("\n\n")
         .enumerate()
         .map(|(i, part)| (i, part.split_once('\n').unwrap()))
-        .map(|(i, (p1, p2))| (i, (Packet { data: p1 }, Packet { data: p2 })))
+        .map(|(i, (p1, p2))| (i, (Packet::new(p1), Packet::new(p2))))
         .filter(|(_, (p1, p2))| p1 < p2)
         .map(|(i, _)| i + 1)
         .sum()
 }
 
 fn part_two(data: &'static str) -> usize {
-    data.split('\n')
+    let indexes = data
+        .split('\n')
         .filter(|l| !l.is_empty())
-        .chain("[[2]]".split('\n'))
-        .chain("[[6]]".split('\n'))
-        .map(|l| Packet { data: l })
-        .sorted_unstable()
-        .enumerate()
-        .filter(|(_, p)| p.data == "[[2]]" || p.data == "[[6]]")
-        .map(|(i, _)| i + 1)
-        .product()
+        .map(Packet::new)
+        .filter(|p| p < &Packet::new("[[6]]"))
+        .fold((1, 2), |acc: (usize, usize), p| {
+            if p < Packet::new("[[2]]") {
+                (acc.0 + 1, acc.1 + 1)
+            } else {
+                (acc.0, acc.1 + 1)
+            }
+        });
+    indexes.0 * indexes.1
 }
 
 #[derive(PartialEq, Eq, Debug)]
 struct Packet {
     data: &'static str,
+}
+
+impl Packet {
+    fn new(data: &'static str) -> Self {
+        Packet { data }
+    }
 }
 
 impl Ord for Packet {
