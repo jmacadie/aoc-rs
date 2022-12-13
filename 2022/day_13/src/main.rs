@@ -57,19 +57,10 @@ impl PartialOrd for Packet {
 
 fn compare_lists(list_1: &'static str, list_2: &'static str) -> Ordering {
     let parsed_1 = parse_list(list_1);
-    let len_1 = parsed_1.len();
     let parsed_2 = parse_list(list_2);
-    let len_2 = parsed_2.len();
-    if len_1 == 0 || len_2 == 0 {
-        return len_1.cmp(&len_2);
-    }
-    for (elem_1, elem_2) in parsed_1.into_iter().zip(parsed_2.into_iter()) {
+    for (&elem_1, &elem_2) in parsed_1.iter().zip(parsed_2.iter()) {
         match (elem_1.starts_with('['), elem_2.starts_with('[')) {
-            (false, false) => match elem_1
-                .parse::<u16>()
-                .unwrap()
-                .cmp(&elem_2.parse::<u16>().unwrap())
-            {
+            (false, false) => match compare_elements(elem_1, elem_2) {
                 Ordering::Equal => (),
                 Ordering::Greater => return Ordering::Greater,
                 Ordering::Less => return Ordering::Less,
@@ -81,7 +72,11 @@ fn compare_lists(list_1: &'static str, list_2: &'static str) -> Ordering {
             },
         }
     }
-    len_1.cmp(&len_2)
+    parsed_1.len().cmp(&parsed_2.len())
+}
+
+fn compare_elements(a: &'static str, b: &'static str) -> Ordering {
+    a.parse::<u32>().unwrap().cmp(&b.parse::<u32>().unwrap())
 }
 
 fn parse_list(list: &'static str) -> Vec<&str> {
