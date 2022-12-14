@@ -3,20 +3,25 @@ use std::cmp::{max, min};
 pub fn main() {
     let data = include_str!("input.txt");
     println!("Part 1: {}", part_one::<200, 100>(data));
-    println!("Part 2: {}", part_two(data));
+    println!("Part 2: {}", part_two::<200, 600>(data));
 }
 
 fn part_one<const R: usize, const C: usize>(data: &str) -> usize {
     let mut m = Map::<R, C>::new(data);
     let mut i = 0_usize;
-    while m.add_sand() {
+    while m.add_sand().is_some() {
         i += 1;
     }
     i
 }
 
-fn part_two(_data: &str) -> usize {
-    0
+fn part_two<const R: usize, const C: usize>(data: &str) -> usize {
+    let mut m = Map::<R, C>::new(data);
+    let mut i = 0_usize;
+    while m.add_sand().unwrap_or(Point(0, 0)) != Point(INPUT, 0) {
+        i += 1;
+    }
+    i + 1
 }
 
 // Going to span [450..550] & [..200]
@@ -95,17 +100,17 @@ impl<const R: usize, const C: usize> Map<R, C> {
         self.data[loc.1][loc.0 - (INPUT - C / 2)] = true
     }
 
-    fn add_sand(&mut self) -> bool {
+    fn add_sand(&mut self) -> Option<Point> {
         let mut loc = Point(INPUT, 0);
         while let Some(p) = self.drop_one(loc) {
             loc = p;
             if loc.1 == self.floor - 1 {
                 self.set(loc);
-                return false;
+                return None;
             }
         }
         self.set(loc);
-        true
+        Some(loc)
     }
 
     fn drop_one(&self, loc: Point) -> Option<Point> {
@@ -140,12 +145,12 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        assert_eq!(24, part_one::<12, 30>(data));
+        assert_eq!(24, part_one::<12, 20>(data));
     }
 
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(0, part_two(data));
+        assert_eq!(93, part_two::<12, 30>(data));
     }
 }
