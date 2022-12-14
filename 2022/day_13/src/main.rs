@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use crate::packet::Packet;
 
 pub fn main() {
     let data = include_str!("input.txt");
@@ -32,83 +32,106 @@ fn part_two(data: &'static str) -> usize {
     indexes.0 * indexes.1
 }
 
-#[derive(PartialEq, Eq, Debug)]
-struct Packet {
-    data: &'static str,
-}
+mod packet {
+    use std::cmp::Ordering;
 
-impl Packet {
-    fn new(data: &'static str) -> Self {
-        Packet { data }
+    #[derive(PartialEq, Eq, Debug)]
+    pub struct Packet {
+        data: &'static str,
     }
-}
 
-impl Ord for Packet {
-    fn cmp(&self, other: &Self) -> Ordering {
-        compare_lists(self.data, other.data)
-    }
-}
-
-impl PartialOrd for Packet {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-fn compare_lists(list_1: &'static str, list_2: &'static str) -> Ordering {
-    let parsed_1 = parse_list(list_1);
-    let parsed_2 = parse_list(list_2);
-    for (&elem_1, &elem_2) in parsed_1.iter().zip(parsed_2.iter()) {
-        match (elem_1.starts_with('['), elem_2.starts_with('[')) {
-            (false, false) => match compare_elements(elem_1, elem_2) {
-                Ordering::Equal => (),
-                Ordering::Greater => return Ordering::Greater,
-                Ordering::Less => return Ordering::Less,
-            },
-            (_, _) => match compare_lists(elem_1, elem_2) {
-                Ordering::Equal => (),
-                Ordering::Greater => return Ordering::Greater,
-                Ordering::Less => return Ordering::Less,
-            },
+    impl Packet {
+        pub fn new(data: &'static str) -> Self {
+            Packet { data }
         }
     }
-    parsed_1.len().cmp(&parsed_2.len())
-}
 
-fn compare_elements(a: &'static str, b: &'static str) -> Ordering {
-    a.parse::<u32>().unwrap().cmp(&b.parse::<u32>().unwrap())
-}
-
-fn parse_list(list: &'static str) -> Vec<&str> {
-    let mut count = 0_u32;
-    let pad = usize::from(list.starts_with('['));
-    let mut start = 0_usize;
-    let mut out = Vec::new();
-    for (i, char) in list[pad..list.len()].char_indices() {
-        match (char, count) {
-            ('[', 0) => {
-                count = 1;
-                start = i;
+    impl Ord for Packet {
+        fn cmp(&self, other: &Self) -> Ordering {
+            for (elem_1, elem_2) in self.iter().zip(other.iter()) {
+                match (elem_1.starts_with('['), elem_2.starts_with('[')) {
+                    (false, false) => match compare_elements(elem_1, elem_2) {
+                        Ordering::Equal => (),
+                        Ordering::Greater => return Ordering::Greater,
+                        Ordering::Less => return Ordering::Less,
+                    },
+                    (_, _) => match Packet::new(elem_1).cmp(&Packet::new(elem_2)) {
+                        Ordering::Equal => (),
+                        Ordering::Greater => return Ordering::Greater,
+                        Ordering::Less => return Ordering::Less,
+                    },
+                }
             }
-            ('[', _) => count += 1,
-            (']', 0) => add_item(&mut out, list, start + pad, i + pad),
-            (']', _) => count -= 1,
-            (',', 0) => {
-                add_item(&mut out, list, start + pad, i + pad);
-                start = i + 1;
-            }
-            (_, _) => (),
+            let len_1 = self.data.len() + 2 * usize::from(!self.data.starts_with('['));
+            let len_2 = other.data.len() + 2 * usize::from(!other.data.starts_with('['));
+            len_1.cmp(&len_2)
         }
     }
-    if pad == 0 {
-        add_item(&mut out, list, start, list.len());
-    }
-    out
-}
 
-fn add_item(output: &mut Vec<&'static str>, source: &'static str, start: usize, end: usize) {
-    if end > start {
-        output.push(&source[start..end]);
+    fn compare_elements(a: &'static str, b: &'static str) -> Ordering {
+        a.parse::<u32>().unwrap().cmp(&b.parse::<u32>().unwrap())
+    }
+
+    impl PartialOrd for Packet {
+        fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+            Some(self.cmp(other))
+        }
+    }
+
+    pub struct Iter {
+        data: &'static str,
+        position: usize,
+        end: bool,
+    }
+
+    impl Iterator for Iter {
+        type Item = &'static str;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            if self.end {
+                return None;
+            }
+            let mut count = 0_u32;
+            let start = self.position;
+            for (i, char) in self.data[self.position..].char_indices() {
+                match (char, count, i) {
+                    ('[', _, _) => count += 1,
+                    (']', 0, 0) => return None,
+                    (']', 0, _) => {
+                        self.end = true;
+                        return Some(&self.data[start..start + i]);
+                    }
+                    (']', _, _) => count -= 1,
+                    (',', 0, _) => {
+                        self.position += i + 1;
+                        return Some(&self.data[start..start + i]);
+                    }
+                    (_, _, _) => (),
+                }
+            }
+            self.end = true;
+            Some(&self.data[start..])
+        }
+    }
+
+    impl Packet {
+        fn iter(&self) -> Iter {
+            let pos = usize::from(self.data.starts_with('['));
+            Iter {
+                data: self.data,
+                position: pos,
+                end: false,
+            }
+        }
+    }
+
+    impl IntoIterator for &Packet {
+        type Item = &'static str;
+        type IntoIter = Iter;
+
+        fn into_iter(self) -> Self::IntoIter {
+            self.iter()
+        }
     }
 }
 
