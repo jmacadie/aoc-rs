@@ -1,28 +1,101 @@
-use std::collections::HashSet;
+use itertools::Itertools;
 
 pub fn main() {
     let data = include_str!("input.txt");
     println!("Part 1: {}", part_one(data, 2_000_000));
-    println!("Part 2: {}", part_two(data));
+    println!("Part 2: {}", part_two::<4_000_000>(data));
 }
 
-fn part_one(data: &str, row: i32) -> usize {
-    let v = data
-        .lines()
+fn part_one(data: &str, row: i32) -> i32 {
+    data.lines()
         .map(read_line)
         .map(|(s, b)| (s, manhatten_distance(s, b)))
         .filter_map(|(s, d)| points_on_line(s, row, d))
-        .fold(HashSet::new(), |mut acc, (a, b)| {
-            for x in a.0..=b.0 {
-                acc.insert(x);
-            }
-            acc
-        });
-    v.len() - 1
+        .sorted_unstable_by_key(|(a, _)| a.0)
+        .fold(
+            FoldAcc {
+                partition: (i32::MIN, i32::MIN),
+                items: 0,
+                disjoint_point: None,
+            },
+            |acc, (a, b)| {
+                if b.0 <= acc.partition.1 {
+                    return acc;
+                }
+                if a.0 > acc.partition.1 + 1 {
+                    return FoldAcc {
+                        partition: (a.0, b.0),
+                        items: acc.items + b.0 - a.0 + 1,
+                        disjoint_point: None,
+                    };
+                }
+                FoldAcc {
+                    partition: (acc.partition.0, b.0),
+                    items: acc.items + b.0 - acc.partition.1,
+                    disjoint_point: None,
+                }
+            },
+        )
+        .items
+        - 1
 }
 
-fn part_two(_data: &str) -> usize {
+fn part_two<const LIM: i32>(data: &str) -> u64 {
+    for i in LIM / 2..LIM {
+        if let Some(point) = data
+            .lines()
+            .map(read_line)
+            .map(|(s, b)| (s, manhatten_distance(s, b)))
+            .filter_map(|(s, d)| points_on_line(s, i, d))
+            .sorted_unstable_by_key(|(a, _)| a.0)
+            .fold(
+                FoldAcc {
+                    partition: (i32::MIN, i32::MIN),
+                    items: 0,
+                    disjoint_point: None,
+                },
+                |acc, (a, b)| {
+                    if b.0 <= acc.partition.1 {
+                        return acc;
+                    }
+                    if a.0 > acc.partition.1 + 1 {
+                        if a.0 > 0 && a.0 < LIM {
+                            return FoldAcc {
+                                partition: (a.0, b.0),
+                                items: 0,
+                                disjoint_point: Some(Point(a.0 - 1, i)),
+                            };
+                        } else {
+                            return FoldAcc {
+                                partition: (a.0, b.0),
+                                items: 0,
+                                disjoint_point: acc.disjoint_point,
+                            };
+                        }
+                    }
+                    FoldAcc {
+                        partition: (acc.partition.0, b.0),
+                        items: 0,
+                        disjoint_point: acc.disjoint_point,
+                    }
+                },
+            )
+            .disjoint_point
+        {
+            println!("point: {point:?}");
+            let x = u64::try_from(point.0).unwrap();
+            let y = u64::try_from(point.1).unwrap();
+            return x * 4_000_000 + y;
+        }
+    }
     0
+}
+
+#[derive(Debug)]
+struct FoldAcc {
+    partition: (i32, i32),
+    items: i32,
+    disjoint_point: Option<Point>,
 }
 
 fn read_line(line: &str) -> (Point, Point) {
@@ -76,6 +149,6 @@ mod tests {
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(0, part_two(data));
+        assert_eq!(56000011, part_two::<20>(data));
     }
 }
