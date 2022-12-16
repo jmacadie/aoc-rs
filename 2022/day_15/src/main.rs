@@ -9,7 +9,7 @@ pub fn main() {
 fn part_one<const ROW: i32>(data: &str) -> i32 {
     data.lines()
         .map(read_line)
-        .map(|(s, b)| (s, manhatten_distance(s, b)))
+        .map(|(s, b)| (s, manhattan_distance(s, b)))
         .filter_map(points_on_line::<ROW>)
         .sorted_unstable_by_key(|(a, _)| a.0)
         .fold(Default::default(), fold_partition)
@@ -21,12 +21,12 @@ fn part_two(data: &str) -> u64 {
     let p = data
         .lines()
         .map(read_line)
-        .map(|(s, b)| (s, manhatten_distance(s, b)))
+        .map(|(s, b)| (s, manhattan_distance(s, b)))
         .combinations(2)
         .filter_map(one_separated)
         .map(get_separation_line)
         .combinations(2)
-        .find_map(get_interesction)
+        .find_map(get_intersection)
         .unwrap_or(Point(0, 0));
     //println!("{p:?}");
     let x = u64::try_from(p.0).unwrap();
@@ -68,7 +68,7 @@ fn fold_partition(accumulator: FoldAcc, (a, b): (Point, Point)) -> FoldAcc {
 fn one_separated(combination: Vec<(Point, u32)>) -> Option<((Point, u32), (Point, u32))> {
     let (s1, d1) = combination[0];
     let (s2, d2) = combination[1];
-    if manhatten_distance(s1, s2) == d1 + d2 + 2 {
+    if manhattan_distance(s1, s2) == d1 + d2 + 2 {
         Some(((s1, d1), (s2, d2)))
     } else {
         None
@@ -133,7 +133,7 @@ fn get_separation_line(((s1, d1), (s2, d2)): ((Point, u32), (Point, u32))) -> (P
     (top, bottom)
 }
 
-fn get_interesction(combination: Vec<(Point, Point)>) -> Option<Point> {
+fn get_intersection(combination: Vec<(Point, Point)>) -> Option<Point> {
     let line_1 = combination[0];
     let line_2 = combination[1];
     let s1 = slope(line_1);
@@ -170,7 +170,7 @@ fn read_line(line: &str) -> (Point, Point) {
     (sensor, beacon)
 }
 
-fn manhatten_distance(a: Point, b: Point) -> u32 {
+fn manhattan_distance(a: Point, b: Point) -> u32 {
     (a.0 - b.0).unsigned_abs() + (a.1 - b.1).unsigned_abs()
 }
 
