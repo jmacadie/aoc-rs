@@ -23,8 +23,8 @@ fn part_two(data: &str) -> u64 {
         .map(read_line)
         .map(|(s, b)| (s, manhatten_distance(s, b)))
         .combinations(2)
-        .filter_map(one_seperated)
-        .map(get_seperation_line)
+        .filter_map(one_separated)
+        .map(get_separation_line)
         .combinations(2)
         .find_map(get_interesction)
         .unwrap_or(Point(0, 0));
@@ -65,7 +65,7 @@ fn fold_partition(accumulator: FoldAcc, (a, b): (Point, Point)) -> FoldAcc {
     }
 }
 
-fn one_seperated(combination: Vec<(Point, u32)>) -> Option<((Point, u32), (Point, u32))> {
+fn one_separated(combination: Vec<(Point, u32)>) -> Option<((Point, u32), (Point, u32))> {
     let (s1, d1) = combination[0];
     let (s2, d2) = combination[1];
     if manhatten_distance(s1, s2) == d1 + d2 + 2 {
@@ -75,7 +75,7 @@ fn one_seperated(combination: Vec<(Point, u32)>) -> Option<((Point, u32), (Point
     }
 }
 
-fn get_seperation_line(((s1, d1), (s2, d2)): ((Point, u32), (Point, u32))) -> (Point, Point) {
+fn get_separation_line(((s1, d1), (s2, d2)): ((Point, u32), (Point, u32))) -> (Point, Point) {
     let d1 = i32::try_from(d1).unwrap() + 1;
     let d2 = i32::try_from(d2).unwrap() + 1;
     let top: Point;
