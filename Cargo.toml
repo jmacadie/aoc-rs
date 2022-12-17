@@ -25,3 +25,4 @@ day_12 = { path = "2022/day_12" }
 day_13 = { path = "2022/day_13" }
 day_14 = { path = "2022/day_14" }
 day_15 = { path = "2022/day_15" }
+day_16 = { path = "2022/day_16" }
