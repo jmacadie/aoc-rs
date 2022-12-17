@@ -3,17 +3,16 @@ use std::collections::{HashMap, HashSet};
 
 pub fn main() {
     let data = include_str!("input.txt");
-    println!("Part 1: {}", part_one(data));
+    let (flows, map) = parse_input(data);
+    println!("Part 1: {}", part_one(&flows, &map));
     println!("Part 2: {}", part_two(data));
 }
 
-fn part_one(data: &'static str) -> u32 {
-    let (flows, map) = parse_input(data);
+fn part_one(flows: &Flows, map: &Map) -> u32 {
     let mut curr_path = Vec::with_capacity(20);
     curr_path.push("AA");
-    let mut val = 0;
-    let (path, value) = solve(&curr_path, 0, 30, &flows, &map, &mut val).unwrap();
-    println!("{path:?}");
+    let (_path, value) = solve(&curr_path, 0, 30, flows, map, 0).unwrap();
+    //println!("{path:?}");
     value
 }
 
@@ -23,7 +22,7 @@ fn solve(
     time: u32,
     flows: &Flows,
     map: &Map,
-    best: &mut u32,
+    mut best: u32,
 ) -> Option<(Vec<&'static str>, u32)> {
     let mut path = path.to_vec();
     let mut priority_list = get_priority_list(&path, time, flows, map);
@@ -31,15 +30,15 @@ fn solve(
     while let Some((node, new_time, opportunity)) = priority_list.pop() {
         path.push(node);
         let value = value + opportunity;
-        if priority_list.is_empty() && value > *best {
-            *best = value;
+        if priority_list.is_empty() && value > best {
             return Some((path, value));
         }
-        if value + remaining_opportunity(&path, new_time, flows, map) <= *best {
+        if value + remaining_opportunity(&path, new_time, flows, map) <= best {
             path.pop();
             continue;
         }
         if let Some(t) = solve(&path, value, new_time, flows, map, best) {
+            best = t.1;
             out = Some(t);
         }
         path.pop(); // Take this item off to try the next
@@ -155,7 +154,8 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        assert_eq!(1651, part_one(data));
+        let (flows, map) = parse_input(data);
+        assert_eq!(1651, part_one(&flows, &map));
     }
 
     #[test]
