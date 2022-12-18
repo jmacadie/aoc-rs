@@ -4,7 +4,6 @@ use std::collections::{HashMap, HashSet};
 pub fn main() {
     let data = include_str!("input.txt");
     let (flows, map) = parse_input(data);
-    println!("{flows:?}");
     println!("Part 1: {}", part_one(&flows, &map));
     println!("Part 2: {}", part_two(&flows, &map));
 }
@@ -48,16 +47,15 @@ fn solve(
     while let Some((node, new_time, opportunity)) = priority_list.pop() {
         path.push(node);
         let value = value + opportunity;
-        if (priority_list.is_empty() || (new_time + time[1] == 0)) && value > best {
+        if priority_list.is_empty() && value > best {
             return Some(([path, paths[1].to_vec()], value));
         }
         let updated_paths = [&path, paths[1]];
-        let max_time = std::cmp::max(new_time, time[1]);
-        if value + remaining_opportunity(updated_paths, max_time, flows, map) <= best {
+        let updated_time = [new_time, time[1]];
+        if value + remaining_opportunity(updated_paths, updated_time, flows, map) <= best {
             path.pop();
             continue;
         }
-        let updated_time = [new_time, time[1]];
         if let Some((p, v)) = solve(updated_paths, updated_time, value, flows, map, best) {
             best = v;
             out = Some((p, v));
@@ -67,10 +65,16 @@ fn solve(
     out
 }
 
-fn remaining_opportunity(paths: [&[&'static str]; 2], time: u32, flows: &Flows, map: &Map) -> u32 {
-    get_priority_list(paths, time, flows, map)
+fn remaining_opportunity(
+    paths: [&[&'static str]; 2],
+    time: [u32; 2],
+    flows: &Flows,
+    map: &Map,
+) -> u32 {
+    get_priority_list([paths[1], paths[0]], time[1], flows, map)
         .into_iter()
-        .map(|(_, _, v)| v)
+        .zip(get_priority_list(paths, time[0], flows, map).into_iter())
+        .map(|((_, _, v1), (_, _, v2))| std::cmp::max(v1, v2))
         .sum()
 }
 
