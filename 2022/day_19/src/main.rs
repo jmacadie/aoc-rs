@@ -5,12 +5,16 @@ pub fn main() {
 }
 
 fn part_one(data: &str) -> usize {
-    for line in data.lines() {
+    /*for line in data.lines() {
         let bp = read_line(line);
         let out = optimise(bp, &[], 0, State::default());
         println!("{out:?}");
-    }
-    0
+    }*/
+    data.lines()
+        .map(read_line)
+        .map(|bp| (bp, optimise(bp, &[], 0, State::default())))
+        .map(|(bp, val)| usize::from(bp.number) * usize::from(val))
+        .sum()
 }
 
 fn part_two(_data: &str) -> usize {
@@ -26,8 +30,10 @@ fn optimise(bp: Blueprint, picks: &[Robots], mut best: u8, state: State) -> u8 {
             if val > best {
                 best = val;
             }
-            //println!("{curr:?}");
-            best = optimise(bp, &curr, best, new_state);
+            let time = 24 - new_state.min;
+            if time > 15 || new_state.geode + (time * (time + 1)) / 2 > best {
+                best = optimise(bp, &curr, best, new_state);
+            }
         }
         curr.pop();
     }
@@ -225,7 +231,7 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        assert_eq!(0, part_one(data));
+        assert_eq!(33, part_one(data));
     }
 
     #[test]
