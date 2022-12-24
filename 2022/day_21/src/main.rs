@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub fn main() {
     let data = include_str!("input.txt");
@@ -12,8 +12,121 @@ fn part_one(data: &'static str) -> u64 {
     eval(root, &monkeys)
 }
 
-fn part_two(_data: &str) -> usize {
-    0
+fn part_two(data: &'static str) -> u64 {
+    let mut monkeys = read_data(data);
+    reorder_monkeys(&mut monkeys);
+    let root = monkeys.get("humn").unwrap();
+    eval(root, &monkeys)
+}
+
+fn reorder_monkeys(data: &mut Monkeys) {
+    let mut monkey = "humn";
+    let mut moved = HashSet::new();
+    while monkey != "root" {
+        moved.insert(monkey);
+        monkey = rewrite_monkey(data, monkey, &moved);
+    }
+}
+
+fn rewrite_monkey(
+    data: &mut Monkeys,
+    monkey: &'static str,
+    moved: &HashSet<&'static str>,
+) -> &'static str {
+    let target = MonkeyCalcElem::Monkey(monkey);
+    for (&next, &next_calc) in data.iter() {
+        if moved.contains(next) {
+            continue;
+        }
+        match next_calc {
+            MonkeyCalc::Add((a, b)) => {
+                if a == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), b));
+                        } else {
+                            *x = MonkeyCalc::Sub((MonkeyCalcElem::Monkey(next), b));
+                        }
+                    }
+                    return next;
+                } else if b == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), a));
+                        } else {
+                            *x = MonkeyCalc::Sub((MonkeyCalcElem::Monkey(next), a));
+                        }
+                    }
+                    return next;
+                }
+            }
+            MonkeyCalc::Sub((a, b)) => {
+                if a == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), b));
+                        } else {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Monkey(next), b));
+                        }
+                    }
+                    return next;
+                } else if b == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), a));
+                        } else {
+                            *x = MonkeyCalc::Sub((a, MonkeyCalcElem::Monkey(next)));
+                        }
+                    }
+                    return next;
+                }
+            }
+            MonkeyCalc::Mul((a, b)) => {
+                if a == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), b));
+                        } else {
+                            *x = MonkeyCalc::Div((MonkeyCalcElem::Monkey(next), b));
+                        }
+                    }
+                    return next;
+                } else if b == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), a));
+                        } else {
+                            *x = MonkeyCalc::Div((MonkeyCalcElem::Monkey(next), a));
+                        }
+                    }
+                    return next;
+                }
+            }
+            MonkeyCalc::Div((a, b)) => {
+                if a == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), b));
+                        } else {
+                            *x = MonkeyCalc::Mul((MonkeyCalcElem::Monkey(next), b));
+                        }
+                    }
+                    return next;
+                } else if b == target {
+                    if let Some(x) = data.get_mut(monkey) {
+                        if next == "root" {
+                            *x = MonkeyCalc::Add((MonkeyCalcElem::Number(0), a));
+                        } else {
+                            *x = MonkeyCalc::Div((a, MonkeyCalcElem::Monkey(next)));
+                        }
+                    }
+                    return next;
+                }
+            }
+            MonkeyCalc::Num(_) => (),
+        }
+    }
+    unreachable!();
 }
 
 fn eval(calc: &MonkeyCalc, data: &Monkeys) -> u64 {
@@ -51,7 +164,7 @@ fn read_line(line: &'static str) -> (&'static str, MonkeyCalc) {
 
 type Monkeys = HashMap<&'static str, MonkeyCalc>;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum MonkeyCalc {
     Num(u64),
     Add((MonkeyCalcElem, MonkeyCalcElem)),
@@ -63,41 +176,28 @@ enum MonkeyCalc {
 impl MonkeyCalc {
     fn new(s: &'static str) -> Self {
         if s.contains('+') {
-            let Some((a, b)) = s.split_once(" + ") else {
-                unreachable!();
-            };
-            let a = MonkeyCalcElem::new(a);
-            let b = MonkeyCalcElem::new(b);
-            MonkeyCalc::Add((a, b))
+            MonkeyCalc::Add(Self::split(s, '+'))
         } else if s.contains('-') {
-            let Some((a, b)) = s.split_once(" - ") else {
-                unreachable!();
-            };
-            let a = MonkeyCalcElem::new(a);
-            let b = MonkeyCalcElem::new(b);
-            MonkeyCalc::Sub((a, b))
+            MonkeyCalc::Sub(Self::split(s, '-'))
         } else if s.contains('*') {
-            let Some((a, b)) = s.split_once(" * ") else {
-                unreachable!();
-            };
-            let a = MonkeyCalcElem::new(a);
-            let b = MonkeyCalcElem::new(b);
-            MonkeyCalc::Mul((a, b))
+            MonkeyCalc::Mul(Self::split(s, '*'))
         } else if s.contains('/') {
-            let Some((a, b)) = s.split_once(" / ") else {
-                unreachable!();
-            };
-            let a = MonkeyCalcElem::new(a);
-            let b = MonkeyCalcElem::new(b);
-            MonkeyCalc::Div((a, b))
+            MonkeyCalc::Div(Self::split(s, '/'))
         } else {
-            let a = s.parse().unwrap();
-            MonkeyCalc::Num(a)
+            MonkeyCalc::Num(s.parse().unwrap())
         }
+    }
+
+    fn split(s: &'static str, op: char) -> (MonkeyCalcElem, MonkeyCalcElem) {
+        let pattern = format!(" {op} ");
+        let Some((a, b)) = s.split_once(&pattern) else {
+            unreachable!();
+        };
+        (MonkeyCalcElem::new(a), MonkeyCalcElem::new(b))
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum MonkeyCalcElem {
     Number(u64),
     Monkey(&'static str),
@@ -126,6 +226,6 @@ mod tests {
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(0, part_two(data));
+        assert_eq!(301, part_two(data));
     }
 }
