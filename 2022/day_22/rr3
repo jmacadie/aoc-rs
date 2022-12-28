@@ -15,7 +15,10 @@ fn part_one<const R: usize, const C: usize>(data: &'static str, test: bool) -> u
 
 fn part_two<const R: usize, const C: usize>(data: &'static str, test: bool) -> usize {
     let mut gps = Gps::<R, C>::new(data, 2, test);
-    gps.step_all();
+    for _ in 0..8 {
+        gps.step();
+    }
+    //gps.step_all();
     println!("{gps}");
     gps.password()
 }
@@ -187,20 +190,20 @@ impl<const R: usize, const C: usize> Gps<R, C> {
             ]
         } else {
             [
-                EdgeMapping::new(e1, e12),
+                EdgeMapping::new(e1, e6),
                 EdgeMapping::new(e2, e5),
                 EdgeMapping::new(e3, e4),
                 EdgeMapping::new(e4, e3),
                 EdgeMapping::new(e5, e2),
-                EdgeMapping::new(e6, e11),
+                EdgeMapping::new(e6, e1),
                 EdgeMapping::new(e7, e10),
                 EdgeMapping::new(e8, e9),
                 EdgeMapping::new(e9, e8),
                 EdgeMapping::new(e10, e7),
-                EdgeMapping::new(e11, e6),
-                EdgeMapping::new(e12, e1),
-                EdgeMapping::new(e13, e14),
-                EdgeMapping::new(e14, e13),
+                EdgeMapping::new(e11, e14),
+                EdgeMapping::new(e12, e13),
+                EdgeMapping::new(e13, e12),
+                EdgeMapping::new(e14, e11),
             ]
         }
     }
@@ -573,6 +576,6 @@ mod tests {
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(5031, part_two::<12, 16>(data, true));
+        assert_eq!(0, part_two::<12, 16>(data, true));
     }
 }
