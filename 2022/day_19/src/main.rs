@@ -5,169 +5,19 @@ pub fn main() {
 }
 
 fn part_one(data: &str) -> usize {
-    /*for line in data.lines() {
-        let bp = read_line(line);
-        let out = optimise(bp, &[], 0, State::default());
-        println!("{out:?}");
-    }*/
     data.lines()
-        .map(read_line)
-        .map(|bp| (bp, optimise(bp, &[], 0, State::default())))
+        .map(Blueprint::new)
+        .map(|bp| (bp, bp.optimise::<24>()))
         .map(|(bp, val)| usize::from(bp.number) * usize::from(val))
         .sum()
 }
 
-fn part_two(_data: &str) -> usize {
-    0
-}
-
-fn optimise(bp: Blueprint, picks: &[Robots], mut best: u8, state: State) -> u8 {
-    let mut curr = picks.to_vec();
-
-    for robot in [Robots::Geode, Robots::Obsidian, Robots::Clay, Robots::Ore] {
-        curr.push(robot);
-        if let Some((val, new_state)) = run(bp, &curr, state) {
-            if val > best {
-                best = val;
-            }
-            let time = 24 - new_state.min;
-            if time > 15 || new_state.geode + (time * (time + 1)) / 2 > best {
-                best = optimise(bp, &curr, best, new_state);
-            }
-        }
-        curr.pop();
-    }
-
-    best
-}
-
-fn run(bp: Blueprint, picks: &[Robots], mut state: State) -> Option<(u8, State)> {
-    let mut num =
-        (state.ore_robot + state.clay_robot + state.obsidian_robot + state.geode_robot - 1).into();
-    let mut making;
-    let mut save_state = State::default();
-    let mut pick = get_next_pick(picks, num);
-    let mut cost = get_pick_cost(pick, bp);
-
-    while state.min < 24 {
-        making = have_resources(cost, state.ore, state.clay, state.obsidian);
-
-        state.ore += state.ore_robot;
-        state.clay += state.clay_robot;
-        state.obsidian += state.obsidian_robot;
-        state.geode += state.geode_robot;
-        state.min += 1;
-
-        if making && state.min < 23 {
-            match pick {
-                Some(Robots::Ore) => state.ore_robot += 1,
-                Some(Robots::Clay) => state.clay_robot += 1,
-                Some(Robots::Obsidian) => state.obsidian_robot += 1,
-                Some(Robots::Geode) => state.geode_robot += 1,
-                None => unreachable!(),
-            }
-            state.ore -= cost.unwrap().ore;
-            state.clay -= cost.unwrap().clay;
-            state.obsidian -= cost.unwrap().obsidian;
-            num += 1;
-            pick = get_next_pick(picks, num);
-            cost = get_pick_cost(pick, bp);
-            if pick.is_none() {
-                save_state = state;
-            }
-        }
-    }
-    if num >= picks.len() {
-        return Some((state.geode, save_state));
-    }
-    None
-}
-
-fn have_resources(cost: Option<RobotCost>, ore: u8, clay: u8, obsidian: u8) -> bool {
-    if let Some(cost) = cost {
-        return ore >= cost.ore && clay >= cost.clay && obsidian >= cost.obsidian;
-    }
-    false
-}
-
-fn get_next_pick(picks: &[Robots], num: usize) -> Option<Robots> {
-    picks.get(num).copied()
-}
-
-fn get_pick_cost(pick: Option<Robots>, bp: Blueprint) -> Option<RobotCost> {
-    match pick? {
-        Robots::Ore => Some(bp.ore_robot),
-        Robots::Clay => Some(bp.clay_robot),
-        Robots::Obsidian => Some(bp.obsidian_robot),
-        Robots::Geode => Some(bp.geode_robot),
-    }
-}
-
-fn read_line(line: &str) -> Blueprint {
-    let (number, rest) = line.split_once(':').unwrap();
-    let number = number.trim_start_matches("Blueprint ").parse().unwrap();
-
-    let mut parts = rest.split('.');
-
-    let ore_robot = parts.next().unwrap().trim();
-    let ore_robot = ore_robot
-        .trim_start_matches("Each ore robot costs ")
-        .trim_end_matches(" ore")
-        .parse()
-        .unwrap();
-
-    let clay_robot = parts.next().unwrap().trim();
-    let clay_robot = clay_robot
-        .trim_start_matches("Each clay robot costs ")
-        .trim_end_matches(" ore")
-        .parse()
-        .unwrap();
-
-    let obsidian_robot = parts.next().unwrap().trim();
-    let (obsidian_robot_ore, obsidian_robot_clay) = obsidian_robot
-        .trim_start_matches("Each obsidian robot costs ")
-        .split_once(" and ")
-        .unwrap();
-    let obsidian_robot_ore = obsidian_robot_ore.trim_end_matches(" ore").parse().unwrap();
-    let obsidian_robot_clay = obsidian_robot_clay
-        .trim_end_matches(" clay")
-        .parse()
-        .unwrap();
-
-    let geode_robot = parts.next().unwrap().trim();
-    let (geode_robot_ore, geode_robot_obsidian) = geode_robot
-        .trim_start_matches("Each geode robot costs ")
-        .split_once(" and ")
-        .unwrap();
-    let geode_robot_ore = geode_robot_ore.trim_end_matches(" ore").parse().unwrap();
-    let geode_robot_obsidian = geode_robot_obsidian
-        .trim_end_matches(" obsidian")
-        .parse()
-        .unwrap();
-
-    Blueprint {
-        number,
-        ore_robot: RobotCost {
-            ore: ore_robot,
-            clay: 0,
-            obsidian: 0,
-        },
-        clay_robot: RobotCost {
-            ore: clay_robot,
-            clay: 0,
-            obsidian: 0,
-        },
-        obsidian_robot: RobotCost {
-            ore: obsidian_robot_ore,
-            clay: obsidian_robot_clay,
-            obsidian: 0,
-        },
-        geode_robot: RobotCost {
-            ore: geode_robot_ore,
-            clay: 0,
-            obsidian: geode_robot_obsidian,
-        },
-    }
+fn part_two(data: &str) -> usize {
+    data.lines()
+        .take(3)
+        .map(Blueprint::new)
+        .map(|bp| usize::from(bp.optimise::<32>()))
+        .product()
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -177,6 +27,159 @@ struct Blueprint {
     clay_robot: RobotCost,
     obsidian_robot: RobotCost,
     geode_robot: RobotCost,
+    ore_robot_lim: u8,
+    clay_robot_lim: u8,
+    obsidian_robot_lim: u8,
+}
+
+impl Blueprint {
+    fn new(line: &str) -> Blueprint {
+        let (number, rest) = line.split_once(':').unwrap();
+        let number = number.trim_start_matches("Blueprint ").parse().unwrap();
+
+        let mut parts = rest.split('.');
+
+        let ore_robot = parts.next().unwrap().trim();
+        let ore_robot = ore_robot
+            .trim_start_matches("Each ore robot costs ")
+            .trim_end_matches(" ore")
+            .parse()
+            .unwrap();
+
+        let clay_robot = parts.next().unwrap().trim();
+        let clay_robot = clay_robot
+            .trim_start_matches("Each clay robot costs ")
+            .trim_end_matches(" ore")
+            .parse()
+            .unwrap();
+
+        let obsidian_robot = parts.next().unwrap().trim();
+        let (obsidian_robot_ore, obsidian_robot_clay) = obsidian_robot
+            .trim_start_matches("Each obsidian robot costs ")
+            .split_once(" and ")
+            .unwrap();
+        let obsidian_robot_ore = obsidian_robot_ore.trim_end_matches(" ore").parse().unwrap();
+        let obsidian_robot_clay = obsidian_robot_clay
+            .trim_end_matches(" clay")
+            .parse()
+            .unwrap();
+
+        let geode_robot = parts.next().unwrap().trim();
+        let (geode_robot_ore, geode_robot_obsidian) = geode_robot
+            .trim_start_matches("Each geode robot costs ")
+            .split_once(" and ")
+            .unwrap();
+        let geode_robot_ore = geode_robot_ore.trim_end_matches(" ore").parse().unwrap();
+        let geode_robot_obsidian = geode_robot_obsidian
+            .trim_end_matches(" obsidian")
+            .parse()
+            .unwrap();
+
+        let mut ore_robot_lim = std::cmp::max(ore_robot, clay_robot);
+        ore_robot_lim = std::cmp::max(ore_robot_lim, obsidian_robot_ore);
+        ore_robot_lim = std::cmp::max(ore_robot_lim, geode_robot_ore);
+
+        Blueprint {
+            number,
+            ore_robot: RobotCost {
+                ore: ore_robot,
+                clay: 0,
+                obsidian: 0,
+            },
+            clay_robot: RobotCost {
+                ore: clay_robot,
+                clay: 0,
+                obsidian: 0,
+            },
+            obsidian_robot: RobotCost {
+                ore: obsidian_robot_ore,
+                clay: obsidian_robot_clay,
+                obsidian: 0,
+            },
+            geode_robot: RobotCost {
+                ore: geode_robot_ore,
+                clay: 0,
+                obsidian: geode_robot_obsidian,
+            },
+            ore_robot_lim,
+            clay_robot_lim: obsidian_robot_clay,
+            obsidian_robot_lim: geode_robot_obsidian,
+        }
+    }
+
+    fn optimise<const T: u8>(&self) -> u8 {
+        self.optimise_inner::<T>(0, State::default())
+    }
+
+    fn optimise_inner<const T: u8>(&self, mut best: u8, state: State) -> u8 {
+        for robot in [Robot::Geode, Robot::Obsidian, Robot::Clay, Robot::Ore] {
+            if self.enough(robot, state) {
+                continue;
+            }
+            if let Some((val, new_state)) = self.run::<T>(robot, state) {
+                best = std::cmp::max(best, val);
+                let rem = T - new_state.min;
+                if rem > 15 || val + (rem * (rem + 1)) / 2 > best {
+                    best = self.optimise_inner::<T>(best, new_state);
+                }
+            }
+        }
+        best
+    }
+
+    fn run<const T: u8>(&self, next: Robot, mut state: State) -> Option<(u8, State)> {
+        let cost = self.get_pick_cost(next);
+        if (cost.clay > 0 && state.clay_robot == 0)
+            || (cost.obsidian > 0 && state.obsidian_robot == 0)
+        {
+            return None;
+        }
+
+        let mut wait = 0;
+        if cost.ore > state.ore {
+            let new = 1 + (cost.ore - state.ore - 1) / state.ore_robot;
+            if state.min + new >= T {
+                return None;
+            }
+            wait = std::cmp::max(wait, new);
+        }
+        if cost.clay > state.clay {
+            let new = 1 + (cost.clay - state.clay - 1) / state.clay_robot;
+            if state.min + new >= T {
+                return None;
+            }
+            wait = std::cmp::max(wait, new);
+        }
+        if cost.obsidian > state.obsidian {
+            let new = 1 + (cost.obsidian - state.obsidian - 1) / state.obsidian_robot;
+            if state.min + new >= T {
+                return None;
+            }
+            wait = std::cmp::max(wait, new);
+        }
+        state.wait(wait + 1);
+        state.add(next, cost);
+
+        Some((state.final_geodes::<T>(), state))
+    }
+
+    fn get_pick_cost(&self, pick: Robot) -> RobotCost {
+        match pick {
+            Robot::Ore => self.ore_robot,
+            Robot::Clay => self.clay_robot,
+            Robot::Obsidian => self.obsidian_robot,
+            Robot::Geode => self.geode_robot,
+        }
+    }
+
+    fn enough(&self, robot: Robot, state: State) -> bool {
+        match robot {
+            Robot::Ore => state.ore_robot >= self.ore_robot_lim,
+            Robot::Clay => state.clay_robot >= self.clay_robot_lim,
+            Robot::Obsidian => state.obsidian_robot >= self.obsidian_robot_lim,
+            Robot::Geode => false,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -187,7 +190,7 @@ struct RobotCost {
 }
 
 #[derive(Debug, Clone, Copy)]
-enum Robots {
+enum Robot {
     Ore,
     Clay,
     Obsidian,
@@ -205,6 +208,32 @@ struct State {
     obsidian_robot: u8,
     geode_robot: u8,
     min: u8,
+}
+
+impl State {
+    fn final_geodes<const T: u8>(&self) -> u8 {
+        self.geode + (T - self.min) * self.geode_robot
+    }
+
+    fn wait(&mut self, mins: u8) {
+        self.ore += self.ore_robot * mins;
+        self.clay += self.clay_robot * mins;
+        self.obsidian += self.obsidian_robot * mins;
+        self.geode += self.geode_robot * mins;
+        self.min += mins;
+    }
+
+    fn add(&mut self, robot: Robot, cost: RobotCost) {
+        match robot {
+            Robot::Ore => self.ore_robot += 1,
+            Robot::Clay => self.clay_robot += 1,
+            Robot::Obsidian => self.obsidian_robot += 1,
+            Robot::Geode => self.geode_robot += 1,
+        }
+        self.ore -= cost.ore;
+        self.clay -= cost.clay;
+        self.obsidian -= cost.obsidian;
+    }
 }
 
 impl Default for State {
@@ -237,6 +266,6 @@ mod tests {
     #[test]
     fn two() {
         let data = include_str!("test.txt");
-        assert_eq!(0, part_two(data));
+        assert_eq!(56 * 62, part_two(data));
     }
 }
