@@ -64,7 +64,7 @@ fn get_cubes(data: &str) -> (Vec<Point>, Point) {
         y: max_y + 1,
         z: max_z + 1,
     };
-    (cubes, dbg!(bound))
+    (cubes, bound)
 }
 
 fn get_outer(cubes: &[Point], bound: Point) -> Vec<Point> {

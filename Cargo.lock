@@ -37,6 +37,15 @@ dependencies = [
  "day_14",
  "day_15",
  "day_16",
+ "day_17",
+ "day_18",
+ "day_19",
+ "day_20",
+ "day_21",
+ "day_22",
+ "day_23",
+ "day_24",
+ "day_25",
  "gag",
  "took",
 ]
@@ -195,6 +204,45 @@ version = "0.1.0"
 dependencies = [
  "itertools",
 ]
+
+[[package]]
+name = "day_17"
+version = "0.1.0"
+
+[[package]]
+name = "day_18"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_19"
+version = "0.1.0"
+
+[[package]]
+name = "day_20"
+version = "0.1.0"
+
+[[package]]
+name = "day_21"
+version = "0.1.0"
+
+[[package]]
+name = "day_22"
+version = "0.1.0"
+
+[[package]]
+name = "day_23"
+version = "0.1.0"
+
+[[package]]
+name = "day_24"
+version = "0.1.0"
+
+[[package]]
+name = "day_25"
+version = "0.1.0"
 
 [[package]]
 name = "either"

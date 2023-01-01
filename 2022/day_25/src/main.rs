@@ -5,12 +5,15 @@ pub fn main() {
 }
 
 fn part_one(data: &str) -> String {
-    let initial = data.lines().map(|l| l.as_bytes()).fold([0; 20], acc_number);
+    let initial = data
+        .lines()
+        .map(|l| l.as_bytes())
+        .fold([0; 20], acc_numbers);
     let norm = normalise(initial);
     print_snafu(norm)
 }
 
-fn acc_number(mut array: [i32; 20], number: &[u8]) -> [i32; 20] {
+fn acc_numbers(mut array: [i32; 20], number: &[u8]) -> [i32; 20] {
     for (i, v) in number.iter().rev().enumerate() {
         let delta = match v {
             b'=' => -2,

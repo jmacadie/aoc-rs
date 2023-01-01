@@ -3,7 +3,7 @@
 use gag::Gag;
 use took::{Timer, Took};
 
-const RUNS: usize = 100;
+const RUNS: usize = 10;
 
 fn main() {
     println!("Benchmarking all days with {} runs...", RUNS);
@@ -49,5 +49,14 @@ fn jobs() -> &'static [(fn(), &'static str)] {
         (day_14::main, "Day 14"),
         (day_15::main, "Day 15"),
         (day_16::main, "Day 16"),
+        (day_17::main, "Day 17"),
+        (day_18::main, "Day 18"),
+        (day_19::main, "Day 19"),
+        (day_20::main, "Day 20"),
+        (day_21::main, "Day 21"),
+        (day_22::main, "Day 22"),
+        (day_23::main, "Day 23"),
+        (day_24::main, "Day 24"),
+        (day_25::main, "Day 25"),
     ]
 }
