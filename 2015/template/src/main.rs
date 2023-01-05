@@ -1,3 +1,5 @@
+#![warn(clippy::all, clippy::pedantic)]
+
 pub fn main() {
     let data = include_str!("input.txt");
     println!("Part 1: {}", part_one(data));
