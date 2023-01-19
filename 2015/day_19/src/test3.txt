@@ -1,0 +1,6 @@
+H => HO
+H => OH
+O => HH
+O => OO
+
+HOOOH
