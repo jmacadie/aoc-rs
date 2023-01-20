@@ -27,11 +27,70 @@ fn part_one(data: &'static str) -> usize {
     count_match - count_dupe
 }
 
-fn part_two(_data: &str) -> usize {
-    0
+fn part_two(data: &'static str) -> u8 {
+    let (molecule, _, _) = read(data);
+
+    let (count, _) = count_submolecule(molecule.trim().as_bytes(), 0);
+    count - 1 // subtract one as we start with the first element
 }
 
 type Replacement = [&'static [u8]; 2];
+
+fn count_submolecule(molecule: &[u8], split_count: u8) -> (u8, &[u8]) {
+    let mut count = 0;
+    let mut ordinary;
+    let mut sub;
+
+    (ordinary, sub) = strip_ordinary(molecule);
+    while ordinary {
+        count += 1;
+        (ordinary, sub) = strip_ordinary(sub);
+    }
+
+    let special = sub.strip_prefix(b"CRn");
+    let start = sub.strip_prefix(b"Rn");
+    let split = sub.strip_prefix(b"Y");
+    let end = sub.strip_prefix(b"Ar");
+    match (special, start, split, end) {
+        (Some(m), None, None, None) => {
+            let sub_calc = count_submolecule(m, 0);
+            count += sub_calc.0;
+            let sub_calc = count_submolecule(sub_calc.1, 0);
+            count += sub_calc.0;
+            count += 1;
+            sub = sub_calc.1;
+        }
+        (None, Some(m), None, None) => {
+            let sub_calc = count_submolecule(m, 0);
+            count += sub_calc.0;
+            let sub_calc = count_submolecule(sub_calc.1, 0);
+            count += sub_calc.0;
+            sub = sub_calc.1;
+        }
+        (None, None, Some(m), None) => {
+            let sub_calc = count_submolecule(m, split_count + 1);
+            count += sub_calc.0;
+            sub = sub_calc.1;
+        }
+        (None, None, None, Some(m)) => sub = m,
+        _ => (),
+    }
+
+    (count - split_count, sub)
+}
+
+fn strip_ordinary(molecule: &[u8]) -> (bool, &[u8]) {
+    const ORDINARY: [&[u8]; 12] = [
+        b"Al", b"B", b"Ca", b"F", b"H", b"Mg", b"N", b"O", b"P", b"Si", b"Th", b"Ti",
+    ];
+    if let Some(m) = ORDINARY
+        .iter()
+        .find_map(|&elem| molecule.strip_prefix(elem))
+    {
+        return (true, m);
+    }
+    (false, molecule)
+}
 
 fn posn_matches(search: &[u8], replacements: &[(usize, &[u8])]) -> usize {
     replacements
@@ -196,8 +255,8 @@ mod tests {
 
     #[test]
     fn two() {
-        let data = include_str!("test.txt");
-        assert_eq!(0, part_two(data));
+        let data = include_str!("test5.txt");
+        assert_eq!(3, part_two(data));
     }
 
     #[test]
