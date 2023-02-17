@@ -73,11 +73,38 @@ impl GameState {
     }
 
     fn turn(&mut self, choice: PlayerMove) {
-        self.process_hard_mode();
-        self.process_effects();
-        self.player_turn(choice);
-        self.process_effects();
-        self.boss_turn();
+        if self.valid_move(choice) {
+            self.process_hard_mode();
+            self.process_effects();
+            self.player_turn(choice);
+            self.process_effects();
+            self.boss_turn();
+        }
+    }
+
+    fn valid_move(&mut self, choice: PlayerMove) -> bool {
+        match choice {
+            PlayerMove::Shield => {
+                if self.shield_turns_remaining > 1 {
+                    self.result = GameResult::Lost;
+                    return false;
+                }
+            }
+            PlayerMove::Poison => {
+                if self.poison_turns_remaining > 1 {
+                    self.result = GameResult::Lost;
+                    return false;
+                }
+            }
+            PlayerMove::Recharge => {
+                if self.recharge_turns_remaining > 1 {
+                    self.result = GameResult::Lost;
+                    return false;
+                }
+            }
+            _ => (),
+        }
+        true
     }
 
     fn boss_turn(&mut self) {
