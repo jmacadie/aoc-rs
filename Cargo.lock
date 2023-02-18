@@ -21,31 +21,51 @@ checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
 name = "aoc-rs"
 version = "0.1.0"
 dependencies = [
- "day_01",
- "day_02",
- "day_03",
- "day_04",
- "day_05",
- "day_06",
- "day_07",
- "day_08",
- "day_09",
- "day_10",
- "day_11",
- "day_12",
- "day_13",
- "day_14",
- "day_15",
- "day_16",
- "day_17",
- "day_18",
- "day_19",
- "day_20",
- "day_21",
- "day_22",
- "day_23",
- "day_24",
- "day_25",
+ "day_2015_06",
+ "day_2015_07",
+ "day_2015_08",
+ "day_2015_09",
+ "day_2015_10",
+ "day_2015_11",
+ "day_2015_12",
+ "day_2015_13",
+ "day_2015_14",
+ "day_2015_15",
+ "day_2015_16",
+ "day_2015_17",
+ "day_2015_18",
+ "day_2015_19",
+ "day_2015_20",
+ "day_2015_21",
+ "day_2015_22",
+ "day_2015_23",
+ "day_2015_24",
+ "day_2015_25",
+ "day_2022_01",
+ "day_2022_02",
+ "day_2022_03",
+ "day_2022_04",
+ "day_2022_05",
+ "day_2022_06",
+ "day_2022_07",
+ "day_2022_08",
+ "day_2022_09",
+ "day_2022_10",
+ "day_2022_11",
+ "day_2022_12",
+ "day_2022_13",
+ "day_2022_14",
+ "day_2022_15",
+ "day_2022_16",
+ "day_2022_17",
+ "day_2022_18",
+ "day_2022_19",
+ "day_2022_20",
+ "day_2022_21",
+ "day_2022_22",
+ "day_2022_23",
+ "day_2022_24",
+ "day_2022_25",
  "gag",
  "took",
 ]
@@ -111,35 +131,142 @@ dependencies = [
 ]
 
 [[package]]
-name = "day_01"
+name = "day_2015_06"
 version = "0.1.0"
 dependencies = [
  "itertools",
 ]
 
 [[package]]
-name = "day_02"
+name = "day_2015_07"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_08"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_09"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_10"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_11"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_12"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_13"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_14"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_15"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_16"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_17"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_18"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_19"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_20"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_21"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2015_22"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_23"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_24"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_25"
+version = "0.1.0"
+
+[[package]]
+name = "day_2022_01"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2022_02"
 version = "0.1.0"
 dependencies = [
  "color-eyre",
 ]
 
 [[package]]
-name = "day_03"
+name = "day_2022_03"
 version = "0.1.0"
 dependencies = [
  "itertools",
 ]
 
 [[package]]
-name = "day_04"
+name = "day_2022_04"
 version = "0.1.0"
 dependencies = [
  "color-eyre",
 ]
 
 [[package]]
-name = "day_05"
+name = "day_2022_05"
 version = "0.1.0"
 dependencies = [
  "color-eyre",
@@ -147,101 +274,101 @@ dependencies = [
 ]
 
 [[package]]
-name = "day_06"
+name = "day_2022_06"
 version = "0.1.0"
 
 [[package]]
-name = "day_07"
-version = "0.1.0"
-dependencies = [
- "itertools",
-]
-
-[[package]]
-name = "day_08"
+name = "day_2022_07"
 version = "0.1.0"
 dependencies = [
  "itertools",
 ]
 
 [[package]]
-name = "day_09"
-version = "0.1.0"
-
-[[package]]
-name = "day_10"
-version = "0.1.0"
-
-[[package]]
-name = "day_11"
+name = "day_2022_08"
 version = "0.1.0"
 dependencies = [
  "itertools",
 ]
 
 [[package]]
-name = "day_12"
+name = "day_2022_09"
 version = "0.1.0"
 
 [[package]]
-name = "day_13"
+name = "day_2022_10"
 version = "0.1.0"
 
 [[package]]
-name = "day_14"
-version = "0.1.0"
-
-[[package]]
-name = "day_15"
+name = "day_2022_11"
 version = "0.1.0"
 dependencies = [
  "itertools",
 ]
 
 [[package]]
-name = "day_16"
+name = "day_2022_12"
+version = "0.1.0"
+
+[[package]]
+name = "day_2022_13"
+version = "0.1.0"
+
+[[package]]
+name = "day_2022_14"
+version = "0.1.0"
+
+[[package]]
+name = "day_2022_15"
 version = "0.1.0"
 dependencies = [
  "itertools",
 ]
 
 [[package]]
-name = "day_17"
-version = "0.1.0"
-
-[[package]]
-name = "day_18"
+name = "day_2022_16"
 version = "0.1.0"
 dependencies = [
  "itertools",
 ]
 
 [[package]]
-name = "day_19"
+name = "day_2022_17"
 version = "0.1.0"
 
 [[package]]
-name = "day_20"
+name = "day_2022_18"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
+name = "day_2022_19"
 version = "0.1.0"
 
 [[package]]
-name = "day_21"
+name = "day_2022_20"
 version = "0.1.0"
 
 [[package]]
-name = "day_22"
+name = "day_2022_21"
 version = "0.1.0"
 
 [[package]]
-name = "day_23"
+name = "day_2022_22"
 version = "0.1.0"
 
 [[package]]
-name = "day_24"
+name = "day_2022_23"
 version = "0.1.0"
 
 [[package]]
-name = "day_25"
+name = "day_2022_24"
+version = "0.1.0"
+
+[[package]]
+name = "day_2022_25"
 version = "0.1.0"
 
 [[package]]
