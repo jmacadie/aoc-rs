@@ -240,3 +240,5 @@ day_2015_22 = { path = "2015/day_22" }
 day_2015_23 = { path = "2015/day_23" }
 day_2015_24 = { path = "2015/day_24" }
 day_2015_25 = { path = "2015/day_25" }
+
+[features]
