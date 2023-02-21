@@ -6,6 +6,7 @@ mod days;
 use bench::bench;
 use days::Year;
 use std::io::{self, BufRead, Write};
+use took::Took;
 
 // https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 // https://stackoverflow.com/questions/69981449/how-do-i-print-colored-text-to-the-terminal-in-rust#answer-69982036
@@ -39,15 +40,20 @@ fn main() -> io::Result<()> {
 }
 
 fn run_all_days(year: Year) {
-    for day in 1..=days::count(year) {
-        run_day(year, day);
-    }
+    let total = (1..=days::count(year))
+        .into_iter()
+        .map(|day| run_day(year, day))
+        .sum();
+
+    println!();
+    Took::from_std(total).describe("All days");
 }
 
-fn run_day(year: Year, day: usize) {
+fn run_day(year: Year, day: usize) -> std::time::Duration {
     let (f, txt) = days::get(year, day);
     let res = bench(f);
-    res.describe(txt);
+    Took::from_std(res).describe(txt);
+    res
 }
 
 fn pick_year() -> io::Result<Option<Year>> {
