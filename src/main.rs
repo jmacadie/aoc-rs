@@ -5,14 +5,20 @@ mod days;
 
 use bench::bench;
 use days::Year;
-use std::io::{self, BufRead, Write};
+use std::{
+    io::{self, BufRead, Write},
+    time::Duration,
+};
 use took::Took;
 
 // https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 // https://stackoverflow.com/questions/69981449/how-do-i-print-colored-text-to-the-terminal-in-rust#answer-69982036
 const ANSI_GREY: &str = "\x1b[38;5;243m";
 const ANSI_BLUE: &str = "\x1b[38;5;4m";
+const ANSI_PURPLE: &str = "\x1b[38;5;5m";
 const ANSI_RESET: &str = "\x1b[0m";
+const ANSI_ERASE_IN_LINE: &str = "\x1b[2K";
+const ANSI_PREVIOUS_LINE: &str = "\x1b[F";
 
 fn main() -> io::Result<()> {
     welcome();
@@ -29,31 +35,54 @@ fn main() -> io::Result<()> {
         return Ok(());
     }
     let day = day.unwrap();
+    clear_days_menu(year)?;
 
     if day == 0 {
-        run_all_days(year);
+        run_all_days(year)?;
     } else {
-        run_day(year, day);
+        let (txt, d) = run_day(year, day);
+        Took::from_std(d).describe(txt);
     }
 
     Ok(())
 }
 
-fn run_all_days(year: Year) {
-    let total = (1..=days::count(year))
-        .into_iter()
-        .map(|day| run_day(year, day))
-        .sum();
+fn run_all_days(year: Year) -> io::Result<()> {
+    let mut results = Vec::new();
+    for day in 1..=days::count(year) {
+        let (_, day_txt) = days::get(year, day);
+        let output = format!("Calculating {}...", day_txt);
+        replace_current_line(&output)?;
+        results.push(run_day(year, day));
+    }
+    replace_current_line("")?;
+
+    let total = results.iter().map(|&(_, d)| d).sum();
+    // Calculate percentages
+    println!("|{:=>7}==={:=>10}==={:=>5}=|", "", "", "");
+    println!("|{:^7} | {:^10} | {:^5} |", "Day", "Time", "%");
+    println!("|{:=>7}=+={:=>10}=+={:=>5}=|", "", "", "");
+    for &(txt, d) in &results {
+        let pcnt = div_duration_pcnt(d, total);
+        let formatted = Took::from_std(d);
+        println!("|{:>7} | {:>10} | {:>4}% |", txt, formatted, pcnt);
+        println!("|{:->7}-+-{:->10}-+-{:->4}--|", "", "", "");
+    }
 
     println!();
     Took::from_std(total).describe("All days");
+
+    Ok(())
 }
 
-fn run_day(year: Year, day: usize) -> std::time::Duration {
+const fn div_duration_pcnt(numerator: Duration, denominator: Duration) -> u128 {
+    100 * numerator.as_nanos() / denominator.as_nanos()
+}
+
+fn run_day(year: Year, day: usize) -> (&'static str, Duration) {
     let (f, txt) = days::get(year, day);
     let res = bench(f);
-    Took::from_std(res).describe(txt);
-    res
+    (txt, res)
 }
 
 fn pick_year() -> io::Result<Option<Year>> {
@@ -234,6 +263,12 @@ where
     }
 }
 
+fn clear_days_menu(year: Year) -> io::Result<()> {
+    let lines = days::count(year) + 10;
+    clear_previous_lines(lines)?;
+    Ok(())
+}
+
 fn show_years() {
     println!("Choose a year to run:");
     for (year, idx) in days::YEARS.iter().zip(1..) {
@@ -276,8 +311,35 @@ fn welcome() {
     println!("This tool is used to performance profile (run-time only) my solutions.");
     println!("All days are written in Rust.");
     println!("Individual days are their own binaries and can be run (to get the answers) by");
-    println!("navigating to the year & day (e.g. $ cd 2015/day_25) and using 'cargo run' there");
+    println!(
+        "navigating to the year & day (e.g. {}2015/day_25{}) and using '{}cargo run{}' there",
+        ANSI_PURPLE, ANSI_RESET, ANSI_PURPLE, ANSI_RESET
+    );
     println!();
+}
+
+fn clear_previous_lines(num: usize) -> io::Result<()> {
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
+
+    write!(handle, "{}", ANSI_ERASE_IN_LINE)?;
+    for _ in 0..num {
+        write!(handle, "{}{}", ANSI_PREVIOUS_LINE, ANSI_ERASE_IN_LINE)?;
+    }
+    handle.flush()?;
+
+    Ok(())
+}
+
+fn replace_current_line(new_line: &str) -> io::Result<()> {
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
+
+    write!(handle, "{}\r", ANSI_ERASE_IN_LINE)?;
+    write!(handle, "{}", new_line)?;
+    handle.flush()?;
+
+    Ok(())
 }
 
 fn trim_newline(s: &mut String) {
