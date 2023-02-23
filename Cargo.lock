@@ -22,6 +22,7 @@ name = "aoc-rs"
 version = "0.1.0"
 dependencies = [
  "day_2015_01",
+ "day_2015_02",
  "day_2015_06",
  "day_2015_07",
  "day_2015_08",
@@ -133,6 +134,10 @@ dependencies = [
 
 [[package]]
 name = "day_2015_01"
+version = "0.1.0"
+
+[[package]]
+name = "day_2015_02"
 version = "0.1.0"
 
 [[package]]
