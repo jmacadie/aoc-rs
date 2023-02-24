@@ -25,6 +25,7 @@ dependencies = [
  "day_2015_02",
  "day_2015_03",
  "day_2015_04",
+ "day_2015_05",
  "day_2015_06",
  "day_2015_07",
  "day_2015_08",
@@ -171,6 +172,10 @@ version = "0.1.0"
 dependencies = [
  "md-5",
 ]
+
+[[package]]
+name = "day_2015_05"
+version = "0.1.0"
 
 [[package]]
 name = "day_2015_06"
