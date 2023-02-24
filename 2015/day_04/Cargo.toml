@@ -1,0 +1,12 @@
+[package]
+name = "day_2015_04"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+md-5 = "0.10.5"
+
+[lib]
+path = "src/main.rs"
