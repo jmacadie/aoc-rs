@@ -10,27 +10,27 @@ In fairness, Python is a great language to do AoC, but I discovered Rust shortly
 Each day is it's own binary which can be found in subfolders.
 Go here to run (or test) the days and get the actual answers.
 
-* (2015)[2015]
-* (2016)[2016]
+* [2015](2015)
+* [2016](2016)
 * 2017 - _not yet started_
 * 2018 - _not yet started_
 * 2019 - _not yet started_
 * 2020 - _not yet started_
-* 2021 - _not yet started_, although I do have (a python repo)[https://github.com/jmacadie/AdventOfCode]
-* (2022)[2022]
+* 2021 - _not yet started_, although I do have [a python repo](https://github.com/jmacadie/AdventOfCode)
+* [2022](2022)
 
 In addition to the days themselves, this top-level folder contains a command line runner application that
 will time profile the days in a selected year
 
 I also have a sub-application that will look for any missing input files and download them automatically.
-For more info, see (here)[inputs]
+For more info, see [here](inputs)
 
-Finally, I have a (template folder)[template] with a template of a day for quickly getting another day added.
+Finally, I have a [template folder](template) with a template of a day for quickly getting another day added.
 There's not much of interest in here
 
 ## How to run
 
-To run any day, you need (Rust installed)[https://www.rust-lang.org/tools/install] :wink:
+To run any day, you need [Rust installed](https://www.rust-lang.org/tools/install) :wink:
 
 Then, at the root or in a day folder, run `cargo run --release`
 
@@ -42,8 +42,8 @@ Not the most streamlined process, this may change:
 
 1. Copy the template folder to the new day e.g. `cp -r template 2015/day_01`
 2. Edit the package name in the Cargo.toml file for the newly copied day. The name format is `day_yyyy_dd`
-3. Uncomment the newly added day in (the top-level app's Cargo.toml)[Cargo.toml]
-4. Update the relevant array in (src/days.rs)[src/days.rs] to include the new day
+3. Uncomment the newly added day in [the top-level app's Cargo.toml](Cargo.toml)
+4. Update the relevant array in [src/days.rs](src/days.rs) to include the new day
 5. Go to the inputs folder and run the input script to download the new day's input: `cd inputs && cargo run --release`
 6. Go back to the root folder and run the main app to check the new day shows and runs: `cd .. && cargo run --release`
 7. Navigate to the new day & start coding :persevere:
