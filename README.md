@@ -2,6 +2,7 @@
 
 This repo is built to host all my solutions to all the advent of code puzzles.
 All days are written in Rust.
+
 I only started in 2021 and did my first year in Python, because I didn't know any better!
 In fairness, Python is a great language to do AoC, but I discovered Rust shortly after finishing that year and switched allegiance
 
@@ -15,7 +16,8 @@ Go here to run (or test) the days and get the actual answers.
 * 2017 - _not yet started_
 * 2018 - _not yet started_
 * 2019 - _not yet started_
-* 2020 - _not yet started_, I do have some solutions [here](wip/year_2020) from when I was starting out. They need to be re-written in the standard format and generally made less bad
+* 2020 - _not yet started_, I do have some solutions [here](wip/year_2020) from when I was starting out.
+They need to be re-written in the standard format and generally made less bad
 * 2021 - _not yet started_, although I do have [a python repo](https://github.com/jmacadie/AdventOfCode)
 * [2022](2022)
 
@@ -32,9 +34,11 @@ There's not much of interest in here
 
 To run any day, you need :crab: [Rust installed](https://www.rust-lang.org/tools/install) :crab:
 
-* To run the performance profiler: at the root directory, run `cargo run --release`. N.B. This won't output any answers, just the calc runtime
-* To run any given day: navigate to the relevant directory, e.g. `cd 2015/day_01`, and then `cargo run --release`
-* To run tests for a day: Most days have tests based on the example cases given in the problem description. To run these, run `cargo test`
+* **Performance profiler**: at the root directory, run `cargo run --release`
+N.B. This won't output any answers, just the calc runtime
+* **Run a day**: navigate to the relevant directory, e.g. `cd 2015/day_01`, and then `cargo run --release`
+* **Test a day**: Most days have tests based on the example cases given in the problem description.
+To run these, navigate to the day directory & run `cargo test`
 
 ## To add a new day
 
@@ -57,7 +61,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2015</summary>
 
-  *All Days -- 555.24ms*
+  **All Days -- 555.24msi**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -92,7 +96,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2016</summary>
 
-  *All Days -- 105.50 μs* _(part-completed)_
+  **All Days -- 105.50 μs** _(part-completed)_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -139,7 +143,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2022</summary>
 
-  *All Days -- 2.86s*
+  **All Days -- 2.86s**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
