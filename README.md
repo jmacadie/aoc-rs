@@ -15,7 +15,7 @@ Go here to run (or test) the days and get the actual answers.
 * 2017 - _not yet started_
 * 2018 - _not yet started_
 * 2019 - _not yet started_
-* 2020 - _not yet started_
+* 2020 - _not yet started_, I do have some solutions [here](wip/year_2020) from when I was starting out. They need to be re-written in the standard format and generally made less bad
 * 2021 - _not yet started_, although I do have [a python repo](https://github.com/jmacadie/AdventOfCode)
 * [2022](2022)
 
@@ -32,11 +32,11 @@ There's not much of interest in here
 
 To run any day, you need :crab: [Rust installed](https://www.rust-lang.org/tools/install) :crab:
 
-Then, at the root or in a day folder, run `cargo run --release`
+* To run the performance profiler: at the root directory, run `cargo run --release`. N.B. This won't output any answers, just the calc runtime
+* To run any given day: navigate to the relevant directory, e.g. `cd 2015/day_01`, and then `cargo run --release`
+* To run tests for a day: Most days have tests based on the example cases given in the problem description. To run these, run `cargo test`
 
-Most days have tests based on the example cases given in the problem description. To run these, run `cargo test`
-
-# To add a new day
+## To add a new day
 
 Not the most streamlined process, this may change:
 
