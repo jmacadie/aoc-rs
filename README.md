@@ -30,7 +30,7 @@ There's not much of interest in here
 
 ## How to run
 
-To run any day, you need [Rust installed](https://www.rust-lang.org/tools/install) :wink:
+To run any day, you need :crab: [Rust installed](https://www.rust-lang.org/tools/install) :crab:
 
 Then, at the root or in a day folder, run `cargo run --release`
 
@@ -57,47 +57,54 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2015</summary>
 
-  All Days = 555.24ms
+  *All Days -- 555.24ms*
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  Day 1 |   14.80 μs |    0% |
-  |  Day 2 |  154.80 μs |    0% |
-  |  Day 3 |  674.90 μs |    0% |
-  |  Day 4 |  282.74 ms |   50% |
-  |  Day 5 |  331.40 μs |    0% |
-  |  Day 6 |   25.19 ms |    4% |
-  |  Day 7 |   16.48 ms |    2% |
-  |  Day 8 |   40.60 μs |    0% |
-  |  Day 9 |   20.01 ms |    3% |
-  | Day 10 |   62.95 ms |   11% |
-  | Day 11 |   52.00 ms |    9% |
-  | Day 12 |  177.30 μs |    0% |
-  | Day 13 |    3.16 ms |    0% |
-  | Day 14 |  249.40 μs |    0% |
-  | Day 15 |  165.70 μs |    0% |
-  | Day 16 |  209.30 μs |    0% |
-  | Day 17 |    7.24 ms |    1% |
-  | Day 18 |   47.98 ms |    8% |
-  | Day 19 |   51.70 μs |    0% |
-  | Day 20 |  451.30 μs |    0% |
-  | Day 21 |  478.30 μs |    0% |
-  | Day 22 |   26.53 ms |    4% |
-  | Day 23 |   14.30 μs |    0% |
-  | Day 24 |    7.95 ms |    1% |
-  | Day 25 |    1.50 μs |    0% |
+  |  [Day 1](2015/day_01/src/main.rs) |   14.80 μs |    0% |
+  |  [Day 2](2015/day_02/src/main.rs) |  154.80 μs |    0% |
+  |  [Day 3](2015/day_03/src/main.rs) |  674.90 μs |    0% |
+  |  [Day 4](2015/day_04/src/main.rs) |  282.74 ms |   50% |
+  |  [Day 5](2015/day_05/src/main.rs) |  331.40 μs |    0% |
+  |  [Day 6](2015/day_06/src/main.rs) |   25.19 ms |    4% |
+  |  [Day 7](2015/day_07/src/main.rs) |   16.48 ms |    2% |
+  |  [Day 8](2015/day_08/src/main.rs) |   40.60 μs |    0% |
+  |  [Day 9](2015/day_09/src/main.rs) |   20.01 ms |    3% |
+  | [Day 10](2015/day_10/src/main.rs) |   62.95 ms |   11% |
+  | [Day 11](2015/day_11/src/main.rs) |   52.00 ms |    9% |
+  | [Day 12](2015/day_12/src/main.rs) |  177.30 μs |    0% |
+  | [Day 13](2015/day_13/src/main.rs) |    3.16 ms |    0% |
+  | [Day 14](2015/day_14/src/main.rs) |  249.40 μs |    0% |
+  | [Day 15](2015/day_15/src/main.rs) |  165.70 μs |    0% |
+  | [Day 16](2015/day_16/src/main.rs) |  209.30 μs |    0% |
+  | [Day 17](2015/day_17/src/main.rs) |    7.24 ms |    1% |
+  | [Day 18](2015/day_18/src/main.rs) |   47.98 ms |    8% |
+  | [Day 19](2015/day_19/src/main.rs) |   51.70 μs |    0% |
+  | [Day 20](2015/day_20/src/main.rs) |  451.30 μs |    0% |
+  | [Day 21](2015/day_21/src/main.rs) |  478.30 μs |    0% |
+  | [Day 22](2015/day_22/src/main.rs) |   26.53 ms |    4% |
+  | [Day 23](2015/day_23/src/main.rs) |   14.30 μs |    0% |
+  | [Day 24](2015/day_24/src/main.rs) |    7.95 ms |    1% |
+  | [Day 25](2015/day_25/src/main.rs) |    1.50 μs |    0% |
 
 </details>
 
 <details>
   <summary>2016</summary>
 
-  All Days = 105.50 μs
+  *All Days -- 105.50 μs* _(part-completed)_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  Day 1 |   60.50 μs |   57% |
-  |  Day 2 |   45.00 μs |   42% |
+  |  [Day 1](2016/day_01/src/main.rs) |   60.50 μs |   57% |
+  |  [Day 2](2016/day_02/src/main.rs) |   45.00 μs |   42% |
+
+</details>
+
+<details>
+  <summary>2017</summary>
+
+  _No solutions yet written_
 
 </details>
 
@@ -132,34 +139,34 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2022</summary>
 
-  All Days = 2.86s
+  *All Days -- 2.86s*
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  Day 1 |   98.30 μs |    0% |
-  |  Day 2 |  152.80 μs |    0% |
-  |  Day 3 |  135.00 μs |    0% |
-  |  Day 4 |  209.70 μs |    0% |
-  |  Day 5 |  139.40 μs |    0% |
-  |  Day 6 |   13.70 μs |    0% |
-  |  Day 7 |   55.10 μs |    0% |
-  |  Day 8 |  109.30 μs |    0% |
-  |  Day 9 |  654.40 μs |    0% |
-  | Day 10 |   27.30 μs |    0% |
-  | Day 11 |   11.20 ms |    0% |
-  | Day 12 |  545.70 μs |    0% |
-  | Day 13 |  235.70 μs |    0% |
-  | Day 14 |   15.86 ms |    0% |
-  | Day 15 |   39.50 μs |    0% |
-  | Day 16 |     1.01 s |   35% |
-  | Day 17 |  397.60 μs |    0% |
-  | Day 18 |  183.06 ms |    6% |
-  | Day 19 |  170.59 ms |    5% |
-  | Day 20 |  178.75 ms |    6% |
-  | Day 21 |    3.60 ms |    0% |
-  | Day 22 |    3.10 ms |    0% |
-  | Day 23 |  242.24 ms |    8% |
-  | Day 24 |     1.03 s |   36% |
-  | Day 25 |   15.30 μs |    0% |
+  |  [Day 1](2022/day_01/src/main.rs) |   98.30 μs |    0% |
+  |  [Day 2](2022/day_02/src/main.rs) |  152.80 μs |    0% |
+  |  [Day 3](2022/day_03/src/main.rs) |  135.00 μs |    0% |
+  |  [Day 4](2022/day_04/src/main.rs) |  209.70 μs |    0% |
+  |  [Day 5](2022/day_05/src/main.rs) |  139.40 μs |    0% |
+  |  [Day 6](2022/day_06/src/main.rs) |   13.70 μs |    0% |
+  |  [Day 7](2022/day_07/src/main.rs) |   55.10 μs |    0% |
+  |  [Day 8](2022/day_08/src/main.rs) |  109.30 μs |    0% |
+  |  [Day 9](2022/day_09/src/main.rs) |  654.40 μs |    0% |
+  | [Day 10](2022/day_10/src/main.rs) |   27.30 μs |    0% |
+  | [Day 11](2022/day_11/src/main.rs) |   11.20 ms |    0% |
+  | [Day 12](2022/day_12/src/main.rs) |  545.70 μs |    0% |
+  | [Day 13](2022/day_13/src/main.rs) |  235.70 μs |    0% |
+  | [Day 14](2022/day_14/src/main.rs) |   15.86 ms |    0% |
+  | [Day 15](2022/day_15/src/main.rs) |   39.50 μs |    0% |
+  | [Day 16](2022/day_16/src/main.rs) |     1.01 s |   35% |
+  | [Day 17](2022/day_17/src/main.rs) |  397.60 μs |    0% |
+  | [Day 18](2022/day_18/src/main.rs) |  183.06 ms |    6% |
+  | [Day 19](2022/day_19/src/main.rs) |  170.59 ms |    5% |
+  | [Day 20](2022/day_20/src/main.rs) |  178.75 ms |    6% |
+  | [Day 21](2022/day_21/src/main.rs) |    3.60 ms |    0% |
+  | [Day 22](2022/day_22/src/main.rs) |    3.10 ms |    0% |
+  | [Day 23](2022/day_23/src/main.rs) |  242.24 ms |    8% |
+  | [Day 24](2022/day_24/src/main.rs) |     1.03 s |   36% |
+  | [Day 25](2022/day_25/src/main.rs) |   15.30 μs |    0% |
 
 </details>
