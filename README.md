@@ -1,7 +1,12 @@
 # Advent of Code solutions
 
-This repo is built to host all my solutions to all the advent of code puzzles.
+This repo is built to host my solutions to [advent of code puzzles](https://adventofcode.com/).
 All days are written in Rust.
+
+Generally speaking, I'm trying to stick to standard library.
+This is a learning exercise for me & I don't want an external crate to magically do all the work for me.
+I do make an exception for [itertools](https://docs.rs/itertools/latest/itertools/), is which is de facto part of the standard library as far as I'm concerned
+On odd days I'll use other crates too, e.g. the [MD-5 crate](https://docs.rs/md-5/latest/md5/) for [2015/day_04](2015/day_04/src/main.rs)
 
 I only started in 2021 and did my first year in Python, because I didn't know any better!
 In fairness, Python is a great language to do AoC, but I discovered Rust shortly after finishing that year and switched allegiance
@@ -9,7 +14,7 @@ In fairness, Python is a great language to do AoC, but I discovered Rust shortly
 ## Structure
 
 Each day is it's own binary which can be found in subfolders.
-Go here to run (or test) the days and get the actual answers.
+Go here to run (or test) the days, and get the actual answers.
 
 * [2015](2015)
 * [2016](2016)
@@ -32,7 +37,7 @@ There's not much of interest in here
 
 ## How to run
 
-To run any day, you need :crab: [Rust installed](https://www.rust-lang.org/tools/install) :crab:
+To start, you need :crab: [Rust installed](https://www.rust-lang.org/tools/install) :crab:
 
 * **Performance profiler**: at the root directory, run `cargo run --release`
 N.B. This won't output any answers, just the calc runtime
@@ -47,7 +52,8 @@ Not the most streamlined process, this may change:
 1. Copy the template folder to the new day e.g. `cp -r template 2015/day_01`
 2. Edit the package name in the Cargo.toml file for the newly copied day. The name format is `day_yyyy_dd`
 3. Uncomment the newly added day in [the top-level app's Cargo.toml](Cargo.toml)
-4. Update the relevant array in [src/days.rs](src/days.rs) to include the new day
+4. Update the relevant array in [src/days.rs](src/days.rs) to include the new day.
+Note you will need to increase the size of the array as well as uncommenting the day line
 5. Go to the inputs folder and run the input script to download the new day's input: `cd inputs && cargo run --release`
 6. Go back to the root folder and run the main app to check the new day shows and runs: `cd .. && cargo run --release`
 7. Navigate to the new day & start coding :persevere:
@@ -61,7 +67,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2015</summary>
 
-  **All Days -- 555.24msi**
+  **All Days -- 555.24ms**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
