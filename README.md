@@ -5,11 +5,11 @@ All days are written in Rust.
 
 Generally speaking, I'm trying to stick to standard library.
 This is a learning exercise for me & I don't want an external crate to magically do all the work for me.
-I do make an exception for [itertools](https://docs.rs/itertools/latest/itertools/), is which is de facto part of the standard library as far as I'm concerned
-On odd days I'll use other crates too, e.g. the [MD-5 crate](https://docs.rs/md-5/latest/md5/) for [2015/day_04](2015/day_04/src/main.rs)
+I do make an exception for [itertools](https://docs.rs/itertools/latest/itertools/), is which is de facto part of the standard library as far as I'm concerned.
+On odd days I'll use other crates too, e.g. the [MD-5 crate](https://docs.rs/md-5/latest/md5/) for [2015/day_04](2015/day_04/src/main.rs).
 
 I only started in 2021 and did my first year in Python, because I didn't know any better!
-In fairness, Python is a great language to do AoC, but I discovered Rust shortly after finishing that year and switched allegiance
+In fairness, Python is a great language to do AoC, but I discovered Rust shortly after finishing that year and switched allegiance.
 
 ## Structure
 
@@ -27,13 +27,13 @@ They need to be re-written in the standard format and generally made less bad
 * [2022](2022)
 
 In addition to the days themselves, this top-level folder contains a command line runner application that
-will time profile the days in a selected year
+will time profile the days in a selected year.
 
 I also have a sub-application that will look for any missing input files and download them automatically.
-For more info, see [here](inputs)
+For more info, see [here](inputs).
 
 Finally, I have a [template folder](template) with a template of a day for quickly getting another day added.
-There's not much of interest in here
+There's not much of interest in here.
 
 ## How to run
 
