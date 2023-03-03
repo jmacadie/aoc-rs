@@ -54,8 +54,8 @@ Not the most streamlined process, this may change:
 3. Uncomment the newly added day in [the top-level app's Cargo.toml](Cargo.toml)
 4. Update the relevant array in [src/days.rs](src/days.rs) to include the new day.
 Note you will need to increase the size of the array as well as uncommenting the day line
-5. Go to the inputs folder and run the input script to download the new day's input: `cd inputs && cargo run --release`
-6. Go back to the root folder and run the main app to check the new day shows and runs: `cd .. && cargo run --release`
+5. Download the inputs by running `cargo aoc-inputs`. This needs to be installed first, see [here](inputs) for more info
+6. From the root folder, run the main app to check the new day shows up and runs without error `cargo run --release`
 7. Navigate to the new day & start coding :persevere:
 
 Adding a new year will be a bit more work over and above these steps
