@@ -51,7 +51,7 @@ fn run_all_days(year: Year) -> io::Result<()> {
     let mut results = Vec::new();
     for day in 1..=days::count(year) {
         let (_, day_txt) = days::get(year, day);
-        let output = format!("Calculating {}...", day_txt);
+        let output = format!("Calculating {day_txt}...");
         replace_current_line(&output)?;
         results.push(run_day(year, day));
     }
@@ -65,7 +65,7 @@ fn run_all_days(year: Year) -> io::Result<()> {
     for &(txt, d) in &results {
         let pcnt = div_duration_pcnt(d, total);
         let formatted = Took::from_std(d);
-        println!("|{:>7} | {:>10} | {:>4}% |", txt, formatted, pcnt);
+        println!("|{txt:>7} | {formatted:>10} | {pcnt:>4}% |");
         println!("|{:->7}-+-{:->10}-+-{:->4}--|", "", "", "");
     }
 
@@ -137,7 +137,7 @@ fn pick_year() -> io::Result<Option<Year>> {
             "h" | "help" => show_years(),
             "q" | "quit" | "exit" => return Ok(None),
             _ => {
-                println!("Bad option: You typed '{}'", buffer);
+                println!("Bad option: You typed '{buffer}'");
                 show_short_options();
             }
         }
@@ -146,7 +146,7 @@ fn pick_year() -> io::Result<Option<Year>> {
 
 fn confirm_year(year: &str) -> io::Result<bool> {
     let mut handle = io::stdout().lock();
-    write!(handle, "Running {}. Please confirm [y]/n  ", year)?;
+    write!(handle, "Running {year}. Please confirm [y]/n  ")?;
     handle.flush()?;
 
     let mut buffer = String::new();
@@ -191,7 +191,7 @@ fn pick_day(year: Year) -> io::Result<Option<usize>> {
                         return Ok(Some(sel_num));
                     }
                 }
-                println!("Bad option: You typed '{}'", buffer);
+                println!("Bad option: You typed '{buffer}'");
                 show_short_options();
             }
         }
@@ -203,15 +203,13 @@ fn confirm_day(year: Year, day: usize) -> io::Result<bool> {
     if day == 0 {
         write!(
             handle,
-            "Running all days in {}. Please confirm [y]/n  ",
-            year
+            "Running all days in {year}. Please confirm [y]/n  "
         )?;
     } else {
         let (_, day_str) = days::get(year, day);
         write!(
             handle,
-            "Running {}, {}. Please confirm [y]/n  ",
-            year, day_str
+            "Running {year}, {day_str}. Please confirm [y]/n  "
         )?;
     }
     handle.flush()?;
@@ -232,7 +230,7 @@ fn confirm_day(year: Year, day: usize) -> io::Result<bool> {
 
 fn show_days(year: Year) {
     println!();
-    println!("Choose a day to run from {}:", year);
+    println!("Choose a day to run from {year}:");
     println!(" 0: All Days (default)");
     match year {
         Year::Y2015 => show_days_inner(days::DAYS_2015.iter()),
@@ -256,9 +254,9 @@ where
 {
     for ((_, txt), idx) in days.zip(1..) {
         if idx > 9 {
-            println!("{}: {}", idx, txt);
+            println!("{idx}: {txt}");
         } else {
-            println!(" {}: {}", idx, txt);
+            println!(" {idx}: {txt}");
         }
     }
 }
@@ -283,11 +281,10 @@ fn show_years() {
 fn show_year_inner(index: u8, year: Year) {
     match days::count(year) {
         0 => println!(
-            "{} {}:   {} (no days available){}",
-            ANSI_GREY, index, year, ANSI_RESET
+            "{ANSI_GREY} {index}:   {year} (no days available){ANSI_RESET}"
         ),
-        1 => println!(" {}:   {} (1 day available)", index, year),
-        d => println!(" {}:   {} ({} days available)", index, year, d),
+        1 => println!(" {index}:   {year} (1 day available)"),
+        d => println!(" {index}:   {year} ({d} days available)"),
     }
 }
 
@@ -299,21 +296,18 @@ fn show_short_options() {
 fn welcome() {
     println!();
     println!(
-        "{}Welcome to jmacadie's AoC runner{}",
-        ANSI_BLUE, ANSI_RESET
+        "{ANSI_BLUE}Welcome to jmacadie's AoC runner{ANSI_RESET}"
     );
     println!("================================");
     println!(
-        "{}https://github.com/jmacadie/aoc-rs{}",
-        ANSI_GREY, ANSI_RESET
+        "{ANSI_GREY}https://github.com/jmacadie/aoc-rs{ANSI_RESET}"
     );
     println!();
     println!("This tool is used to performance profile (run-time only) my solutions.");
     println!("All days are written in Rust.");
     println!("Individual days are their own binaries and can be run (to get the answers) by");
     println!(
-        "navigating to the year & day (e.g. {}2015/day_25{}) and using '{}cargo run{}' there",
-        ANSI_PURPLE, ANSI_RESET, ANSI_PURPLE, ANSI_RESET
+        "navigating to the year & day (e.g. {ANSI_PURPLE}2015/day_25{ANSI_RESET}) and using '{ANSI_PURPLE}cargo run{ANSI_RESET}' there"
     );
     println!();
 }
@@ -322,9 +316,9 @@ fn clear_previous_lines(num: usize) -> io::Result<()> {
     let stdout = io::stdout();
     let mut handle = stdout.lock();
 
-    write!(handle, "{}", ANSI_ERASE_IN_LINE)?;
+    write!(handle, "{ANSI_ERASE_IN_LINE}")?;
     for _ in 0..num {
-        write!(handle, "{}{}", ANSI_PREVIOUS_LINE, ANSI_ERASE_IN_LINE)?;
+        write!(handle, "{ANSI_PREVIOUS_LINE}{ANSI_ERASE_IN_LINE}")?;
     }
     handle.flush()?;
 
@@ -335,8 +329,8 @@ fn replace_current_line(new_line: &str) -> io::Result<()> {
     let stdout = io::stdout();
     let mut handle = stdout.lock();
 
-    write!(handle, "{}\r", ANSI_ERASE_IN_LINE)?;
-    write!(handle, "{}", new_line)?;
+    write!(handle, "{ANSI_ERASE_IN_LINE}\r")?;
+    write!(handle, "{new_line}")?;
     handle.flush()?;
 
     Ok(())
