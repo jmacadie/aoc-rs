@@ -233,7 +233,7 @@ pub const DAYS_2017: [(fn(), &str); 0] = [
     //(day_2017_25::main, "Day 25"),
 ];
 
-pub const DAYS_2016: [(fn(), &str); 7] = [
+pub const DAYS_2016: [(fn(), &str); 8] = [
     (day_2016_01::main, "Day 1"),
     (day_2016_02::main, "Day 2"),
     (day_2016_03::main, "Day 3"),
@@ -241,7 +241,7 @@ pub const DAYS_2016: [(fn(), &str); 7] = [
     (day_2016_05::main, "Day 5"),
     (day_2016_06::main, "Day 6"),
     (day_2016_07::main, "Day 7"),
-    //(day_2016_08::main, "Day 8"),
+    (day_2016_08::main, "Day 8"),
     //(day_2016_09::main, "Day 9"),
     //(day_2016_10::main, "Day 10"),
     //(day_2016_11::main, "Day 11"),
