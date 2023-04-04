@@ -102,23 +102,24 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2016</summary>
 
-  **All Days -- 5.53 s** _(part-completed)_
+  **All Days -- 15.17 s** _(part-completed)_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1](2016/day_01/src/main.rs) |   60.50 μs |    0% |
-  |  [Day 2](2016/day_02/src/main.rs) |   45.00 μs |    0% |
-  |  [Day 3](2016/day_03/src/main.rs) |  346.30 μs |    0% |
-  |  [Day 4](2016/day_04/src/main.rs) |    1.95 ms |    0% |
-  |  [Day 5](2016/day_05/src/main.rs) |    5.52  s |   99% |
-  |  [Day 6](2016/day_06/src/main.rs) |  211.10 μs |    0% |
-  |  [Day 7](2016/day_07/src/main.rs) |    2.09 ms |    0% |
-  |  [Day 8](2016/day_08/src/main.rs) |   44.90 μs |    0% |
-  |  [Day 9](2016/day_09/src/main.rs) |   31.90 μs |    0% |
-  | [Day 10](2016/day_10/src/main.rs) |   87.10 μs |    0% |
-  | [Day 11](2016/day_11/src/main.rs) |   46.63 ms |    0% |
-  | [Day 12](2016/day_12/src/main.rs) |    3.40 μs |    0% |
-  | [Day 13](2016/day_13/src/main.rs) |   57.10 μs |    0% |
+  |  [Day 1](2016/day_01/src/main.rs) |      60.50 μs |    0% |
+  |  [Day 2](2016/day_02/src/main.rs) |      45.00 μs |    0% |
+  |  [Day 3](2016/day_03/src/main.rs) |     346.30 μs |    0% |
+  |  [Day 4](2016/day_04/src/main.rs) |    1.95 ms    |    0% |
+  |  [Day 5](2016/day_05/src/main.rs) | 5.52  s       |   36% |
+  |  [Day 6](2016/day_06/src/main.rs) |     211.10 μs |    0% |
+  |  [Day 7](2016/day_07/src/main.rs) |    2.09 ms    |    0% |
+  |  [Day 8](2016/day_08/src/main.rs) |      44.90 μs |    0% |
+  |  [Day 9](2016/day_09/src/main.rs) |      31.90 μs |    0% |
+  | [Day 10](2016/day_10/src/main.rs) |      87.10 μs |    0% |
+  | [Day 11](2016/day_11/src/main.rs) |   46.63 ms    |    0% |
+  | [Day 12](2016/day_12/src/main.rs) |       3.40 μs |    0% |
+  | [Day 13](2016/day_13/src/main.rs) |      57.10 μs |    0% |
+  | [Day 14](2016/day_14/src/main.rs) | 9.51 s        |   62% |
 
 </details>
 
