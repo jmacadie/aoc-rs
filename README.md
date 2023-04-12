@@ -121,6 +121,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 13](2016/day_13/src/main.rs) |  57.10 μs |    0% |
   | [Day 14](2016/day_14/src/main.rs) |   9.51 s  |   63% |
   | [Day 15](2016/day_15/src/main.rs) |   8.60 μs |    0% |
+  | [Day 16](2016/day_16/src/main.rs) |   2.60 μs |    0% |
 
 </details>
 
