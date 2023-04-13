@@ -71,31 +71,31 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1](2015/day_01/src/main.rs) |   14.80 μs |    0% |
-  |  [Day 2](2015/day_02/src/main.rs) |  154.80 μs |    0% |
-  |  [Day 3](2015/day_03/src/main.rs) |  674.90 μs |    0% |
-  |  [Day 4](2015/day_04/src/main.rs) |  282.74 ms |   50% |
-  |  [Day 5](2015/day_05/src/main.rs) |  331.40 μs |    0% |
-  |  [Day 6](2015/day_06/src/main.rs) |   25.19 ms |    4% |
-  |  [Day 7](2015/day_07/src/main.rs) |   16.48 ms |    2% |
-  |  [Day 8](2015/day_08/src/main.rs) |   40.60 μs |    0% |
-  |  [Day 9](2015/day_09/src/main.rs) |   20.01 ms |    3% |
-  | [Day 10](2015/day_10/src/main.rs) |   62.95 ms |   11% |
-  | [Day 11](2015/day_11/src/main.rs) |   52.00 ms |    9% |
-  | [Day 12](2015/day_12/src/main.rs) |  177.30 μs |    0% |
-  | [Day 13](2015/day_13/src/main.rs) |    3.16 ms |    0% |
-  | [Day 14](2015/day_14/src/main.rs) |  249.40 μs |    0% |
-  | [Day 15](2015/day_15/src/main.rs) |  165.70 μs |    0% |
-  | [Day 16](2015/day_16/src/main.rs) |  209.30 μs |    0% |
-  | [Day 17](2015/day_17/src/main.rs) |    7.24 ms |    1% |
-  | [Day 18](2015/day_18/src/main.rs) |   47.98 ms |    8% |
-  | [Day 19](2015/day_19/src/main.rs) |   51.70 μs |    0% |
-  | [Day 20](2015/day_20/src/main.rs) |  451.30 μs |    0% |
-  | [Day 21](2015/day_21/src/main.rs) |  478.30 μs |    0% |
-  | [Day 22](2015/day_22/src/main.rs) |   26.53 ms |    4% |
-  | [Day 23](2015/day_23/src/main.rs) |   14.30 μs |    0% |
-  | [Day 24](2015/day_24/src/main.rs) |    7.95 ms |    1% |
-  | [Day 25](2015/day_25/src/main.rs) |    1.50 μs |    0% |
+  |  [Day 1: Not Quite Lisp](2015/day_01/src/main.rs) |   14.80 μs |    0% |
+  |  [Day 2: I Was Told There Would Be No Math](2015/day_02/src/main.rs) |  154.80 μs |    0% |
+  |  [Day 3: Perfect Spherical Houses in a Vacuum](2015/day_03/src/main.rs) |  674.90 μs |    0% |
+  |  [Day 4: The Ideal Stocking Stuffer](2015/day_04/src/main.rs) |  282.74 ms |   50% |
+  |  [Day 5: Dosen't He Have Intern-Elves For This?](2015/day_05/src/main.rs) |  331.40 μs |    0% |
+  |  [Day 6: Probably a Fire Hazard](2015/day_06/src/main.rs) |   25.19 ms |    4% |
+  |  [Day 7: Some Assembly Required](2015/day_07/src/main.rs) |   16.48 ms |    2% |
+  |  [Day 8: Matchsticks](2015/day_08/src/main.rs) |   40.60 μs |    0% |
+  |  [Day 9: All in a Single Night](2015/day_09/src/main.rs) |   20.01 ms |    3% |
+  | [Day 10: Elves Look, Elves Say](2015/day_10/src/main.rs) |   62.95 ms |   11% |
+  | [Day 11: Corporate Policy](2015/day_11/src/main.rs) |   52.00 ms |    9% |
+  | [Day 12: JSAbacusFramework.io](2015/day_12/src/main.rs) |  177.30 μs |    0% |
+  | [Day 13: Knights of the Dinner Table](2015/day_13/src/main.rs) |    3.16 ms |    0% |
+  | [Day 14: Reindeer Olympics](2015/day_14/src/main.rs) |  249.40 μs |    0% |
+  | [Day 15: Science for Hungry People](2015/day_15/src/main.rs) |  165.70 μs |    0% |
+  | [Day 16: Aunt Sue](2015/day_16/src/main.rs) |  209.30 μs |    0% |
+  | [Day 17: No Such Thing as Too Much](2015/day_17/src/main.rs) |    7.24 ms |    1% |
+  | [Day 18: Like a GIF For Your Yard](2015/day_18/src/main.rs) |   47.98 ms |    8% |
+  | [Day 19: Medicine for Rudolph](2015/day_19/src/main.rs) |   51.70 μs |    0% |
+  | [Day 20: Infinite Elves and Infinite Houses](2015/day_20/src/main.rs) |  451.30 μs |    0% |
+  | [Day 21: RPG Simulator 20XX](2015/day_21/src/main.rs) |  478.30 μs |    0% |
+  | [Day 22: Wizard Simulator 20XX](2015/day_22/src/main.rs) |   26.53 ms |    4% |
+  | [Day 23: Opening the Turing Lock](2015/day_23/src/main.rs) |   14.30 μs |    0% |
+  | [Day 24: It Hangs in the Balance](2015/day_24/src/main.rs) |    7.95 ms |    1% |
+  | [Day 25: Let It Snow](2015/day_25/src/main.rs) |    1.50 μs |    0% |
 
 </details>
 
