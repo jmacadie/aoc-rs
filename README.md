@@ -125,6 +125,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 17: Two Steps Forward](2016/day_17/src/main.rs) |  27.39 ms |    0% |
   | [Day 18: Like a Rogue](2016/day_18/src/main.rs) |   1.19 ms |    0% |
   | [Day 19: An Elephant Named Joseph](2016/day_19/src/main.rs) |   1.50 μs |    0% |
+  | [Day 20: Firewall Rules](2016/day_20/src/main.rs) |   128.00 μs |    0% |
 
 </details>
 
