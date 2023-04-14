@@ -106,23 +106,23 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1](2016/day_01/src/main.rs) |  60.50 μs |    0% |
-  |  [Day 2](2016/day_02/src/main.rs) |  45.00 μs |    0% |
-  |  [Day 3](2016/day_03/src/main.rs) | 346.30 μs |    0% |
-  |  [Day 4](2016/day_04/src/main.rs) |   1.95 ms |    0% |
-  |  [Day 5](2016/day_05/src/main.rs) |   5.52  s |   36% |
-  |  [Day 6](2016/day_06/src/main.rs) | 211.10 μs |    0% |
-  |  [Day 7](2016/day_07/src/main.rs) |   2.09 ms |    0% |
-  |  [Day 8](2016/day_08/src/main.rs) |  44.90 μs |    0% |
-  |  [Day 9](2016/day_09/src/main.rs) |  31.90 μs |    0% |
-  | [Day 10](2016/day_10/src/main.rs) |  87.10 μs |    0% |
-  | [Day 11](2016/day_11/src/main.rs) |  46.63 ms |    0% |
-  | [Day 12](2016/day_12/src/main.rs) |   3.40 μs |    0% |
-  | [Day 13](2016/day_13/src/main.rs) |  57.10 μs |    0% |
-  | [Day 14](2016/day_14/src/main.rs) |   9.51 s  |   63% |
-  | [Day 15](2016/day_15/src/main.rs) |   8.60 μs |    0% |
-  | [Day 16](2016/day_16/src/main.rs) |   2.60 μs |    0% |
-  | [Day 17](2016/day_17/src/main.rs) |  27.39 ms |    0% |
+  |  [Day 1: No Time for a Taxicab](2016/day_01/src/main.rs) |  60.50 μs |    0% |
+  |  [Day 2: Bathroom Security](2016/day_02/src/main.rs) |  45.00 μs |    0% |
+  |  [Day 3: Squares With Three Sides](2016/day_03/src/main.rs) | 346.30 μs |    0% |
+  |  [Day 4: Security Through Obscurity](2016/day_04/src/main.rs) |   1.95 ms |    0% |
+  |  [Day 5: How About a Nice Game of Chess?](2016/day_05/src/main.rs) |   5.52  s |   36% |
+  |  [Day 6: Signals and Noise](2016/day_06/src/main.rs) | 211.10 μs |    0% |
+  |  [Day 7: Internet Protocol Version 7](2016/day_07/src/main.rs) |   2.09 ms |    0% |
+  |  [Day 8: Two-Factor Authentication](2016/day_08/src/main.rs) |  44.90 μs |    0% |
+  |  [Day 9: Explosives in Cyberspace](2016/day_09/src/main.rs) |  31.90 μs |    0% |
+  | [Day 10: Balance Bots](2016/day_10/src/main.rs) |  87.10 μs |    0% |
+  | [Day 11: Radioisotope Thermoelectric Generators](2016/day_11/src/main.rs) |  46.63 ms |    0% |
+  | [Day 12: Leonardo's Monorail](2016/day_12/src/main.rs) |   3.40 μs |    0% |
+  | [Day 13: A Maze of Twisty Little Cubicles](2016/day_13/src/main.rs) |  57.10 μs |    0% |
+  | [Day 14: One-Time Pad](2016/day_14/src/main.rs) |   9.51 s  |   63% |
+  | [Day 15: Timing is Everything](2016/day_15/src/main.rs) |   8.60 μs |    0% |
+  | [Day 16: Dragon Checksum](2016/day_16/src/main.rs) |   2.60 μs |    0% |
+  | [Day 17: Two Steps Forward](2016/day_17/src/main.rs) |  27.39 ms |    0% |
 
 </details>
 
@@ -168,30 +168,30 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1](2022/day_01/src/main.rs) |   98.30 μs |    0% |
-  |  [Day 2](2022/day_02/src/main.rs) |  152.80 μs |    0% |
-  |  [Day 3](2022/day_03/src/main.rs) |  135.00 μs |    0% |
-  |  [Day 4](2022/day_04/src/main.rs) |  209.70 μs |    0% |
-  |  [Day 5](2022/day_05/src/main.rs) |  139.40 μs |    0% |
-  |  [Day 6](2022/day_06/src/main.rs) |   13.70 μs |    0% |
-  |  [Day 7](2022/day_07/src/main.rs) |   55.10 μs |    0% |
-  |  [Day 8](2022/day_08/src/main.rs) |  109.30 μs |    0% |
-  |  [Day 9](2022/day_09/src/main.rs) |  654.40 μs |    0% |
-  | [Day 10](2022/day_10/src/main.rs) |   27.30 μs |    0% |
-  | [Day 11](2022/day_11/src/main.rs) |   11.20 ms |    0% |
-  | [Day 12](2022/day_12/src/main.rs) |  545.70 μs |    0% |
-  | [Day 13](2022/day_13/src/main.rs) |  235.70 μs |    0% |
-  | [Day 14](2022/day_14/src/main.rs) |   15.86 ms |    0% |
-  | [Day 15](2022/day_15/src/main.rs) |   39.50 μs |    0% |
-  | [Day 16](2022/day_16/src/main.rs) |     1.01 s |   35% |
-  | [Day 17](2022/day_17/src/main.rs) |  397.60 μs |    0% |
-  | [Day 18](2022/day_18/src/main.rs) |  183.06 ms |    6% |
-  | [Day 19](2022/day_19/src/main.rs) |  170.59 ms |    5% |
-  | [Day 20](2022/day_20/src/main.rs) |  178.75 ms |    6% |
-  | [Day 21](2022/day_21/src/main.rs) |    3.60 ms |    0% |
-  | [Day 22](2022/day_22/src/main.rs) |    3.10 ms |    0% |
-  | [Day 23](2022/day_23/src/main.rs) |  242.24 ms |    8% |
-  | [Day 24](2022/day_24/src/main.rs) |     1.03 s |   36% |
-  | [Day 25](2022/day_25/src/main.rs) |   15.30 μs |    0% |
+  |  [Day 1: Calorie Counting](2022/day_01/src/main.rs) |   98.30 μs |    0% |
+  |  [Day 2: Rock Paper Scissors](2022/day_02/src/main.rs) |  152.80 μs |    0% |
+  |  [Day 3: Rucksack Reorganization](2022/day_03/src/main.rs) |  135.00 μs |    0% |
+  |  [Day 4: Camp Cleanup](2022/day_04/src/main.rs) |  209.70 μs |    0% |
+  |  [Day 5: Supply Stacks](2022/day_05/src/main.rs) |  139.40 μs |    0% |
+  |  [Day 6: Tuning Trouble](2022/day_06/src/main.rs) |   13.70 μs |    0% |
+  |  [Day 7: No Space Left On Device](2022/day_07/src/main.rs) |   55.10 μs |    0% |
+  |  [Day 8: Treetop Tree House](2022/day_08/src/main.rs) |  109.30 μs |    0% |
+  |  [Day 9: Rope Bridge](2022/day_09/src/main.rs) |  654.40 μs |    0% |
+  | [Day 10: Cathode-Ray Tube](2022/day_10/src/main.rs) |   27.30 μs |    0% |
+  | [Day 11: Monkey in the Middle](2022/day_11/src/main.rs) |   11.20 ms |    0% |
+  | [Day 12: Hill Climbing Algorithm](2022/day_12/src/main.rs) |  545.70 μs |    0% |
+  | [Day 13: Distress Signal](2022/day_13/src/main.rs) |  235.70 μs |    0% |
+  | [Day 14: Regolith Reservoir](2022/day_14/src/main.rs) |   15.86 ms |    0% |
+  | [Day 15: Beacon Exclusion Zone](2022/day_15/src/main.rs) |   39.50 μs |    0% |
+  | [Day 16: Proboscidea Volcanium](2022/day_16/src/main.rs) |     1.01 s |   35% |
+  | [Day 17: Pyroclastic Flow](2022/day_17/src/main.rs) |  397.60 μs |    0% |
+  | [Day 18: Boiling Boulders](2022/day_18/src/main.rs) |  183.06 ms |    6% |
+  | [Day 19: Not Enough Minerals](2022/day_19/src/main.rs) |  170.59 ms |    5% |
+  | [Day 20: Grove Positioning System](2022/day_20/src/main.rs) |  178.75 ms |    6% |
+  | [Day 21: Monkey Math](2022/day_21/src/main.rs) |    3.60 ms |    0% |
+  | [Day 22: Monkey Map](2022/day_22/src/main.rs) |    3.10 ms |    0% |
+  | [Day 23: Unstable Diffusion](2022/day_23/src/main.rs) |  242.24 ms |    8% |
+  | [Day 24: Blizzard Basin](2022/day_24/src/main.rs) |     1.03 s |   36% |
+  | [Day 25: Full of Hot Air](2022/day_25/src/main.rs) |   15.30 μs |    0% |
 
 </details>
