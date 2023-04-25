@@ -102,7 +102,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2016</summary>
 
-  **All Days -- 15.00 s** _(part-completed)_
+  **All Days -- 15.13 s** _(part-completed)_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -127,6 +127,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 19: An Elephant Named Joseph](2016/day_19/src/main.rs) |   1.50 μs |    0% |
   | [Day 20: Firewall Rules](2016/day_20/src/main.rs) |   128.00 μs |    0% |
   | [Day 21: Scrambled Letters and Hash](2016/day_21/src/main.rs) |    41.40 μs |    0% |
+  | [Day 22: Grid Computing(2016/day_22/src/main.rs) |     1.22 ms |    0% |
 
 </details>
 
