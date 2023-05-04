@@ -69,6 +69,7 @@ dependencies = [
  "day_2016_21",
  "day_2016_22",
  "day_2016_23",
+ "day_2016_24",
  "day_2022_01",
  "day_2022_02",
  "day_2022_03",
@@ -424,6 +425,13 @@ dependencies = [
 [[package]]
 name = "day_2016_23"
 version = "0.1.0"
+
+[[package]]
+name = "day_2016_24"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
 
 [[package]]
 name = "day_2022_01"

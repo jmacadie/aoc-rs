@@ -129,6 +129,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 21: Scrambled Letters and Hash](2016/day_21/src/main.rs) |    41.40 μs |    0% |
   | [Day 22: Grid Computing](2016/day_22/src/main.rs) |     1.22 ms |    0% |
   | [Day 23: Safe Cracking](2016/day_23/src/main.rs) |     2.30 μs |    0% |
+  | [Day 24: Air Duct Spelunking](2016/day_24/src/main.rs) |   699.40 μs |    0% |
 
 </details>
 
