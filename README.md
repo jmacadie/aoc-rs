@@ -18,7 +18,7 @@ Go here to run (or test) the days, and get the actual answers.
 
 * [2015](2015)
 * [2016](2016)
-* 2017 - _not yet started_
+* [2017](2017)
 * 2018 - _not yet started_
 * 2019 - _not yet started_
 * 2020 - _not yet started_, I do have some solutions [here](wip/year_2020) from when I was starting out.
@@ -137,11 +137,12 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 4.10 μs** _part-completed_
+  **All Days: 21.10 μs** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1: Inverse Captcha](2017/day_01/src/main.rs) |   4.10 μs |  100% |
+  |  [Day 1: Inverse Captcha](2017/day_01/src/main.rs) |   2.50 μs |   11% |
+  |  [Day 2: Corruption Checksum](2017/day_02/src/main.rs) |  18.60 μs |   88% |
 
 </details>
 
