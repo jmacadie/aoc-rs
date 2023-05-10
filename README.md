@@ -67,7 +67,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2015</summary>
 
-  **All Days -- 555.24ms**
+  **All Days: 555.24ms**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -102,7 +102,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2016</summary>
 
-  **All Days -- 15.15 s**
+  **All Days: 15.15 s**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -137,7 +137,11 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  _No solutions yet written_
+  **All Days: 4.10 μs** _part-completed_
+
+  | Day | Runtime | Percentage of year |
+  |---|---|---|
+  |  [Day 1: Inverse Captcha](2017/day_01/src/main.rs) |   4.10 μs |  100% |
 
 </details>
 
@@ -172,7 +176,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2022</summary>
 
-  **All Days -- 2.86s**
+  **All Days: 2.86s**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
