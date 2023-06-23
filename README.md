@@ -137,12 +137,13 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 21.10 μs** _part-completed_
+  **All Days: 28.80 μs** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1: Inverse Captcha](2017/day_01/src/main.rs) |   2.50 μs |   11% |
-  |  [Day 2: Corruption Checksum](2017/day_02/src/main.rs) |  18.60 μs |   88% |
+  |  [Day 1: Inverse Captcha](2017/day_01/src/main.rs) |   3.20 μs |   11% |
+  |  [Day 2: Corruption Checksum](2017/day_02/src/main.rs) |  22.50 μs |   78% |
+  |  [Day 3: Spiral Memory](2017/day_03/src/main.rs) |   3.10 μs |   10% |
 
 </details>
 
