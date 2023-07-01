@@ -137,7 +137,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 72.14 ms** _part-completed_
+  **All Days: 76.76 ms** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -145,7 +145,8 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 2: Corruption Checksum](2017/day_02/src/main.rs) |  22.50 μs |    0% |
   |  [Day 3: Spiral Memory](2017/day_03/src/main.rs) |   3.10 μs |    0% |
   |  [Day 4: High-Entropy Passphrases](2017/day_04/src/main.rs) |  303.60 μs |   0% |
-  |  [Day 5: A Maze of Twisty Trampolines, All Alike](2017/day_05/src/main.rs) |   71.81 ms |   99% |
+  |  [Day 5: A Maze of Twisty Trampolines, All Alike](2017/day_05/src/main.rs) |   71.81 ms |   95% |
+  |  [Day 6: Memory Reallocation](2017/day_06/src/main.rs) |    4.62 ms |    4% |
 
 </details>
 
