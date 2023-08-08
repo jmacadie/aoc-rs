@@ -147,6 +147,8 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 4: High-Entropy Passphrases](2017/day_04/src/main.rs) |  303.60 μs |   0% |
   |  [Day 5: A Maze of Twisty Trampolines, All Alike](2017/day_05/src/main.rs) |   71.81 ms |   95% |
   |  [Day 6: Memory Reallocation](2017/day_06/src/main.rs) |    4.62 ms |    4% |
+  |  [Day 7: Recursive Circus](2017/day_07/src/main.rs) |    489.70 μs |    0% |
+  |  [Day 8: I Heard You Like Registers](2017/day_08/src/main.rs) |    393.80 μs |    0% |
 
 </details>
 
