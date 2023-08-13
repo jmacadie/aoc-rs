@@ -150,6 +150,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 7: Recursive Circus](2017/day_07/src/main.rs) |    489.70 μs |    0% |
   |  [Day 8: I Heard You Like Registers](2017/day_08/src/main.rs) |    393.80 μs |    0% |
   |  [Day 9: Stream Processing](2017/day_09/src/main.rs) |    185.80 μs |    0% |
+  | [Day 10: Knot Hash](2017/day_10/src/main.rs) |    170.10 μs |    0% |
 
 </details>
 
