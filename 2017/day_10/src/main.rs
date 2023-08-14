@@ -111,9 +111,10 @@ impl<const N: usize> KnotHash<N> {
         self.data.swap(a, b);
     }
 
-    // fn first_two(&self) -> usize {
-    //     usize::from(self.data[0]) * usize::from(self.data[1])
-    // }
+    #[allow(dead_code)]
+    fn first_two(&self) -> usize {
+        usize::from(self.data[0]) * usize::from(self.data[1])
+    }
 
     fn to_dense_hash(&self) -> [u8; 16] {
         std::array::from_fn(|i| {
