@@ -137,7 +137,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 108.27 ms** _part-completed_
+  **All Days: 108.97 ms** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -152,6 +152,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 9: Stream Processing](2017/day_09/src/main.rs) |    185.80 μs |    0% |
   | [Day 10: Knot Hash](2017/day_10/src/main.rs) |    170.10 μs |    0% |
   | [Day 11: Hex Ed](2017/day_11/src/main.rs) |    450.50 μs |    0% |
+  | [Day 12: Digital Plumber](2017/day_12/src/main.rs) |    535.80 μs |    0% |
 
 </details>
 
