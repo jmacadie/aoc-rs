@@ -5,7 +5,7 @@ use std::fmt::Display;
 pub fn main() {
     let data = include_str!("input.txt");
     println!("Part 1: {}", part_one::<256>(data));
-    println!("Part 2: {}", part_two::<256>(data));
+    println!("Part 2: {}", part_two(data));
 }
 
 fn part_one<const N: usize>(data: &str) -> usize {
@@ -31,18 +31,8 @@ fn part_one<const N: usize>(data: &str) -> usize {
     first * second
 }
 
-fn part_two<const N: usize>(data: &str) -> String {
-    let ascii = data.trim().as_bytes();
-    let mut knot = KnotHash::<N>::new();
-
-    for _ in 0..64 {
-        for ch in ascii {
-            knot.fold(usize::from(*ch));
-        }
-        for ch in [17, 31, 73, 47, 23] {
-            knot.fold(ch);
-        }
-    }
+fn part_two(data: &str) -> String {
+    let knot = KnotHash::new(data);
     format!("{knot}")
 }
 
@@ -69,21 +59,36 @@ fn move_position<const N: usize>(
     (position, skip)
 }
 
+const KNOT_SIZE: usize = 256;
+
 #[derive(Debug)]
-struct KnotHash<const N: usize> {
-    data: [u8; N],
+pub struct KnotHash {
+    data: [u8; KNOT_SIZE],
     position: usize,
     skip: usize,
 }
 
-impl<const N: usize> KnotHash<N> {
-    fn new() -> Self {
+impl KnotHash {
+    #[must_use]
+    pub fn new(input: &str) -> Self {
+        let ascii = input.trim().as_bytes();
         let data = std::array::from_fn(|i| u8::try_from(i).unwrap());
-        Self {
+        let mut knot = Self {
             data,
             position: 0,
             skip: 0,
+        };
+
+        for _ in 0..64 {
+            for ch in ascii {
+                knot.fold(usize::from(*ch));
+            }
+            for ch in [17, 31, 73, 47, 23] {
+                knot.fold(ch);
+            }
         }
+
+        knot
     }
 
     fn fold(&mut self, length: usize) {
@@ -97,16 +102,16 @@ impl<const N: usize> KnotHash<N> {
         }
 
         self.position += length + self.skip;
-        self.position %= N;
+        self.position %= KNOT_SIZE;
         self.skip += 1;
     }
 
     fn swap(&mut self, mut a: usize, mut b: usize) {
-        if a >= N {
-            a %= N;
+        if a >= KNOT_SIZE {
+            a %= KNOT_SIZE;
         }
-        if b >= N {
-            b %= N;
+        if b >= KNOT_SIZE {
+            b %= KNOT_SIZE;
         }
         self.data.swap(a, b);
     }
@@ -125,9 +130,19 @@ impl<const N: usize> KnotHash<N> {
                 .unwrap()
         })
     }
+
+    #[must_use]
+    pub fn to_u128(&self) -> u128 {
+        let mut out: u128 = 0;
+        for val in self.to_dense_hash() {
+            out <<= 8;
+            out |= u128::from(val);
+        }
+        out
+    }
 }
 
-impl<const N: usize> Display for KnotHash<N> {
+impl Display for KnotHash {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for num in self.to_dense_hash() {
             write!(f, "{num:02x}")?;
@@ -149,12 +164,9 @@ mod tests {
 
     #[test]
     fn two() {
-        assert_eq!("a2582a3a0e66e6e86e3812dcb672a272", part_two::<256>(""));
-        assert_eq!(
-            "33efeb34ea91902bb2f59c9920caa6cd",
-            part_two::<256>("AoC 2017")
-        );
-        assert_eq!("3efbe78a8d82f29979031a4aa0b16a9d", part_two::<256>("1,2,3"));
-        assert_eq!("63960835bcdc130f0b66d7ff4f6a5a8e", part_two::<256>("1,2,4"));
+        assert_eq!("a2582a3a0e66e6e86e3812dcb672a272", part_two(""));
+        assert_eq!("33efeb34ea91902bb2f59c9920caa6cd", part_two("AoC 2017"));
+        assert_eq!("3efbe78a8d82f29979031a4aa0b16a9d", part_two("1,2,3"));
+        assert_eq!("63960835bcdc130f0b66d7ff4f6a5a8e", part_two("1,2,4"));
     }
 }

@@ -137,7 +137,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 109.09 ms** _part-completed_
+  **All Days: 118.85 ms** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -145,8 +145,8 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 2: Corruption Checksum](2017/day_02/src/main.rs) |  22.50 μs |    0% |
   |  [Day 3: Spiral Memory](2017/day_03/src/main.rs) |   3.10 μs |    0% |
   |  [Day 4: High-Entropy Passphrases](2017/day_04/src/main.rs) |  303.60 μs |   0% |
-  |  [Day 5: A Maze of Twisty Trampolines, All Alike](2017/day_05/src/main.rs) |   101.56 ms |   93% |
-  |  [Day 6: Memory Reallocation](2017/day_06/src/main.rs) |    4.62 ms |    4% |
+  |  [Day 5: A Maze of Twisty Trampolines, All Alike](2017/day_05/src/main.rs) |   101.56 ms |   85% |
+  |  [Day 6: Memory Reallocation](2017/day_06/src/main.rs) |    4.62 ms |    3% |
   |  [Day 7: Recursive Circus](2017/day_07/src/main.rs) |    489.70 μs |    0% |
   |  [Day 8: I Heard You Like Registers](2017/day_08/src/main.rs) |    393.80 μs |    0% |
   |  [Day 9: Stream Processing](2017/day_09/src/main.rs) |    185.80 μs |    0% |
@@ -154,6 +154,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 11: Hex Ed](2017/day_11/src/main.rs) |    450.50 μs |    0% |
   | [Day 12: Digital Plumber](2017/day_12/src/main.rs) |    535.80 μs |    0% |
   | [Day 13: Packet Scanners](2017/day_13/src/main.rs) |     29.10 μs |    0% |
+  | [Day 14: Disk Defragmentation](2017/day_14/src/main.rs) |      9.86 ms |    8% |
 
 </details>
 
