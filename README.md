@@ -137,7 +137,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 610.04 ms** _part-completed_
+  **All Days: 613.38 ms** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -157,6 +157,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 14: Disk Defragmentation](2017/day_14/src/main.rs) |      9.86 ms |    1% |
   | [Day 15: Dueling Generators](2017/day_15/src/main.rs) |    475.21 ms |   77% |
   | [Day 16: Permutation Promenade](2017/day_16/src/main.rs) |     18.07 ms |    2% |
+  | [Day 17: Permutation Promenade](2017/day_17/src/main.rs) |      3.93 ms |    0% |
 
 </details>
 
