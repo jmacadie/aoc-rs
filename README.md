@@ -137,7 +137,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 638.62 ms** _part-completed_
+  **All Days: 673.48 ms** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -155,11 +155,12 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 12: Digital Plumber](2017/day_12/src/main.rs) |    535.80 μs |    0% |
   | [Day 13: Packet Scanners](2017/day_13/src/main.rs) |     29.10 μs |    0% |
   | [Day 14: Disk Defragmentation](2017/day_14/src/main.rs) |      9.86 ms |    1% |
-  | [Day 15: Dueling Generators](2017/day_15/src/main.rs) |    475.21 ms |   76% |
+  | [Day 15: Dueling Generators](2017/day_15/src/main.rs) |    475.21 ms |   74% |
   | [Day 16: Permutation Promenade](2017/day_16/src/main.rs) |     18.07 ms |    2% |
   | [Day 17: Spinkock](2017/day_17/src/main.rs) |      3.93 ms |    0% |
   | [Day 18: Duet](2017/day_18/src/main.rs) |      3.61 ms |    0% |
   | [Day 19: A Series of Tubes](2017/day_19/src/main.rs) |      146.80 μs |    0% |
+  | [Day 20: Particle Swarm](2017/day_20/src/main.rs) |       27.98 ms |    4% |
 
 </details>
 
