@@ -160,7 +160,8 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 17: Spinkock](2017/day_17/src/main.rs) |      3.93 ms |    0% |
   | [Day 18: Duet](2017/day_18/src/main.rs) |      3.61 ms |    0% |
   | [Day 19: A Series of Tubes](2017/day_19/src/main.rs) |      146.80 μs |    0% |
-  | [Day 20: Particle Swarm](2017/day_20/src/main.rs) |       27.98 ms |    4% |
+  | [Day 20: Particle Swarm](2017/day_20/src/main.rs) |       27.98 ms |    3% |
+  | [Day 21: Fractal Art](2017/day_21/src/main.rs) |       55.80 μs |    o% |
 
 </details>
 
