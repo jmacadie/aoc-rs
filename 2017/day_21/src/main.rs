@@ -25,17 +25,13 @@ fn part_one(grid_map: &GridMap) -> u32 {
 
 fn part_two(grid_map: &GridMap) -> u32 {
     fn expand(data: &[(Grid3, u32)], grid_map: &GridMap) -> Vec<(Grid3, u32)> {
-        let mut output = Vec::with_capacity(data.len() * 9);
-        for (grid, found) in &data
-            .iter()
+        data.iter()
             .flat_map(|(g, c)| grid_map.get_3x3(*g).into_iter().map(move |gi| (gi, c)))
             .sorted_unstable_by_key(|&(g, _)| g)
             .group_by(|&(g, _)| g)
-        {
-            let count = found.map(|(_, c)| c).sum();
-            output.push((grid, count));
-        }
-        output
+            .into_iter()
+            .map(|(grid, found)| (grid, found.map(|(_, c)| c).sum()))
+            .collect()
     }
 
     let mut grids = vec![(START.into(), 1)];
