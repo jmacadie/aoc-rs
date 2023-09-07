@@ -1,9 +1,37 @@
-#![warn(clippy::all, clippy::pedantic, clippy::nursery)]
-
 use crate::grid2::Grid2;
 use crate::grid2x2::Grid2x2;
 use crate::grid3::Grid3;
 
+/// Grid Map
+///
+/// This struct contains the mappings of:
+///
+/// * all possible 2x2 grids (16 variants) into:
+///   - 3x3 grid (input rules)
+///
+/// * all possible 3x3 grids (512 variants) into:
+///   - 4x4 grid / 4 x 2x2, 1 iteration (input rules)
+///   - 6x6 grid / 4 x 3x3, 2 iterations
+///   - 9x9 grid / 9 x 3x3, 3 iterations
+///
+/// These mappings are pre-computed from the input rules, which allows the
+/// subsequent problem of applying multiple iterations to be reduced to
+/// a series of lookups from these mappings
+///
+/// Since the 2x2 grids are just a u4 (lower 4 bits of a u8) & 3x3 grids are
+/// just a u9 (lower 9 bits of a u16), the mapping tables are structed as arrays
+/// with the index of the array corresponding to number equivalent of the grid
+/// we're mapping from. For example:
+///
+/// The grid:
+/// . #
+/// # .
+///
+/// Is represetned in u8 as:
+/// 0b00000101, or 5 in decimal
+///
+/// So that grid maps to the 3x3 grid found in the fifth slot of the 2x2 to 3x3
+/// mapping array
 #[derive(Debug)]
 pub struct GridMap {
     g2_g3: [Grid3; 16],

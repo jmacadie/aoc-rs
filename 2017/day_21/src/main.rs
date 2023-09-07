@@ -15,12 +15,17 @@ use itertools::Itertools;
 // # # #
 const START: u16 = 0b0000_0000_0101_1110;
 
-#[allow(clippy::missing_panics_doc)]
 pub fn main() {
     let data = include_str!("input.txt");
-    let grid_map = GridMap::new(data).unwrap();
-    println!("Part 1: {}", part_one(&grid_map));
-    println!("Part 2: {}", part_two(&grid_map));
+    match GridMap::new(data) {
+        Ok(g) => {
+            println!("Part 1: {}", part_one(&g));
+            println!("Part 2: {}", part_two(&g));
+        }
+        Err(e) => {
+            println!("Cannot parse the input data: {e}");
+        }
+    }
 }
 
 fn part_one(grid_map: &GridMap) -> u32 {
