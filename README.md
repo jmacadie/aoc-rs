@@ -137,7 +137,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 828.06 ms** _part-completed_
+  **All Days: 839.20 ms** _part-completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -163,6 +163,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 20: Particle Swarm](2017/day_20/src/main.rs) |       27.98 ms |    3% |
   | [Day 21: Fractal Art](2017/day_21/src/main.rs) |       55.80 μs |    0% |
   | [Day 22: Sporifica Virus](2017/day_22/src/main.rs) |      178.50 ms |   21% |
+  | [Day 23: Coprocessor Conflagration](2017/day_23/src/main.rs) |      375.90 μs |    0% |
 
 </details>
 
