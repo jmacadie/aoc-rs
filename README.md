@@ -137,7 +137,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2017</summary>
 
-  **All Days: 806.41 ms** _part-completed_
+  **All Days: 978.00 ms**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -145,7 +145,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 2: Corruption Checksum](2017/day_02/src/main.rs) |  22.50 μs |    0% |
   |  [Day 3: Spiral Memory](2017/day_03/src/main.rs) |   3.10 μs |    0% |
   |  [Day 4: High-Entropy Passphrases](2017/day_04/src/main.rs) |  303.60 μs |   0% |
-  |  [Day 5: A Maze of Twisty Trampolines, All Alike](2017/day_05/src/main.rs) |   101.56 ms |   11% |
+  |  [Day 5: A Maze of Twisty Trampolines, All Alike](2017/day_05/src/main.rs) |   101.56 ms |   10% |
   |  [Day 6: Memory Reallocation](2017/day_06/src/main.rs) |    4.62 ms |    0% |
   |  [Day 7: Recursive Circus](2017/day_07/src/main.rs) |    489.70 μs |    0% |
   |  [Day 8: I Heard You Like Registers](2017/day_08/src/main.rs) |    393.80 μs |    0% |
@@ -154,17 +154,18 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 11: Hex Ed](2017/day_11/src/main.rs) |    450.50 μs |    0% |
   | [Day 12: Digital Plumber](2017/day_12/src/main.rs) |    535.80 μs |    0% |
   | [Day 13: Packet Scanners](2017/day_13/src/main.rs) |     29.10 μs |    0% |
-  | [Day 14: Disk Defragmentation](2017/day_14/src/main.rs) |      9.86 ms |    1% |
-  | [Day 15: Dueling Generators](2017/day_15/src/main.rs) |    475.21 ms |   53% |
+  | [Day 14: Disk Defragmentation](2017/day_14/src/main.rs) |      9.86 ms |    0% |
+  | [Day 15: Dueling Generators](2017/day_15/src/main.rs) |    475.21 ms |   48% |
   | [Day 16: Permutation Promenade](2017/day_16/src/main.rs) |     18.07 ms |    1% |
   | [Day 17: Spinkock](2017/day_17/src/main.rs) |      3.93 ms |    0% |
   | [Day 18: Duet](2017/day_18/src/main.rs) |      3.61 ms |    0% |
   | [Day 19: A Series of Tubes](2017/day_19/src/main.rs) |      146.80 μs |    0% |
   | [Day 20: Particle Swarm](2017/day_20/src/main.rs) |       27.98 ms |    2% |
   | [Day 21: Fractal Art](2017/day_21/src/main.rs) |       55.80 μs |    0% |
-  | [Day 22: Sporifica Virus](2017/day_22/src/main.rs) |      151.92 ms |   16% |
+  | [Day 22: Sporifica Virus](2017/day_22/src/main.rs) |      151.92 ms |   15% |
   | [Day 23: Coprocessor Conflagration](2017/day_23/src/main.rs) |      375.90 μs |    0% |
-  | [Day 24: Electromagnetic Moat](2017/day_24/src/main.rs) |       97.46 ms |   10% |
+  | [Day 24: Electromagnetic Moat](2017/day_24/src/main.rs) |      130.98 ms |   13% |
+  | [Day 25: The Halting Problem](2017/day_25/src/main.rs) |       46.84 ms |    4% |
 
 </details>
 
