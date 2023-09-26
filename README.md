@@ -172,7 +172,11 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2018</summary>
 
-  _No solutions yet written_
+  **All Days:   2.58 ms** _part completed_
+
+  | Day | Runtime | Percentage of year |
+  |---|---|---|
+  |  [Day 1: Chronal Calibration](2018/day_01/src/main.rs) |   2.58 ms |  100% |
 
 </details>
 
