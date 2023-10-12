@@ -19,7 +19,7 @@ Go here to run (or test) the days, and get the actual answers.
 * [2015](2015)
 * [2016](2016)
 * [2017](2017)
-* 2018 - _not yet started_
+* [2018](2018)
 * 2019 - _not yet started_
 * 2020 - _not yet started_, I do have some solutions [here](wip/year_2020) from when I was starting out.
 They need to be re-written in the standard format and generally made less bad
@@ -172,12 +172,13 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2018</summary>
 
-  **All Days:   3.08 ms** _part completed_
+  **All Days:   5.59 ms** _part completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1: Chronal Calibration](2018/day_01/src/main.rs) |   2.89 ms |   93% |
-  |  [Day 2: Inventory Management System](2018/day_02/src/main.rs) | 195.90 μs |    6% |
+  |  [Day 1: Chronal Calibration](2018/day_01/src/main.rs)         |   2.89 ms |   57% |
+  |  [Day 2: Inventory Management System](2018/day_02/src/main.rs) | 195.90 μs |    3% |
+  |  [Day 3: No Matter How You Slice It](2018/day_03/src/main.rs)  |   2.18 ms |   34% |
 
 </details>
 
