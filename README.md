@@ -172,13 +172,14 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2018</summary>
 
-  **All Days:   5.59 ms** _part completed_
+  **All Days:   6.39 ms** _part completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1: Chronal Calibration](2018/day_01/src/main.rs)         |    2.89 ms |  57% |
+  |  [Day 1: Chronal Calibration](2018/day_01/src/main.rs)         |    2.89 ms |  50% |
   |  [Day 2: Inventory Management System](2018/day_02/src/main.rs) |  195.90 μs |   3% |
-  |  [Day 3: No Matter How You Slice It](2018/day_03/src/main.rs)  |    2.18 ms |  34% |
+  |  [Day 3: No Matter How You Slice It](2018/day_03/src/main.rs)  |    2.18 ms |  36% |
+  |  [Day 4: Repose Record](2018/day_04/src/main.rs)               |  653.70 μs |  10% |
 
 </details>
 

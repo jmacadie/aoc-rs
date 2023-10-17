@@ -177,11 +177,11 @@ pub const DAYS_2019: [(fn(), &str); 0] = [
     //(day_2019_25::main, "Day 25"),
 ];
 
-pub const DAYS_2018: [(fn(), &str); 3] = [
+pub const DAYS_2018: [(fn(), &str); 4] = [
     (day_2018_01::main, "Day 1"),
     (day_2018_02::main, "Day 2"),
     (day_2018_03::main, "Day 3"),
-    //(day_2018_04::main, "Day 4"),
+    (day_2018_04::main, "Day 4"),
     //(day_2018_05::main, "Day 5"),
     //(day_2018_06::main, "Day 6"),
     //(day_2018_07::main, "Day 7"),

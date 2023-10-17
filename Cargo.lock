@@ -99,6 +99,7 @@ dependencies = [
  "day_2018_01",
  "day_2018_02",
  "day_2018_03",
+ "day_2018_04",
  "day_2022_01",
  "day_2022_02",
  "day_2022_03",
@@ -594,6 +595,10 @@ version = "0.1.0"
 
 [[package]]
 name = "day_2018_03"
+version = "0.1.0"
+
+[[package]]
+name = "day_2018_04"
 version = "0.1.0"
 
 [[package]]
