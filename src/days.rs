@@ -9,6 +9,7 @@ pub const YEARS: [Year; 8] = [
     Year::Y2020,
     Year::Y2021,
     Year::Y2022,
+    Year::Y2023,
 ];
 
 #[derive(Debug, Clone, Copy)]
@@ -21,6 +22,7 @@ pub enum Year {
     Y2020,
     Y2021,
     Y2022,
+    Y2023,
 }
 
 impl Display for Year {
@@ -34,6 +36,7 @@ impl Display for Year {
             Self::Y2020 => write!(f, "2020")?,
             Self::Y2021 => write!(f, "2021")?,
             Self::Y2022 => write!(f, "2022")?,
+            Self::Y2023 => write!(f, "2023")?,
         }
         Ok(())
     }
@@ -49,6 +52,7 @@ pub fn count(year: Year) -> usize {
         Year::Y2020 => DAYS_2020.len(),
         Year::Y2021 => DAYS_2021.len(),
         Year::Y2022 => DAYS_2022.len(),
+        Year::Y2023 => DAYS_2023.len(),
     }
 }
 
@@ -62,8 +66,37 @@ pub fn get(year: Year, day: usize) -> (fn(), &'static str) {
         Year::Y2020 => DAYS_2020[day - 1],
         Year::Y2021 => DAYS_2021[day - 1],
         Year::Y2022 => DAYS_2022[day - 1],
+        Year::Y2023 => DAYS_2023[day - 1],
     }
 }
+
+pub const DAYS_2023: [(fn(), &str); 0] = [
+//     (day_2022_01::main, "Day 1"),
+//     (day_2022_02::main, "Day 2"),
+//     (day_2022_03::main, "Day 3"),
+//     (day_2022_04::main, "Day 4"),
+//     (day_2022_05::main, "Day 5"),
+//     (day_2022_06::main, "Day 6"),
+//     (day_2022_07::main, "Day 7"),
+//     (day_2022_08::main, "Day 8"),
+//     (day_2022_09::main, "Day 9"),
+//     (day_2022_10::main, "Day 10"),
+//     (day_2022_11::main, "Day 11"),
+//     (day_2022_12::main, "Day 12"),
+//     (day_2022_13::main, "Day 13"),
+//     (day_2022_14::main, "Day 14"),
+//     (day_2022_15::main, "Day 15"),
+//     (day_2022_16::main, "Day 16"),
+//     (day_2022_17::main, "Day 17"),
+//     (day_2022_18::main, "Day 18"),
+//     (day_2022_19::main, "Day 19"),
+//     (day_2022_20::main, "Day 20"),
+//     (day_2022_21::main, "Day 21"),
+//     (day_2022_22::main, "Day 22"),
+//     (day_2022_23::main, "Day 23"),
+//     (day_2022_24::main, "Day 24"),
+//     (day_2022_25::main, "Day 25"),
+];
 
 pub const DAYS_2022: [(fn(), &str); 25] = [
     (day_2022_01::main, "Day 1"),
