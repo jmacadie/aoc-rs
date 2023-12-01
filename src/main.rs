@@ -129,9 +129,14 @@ fn pick_year() -> io::Result<Option<Year>> {
                     return Ok(Some(Year::Y2021));
                 }
             }
-            "8" | "2022" | "" => {
+            "8" | "2022" => {
                 if confirm_year("2022")? {
                     return Ok(Some(Year::Y2022));
+                }
+            }
+            "9" | "2023" | "" => {
+                if confirm_year("2023")? {
+                    return Ok(Some(Year::Y2023));
                 }
             }
             "h" | "help" => show_years(),
@@ -201,16 +206,10 @@ fn pick_day(year: Year) -> io::Result<Option<usize>> {
 fn confirm_day(year: Year, day: usize) -> io::Result<bool> {
     let mut handle = io::stdout().lock();
     if day == 0 {
-        write!(
-            handle,
-            "Running all days in {year}. Please confirm [y]/n  "
-        )?;
+        write!(handle, "Running all days in {year}. Please confirm [y]/n  ")?;
     } else {
         let (_, day_str) = days::get(year, day);
-        write!(
-            handle,
-            "Running {year}, {day_str}. Please confirm [y]/n  "
-        )?;
+        write!(handle, "Running {year}, {day_str}. Please confirm [y]/n  ")?;
     }
     handle.flush()?;
 
@@ -241,6 +240,7 @@ fn show_days(year: Year) {
         Year::Y2020 => show_days_inner(days::DAYS_2020.iter()),
         Year::Y2021 => show_days_inner(days::DAYS_2021.iter()),
         Year::Y2022 => show_days_inner(days::DAYS_2022.iter()),
+        Year::Y2023 => show_days_inner(days::DAYS_2023.iter()),
     };
     println!();
     println!("Type the list number, but NOT the day value");
@@ -280,9 +280,7 @@ fn show_years() {
 
 fn show_year_inner(index: u8, year: Year) {
     match days::count(year) {
-        0 => println!(
-            "{ANSI_GREY} {index}:   {year} (no days available){ANSI_RESET}"
-        ),
+        0 => println!("{ANSI_GREY} {index}:   {year} (no days available){ANSI_RESET}"),
         1 => println!(" {index}:   {year} (1 day available)"),
         d => println!(" {index}:   {year} ({d} days available)"),
     }
@@ -295,13 +293,9 @@ fn show_short_options() {
 
 fn welcome() {
     println!();
-    println!(
-        "{ANSI_BLUE}Welcome to jmacadie's AoC runner{ANSI_RESET}"
-    );
+    println!("{ANSI_BLUE}Welcome to jmacadie's AoC runner{ANSI_RESET}");
     println!("================================");
-    println!(
-        "{ANSI_GREY}https://github.com/jmacadie/aoc-rs{ANSI_RESET}"
-    );
+    println!("{ANSI_GREY}https://github.com/jmacadie/aoc-rs{ANSI_RESET}");
     println!();
     println!("This tool is used to performance profile (run-time only) my solutions.");
     println!("All days are written in Rust.");
