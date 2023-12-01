@@ -25,6 +25,7 @@ Go here to run (or test) the days, and get the actual answers.
 They need to be re-written in the standard format and generally made less bad
 * 2021 - _not yet started_, although I do have [a python repo](https://github.com/jmacadie/AdventOfCode)
 * [2022](2022)
+* [2023](2023)
 
 In addition to the days themselves, this top-level folder contains a command line runner application that
 will time profile the days in a selected year.
@@ -237,5 +238,16 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 23: Unstable Diffusion](2022/day_23/src/main.rs)       |  242.24 ms |   8% |
   | [Day 24: Blizzard Basin](2022/day_24/src/main.rs)           |    1.03 s  |  36% |
   | [Day 25: Full of Hot Air](2022/day_25/src/main.rs)          |   15.30 μs |   0% |
+
+</details>
+
+<details>
+  <summary>2023</summary>
+
+  **All Days: 193.2 μs** _part completed_
+
+  | Day | Runtime | Percentage of year |
+  |---|---|---|
+  |  [Day 1: Trebuchet?!](2023/day_01/src/main.rs)         |  193.2 μs | 100% |
 
 </details>
