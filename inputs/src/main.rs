@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .build()?;
 
     // Loop through all days
-    for year in 2015..=2022 {
+    for year in 2015..=2030 {
         for day in 1..=25 {
             process_day(year, day, &root, &client)?;
         }
