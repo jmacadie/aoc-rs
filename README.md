@@ -244,11 +244,12 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2023</summary>
 
-  **All Days: 375.2 μs** _part completed_
+  **All Days: 483.8 μs** _part completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1: Trebuchet?!](2023/day_01/src/main.rs)         |  193.2 μs |  51% |
-  |  [Day 2: Cube Conundrum](2023/day_02/src/main.rs)      |  182.2 μs |  48% |
+  |  [Day 1: Trebuchet?!](2023/day_01/src/main.rs)         |  193.2 μs |  38% |
+  |  [Day 2: Cube Conundrum](2023/day_02/src/main.rs)      |  182.2 μs |  35% |
+  |  [Day 3: Cube Conundrum](2023/day_03/src/main.rs)      |  122.7 μs |  25% |
 
 </details>
