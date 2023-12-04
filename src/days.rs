@@ -70,11 +70,11 @@ pub fn get(year: Year, day: usize) -> (fn(), &'static str) {
     }
 }
 
-pub const DAYS_2023: [(fn(), &str); 3] = [
+pub const DAYS_2023: [(fn(), &str); 4] = [
     (day_2023_01::main, "Day 1"),
     (day_2023_02::main, "Day 2"),
     (day_2023_03::main, "Day 3"),
-    //     (day_2023_04::main, "Day 4"),
+    (day_2023_04::main, "Day 4"),
     //     (day_2023_05::main, "Day 5"),
     //     (day_2023_06::main, "Day 6"),
     //     (day_2023_07::main, "Day 7"),
