@@ -13,29 +13,17 @@ fn part_one(cards: &[usize]) -> u32 {
 }
 
 fn part_two(cards: &[usize]) -> u32 {
-    let mut stack = Stack::new();
-    cards.iter().fold(0, |acc, &wins| acc + stack.add(wins))
-}
-
-struct Stack {
-    data: [u32; 12],
-}
-
-impl Stack {
-    const fn new() -> Self {
-        Self { data: [1; 12] }
-    }
-
-    fn add(&mut self, wins: usize) -> u32 {
-        let current = self.data[0];
-        for i in 1..=wins {
-            self.data[i] += current;
-        }
-        for i in 0..11 {
-            self.data[i] = self.data[i + 1];
-        }
-        current
-    }
+    let mut queue = [0; 250];
+    queue.iter_mut().take(cards.len()).for_each(|q| *q = 1);
+    cards.iter().enumerate().fold(0, |acc, (i, &wins)| {
+        let current = queue[i];
+        queue
+            .iter_mut()
+            .skip(i + 1)
+            .take(wins)
+            .for_each(|q| *q += current);
+        acc + current
+    })
 }
 
 fn score_scratchcard(s: &str) -> usize {
