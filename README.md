@@ -244,16 +244,17 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2023</summary>
 
-  **All Days: 1.58 ms** _part completed_s
+  **All Days: 2.15 ms** _part completed_s
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1: Trebuchet?!](2023/day_01/src/main.rs)                     |  193.2 μs |  12% |
-  |  [Day 2: Cube Conundrum](2023/day_02/src/main.rs)                  |  182.2 μs |  11% |
-  |  [Day 3: Cube Conundrum](2023/day_03/src/main.rs)                  |  122.7 μs |   7% |
-  |  [Day 4: Scratchcards](2023/day_04/src/main.rs)                    |  184.9 μs |  11% |
-  |  [Day 5: If You Give A Seed A Fertilizer](2023/day_05/src/main.rs) |  342.2 μs |  22% |
+  |  [Day 1: Trebuchet?!](2023/day_01/src/main.rs)                     |  193.2 μs |   8% |
+  |  [Day 2: Cube Conundrum](2023/day_02/src/main.rs)                  |  182.2 μs |   8% |
+  |  [Day 3: Cube Conundrum](2023/day_03/src/main.rs)                  |  122.7 μs |   5% |
+  |  [Day 4: Scratchcards](2023/day_04/src/main.rs)                    |  184.9 μs |   7% |
+  |  [Day 5: If You Give A Seed A Fertilizer](2023/day_05/src/main.rs) |  342.2 μs |  16% |
   |  [Day 6: Wait For It](2023/day_06/src/main.rs)                     |    4.0 μs |   0% |
-  |  [Day 7: Camel Cards](2023/day_07/src/main.rs)                     |  565.6 μs |  35% |
+  |  [Day 7: Camel Cards](2023/day_07/src/main.rs)                     |  565.6 μs |  25% |
+  |  [Day 8: Haunted Wasteland](2023/day_08/src/main.rs)               |  585.6 μs |  27% |
 
 </details>
