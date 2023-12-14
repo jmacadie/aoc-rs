@@ -137,6 +137,7 @@ dependencies = [
  "day_2023_09",
  "day_2023_10",
  "day_2023_11",
+ "day_2023_12",
  "gag",
  "took",
 ]
@@ -803,6 +804,10 @@ version = "0.1.0"
 dependencies = [
  "itertools 0.12.0",
 ]
+
+[[package]]
+name = "day_2023_12"
+version = "0.1.0"
 
 [[package]]
 name = "digest"
