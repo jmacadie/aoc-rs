@@ -244,7 +244,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2023</summary>
 
-  **All Days: 190.99 ms** _part completed_
+  **All Days: 338.93 ms** _part completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -259,10 +259,11 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 9: Mirage Maintenance](2023/day_09/src/main.rs)              |  374.72 μs |   0% |
   | [Day 10: Pipe Maze](2023/day_10/src/main.rs)                       |  449.33 μs |   0% |
   | [Day 11: Cosmic Expansion](2023/day_11/src/main.rs)                |  302.30 μs |   0% |
-  | [Day 12: Hot Springs](2023/day_12/src/main.rs)                     |  117.56 ms |  55% |
+  | [Day 12: Hot Springs](2023/day_12/src/main.rs)                     |  117.56 ms |  35% |
   | [Day 13: Point of Incidence](2023/day_13/src/main.rs)              |  143.40 μs |   0% |
-  | [Day 14: Parabolic Reflector Dish](2023/day_14/src/main.rs)        |   60.46 ms |  28% |
+  | [Day 14: Parabolic Reflector Dish](2023/day_14/src/main.rs)        |   60.46 ms |  17% |
   | [Day 15: Lens Library](2023/day_15/src/main.rs)                    |  464.20 μs |   0% |
-  | [Day 16: The Floor Will Be Lava](2023/day_16/src/main.rs)          |   29.05 ms |  13% |
+  | [Day 16: The Floor Will Be Lava](2023/day_16/src/main.rs)          |   29.05 ms |   8% |
+  | [Day 17: Clumsy Crucible](2023/day_17/src/main.rs)                 |  127.08 ms |  37% |
 
 </details>
