@@ -265,5 +265,6 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 15: Lens Library](2023/day_15/src/main.rs)                    |  464.20 μs |   0% |
   | [Day 16: The Floor Will Be Lava](2023/day_16/src/main.rs)          |   29.05 ms |   8% |
   | [Day 17: Clumsy Crucible](2023/day_17/src/main.rs)                 |  127.08 ms |  37% |
+  | [Day 18: Lavaduct Lagoon](2023/day_18/src/main.rs)                 |  442.20 μs |   0% |
 
 </details>
