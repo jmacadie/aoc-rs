@@ -244,7 +244,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2023</summary>
 
-  **All Days: 349.95 ms** _part completed_
+  **All Days: 344.26 ms** _part completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -266,6 +266,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 16: The Floor Will Be Lava](2023/day_16/src/main.rs)          |   29.05 ms |   8% |
   | [Day 17: Clumsy Crucible](2023/day_17/src/main.rs)                 |  127.08 ms |  37% |
   | [Day 18: Lavaduct Lagoon](2023/day_18/src/main.rs)                 |  442.20 μs |   0% |
-  | [Day 19: Aplenty](2023/day_19/src/main.rs)                 |  742.00 μs |   0% |
+  | [Day 19: Aplenty](2023/day_19/src/main.rs)                         |  742.00 μs |   0% |
+  | [Day 20: Pulse Propagation](2023/day_20/src/main.rs)               |    3.33 ms |   0% |
 
 </details>
