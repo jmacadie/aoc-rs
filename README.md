@@ -244,7 +244,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2023</summary>
 
-  **All Days: 453.02 ms** _part completed_
+  **All Days: 497.24 ms** _part completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
@@ -259,16 +259,17 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |  [Day 9: Mirage Maintenance](2023/day_09/src/main.rs)              |  374.72 μs |   0% |
   | [Day 10: Pipe Maze](2023/day_10/src/main.rs)                       |  449.33 μs |   0% |
   | [Day 11: Cosmic Expansion](2023/day_11/src/main.rs)                |  302.30 μs |   0% |
-  | [Day 12: Hot Springs](2023/day_12/src/main.rs)                     |  117.56 ms |  25% |
+  | [Day 12: Hot Springs](2023/day_12/src/main.rs)                     |  117.56 ms |  23% |
   | [Day 13: Point of Incidence](2023/day_13/src/main.rs)              |  143.40 μs |   0% |
-  | [Day 14: Parabolic Reflector Dish](2023/day_14/src/main.rs)        |   60.46 ms |  12% |
+  | [Day 14: Parabolic Reflector Dish](2023/day_14/src/main.rs)        |   60.46 ms |  11% |
   | [Day 15: Lens Library](2023/day_15/src/main.rs)                    |  464.20 μs |   0% |
-  | [Day 16: The Floor Will Be Lava](2023/day_16/src/main.rs)          |   29.05 ms |   6% |
-  | [Day 17: Clumsy Crucible](2023/day_17/src/main.rs)                 |  127.08 ms |  30% |
+  | [Day 16: The Floor Will Be Lava](2023/day_16/src/main.rs)          |   29.05 ms |   5% |
+  | [Day 17: Clumsy Crucible](2023/day_17/src/main.rs)                 |  127.08 ms |  24% |
   | [Day 18: Lavaduct Lagoon](2023/day_18/src/main.rs)                 |  442.20 μs |   0% |
   | [Day 19: Aplenty](2023/day_19/src/main.rs)                         |  742.00 μs |   0% |
   | [Day 20: Pulse Propagation](2023/day_20/src/main.rs)               |    3.33 ms |   0% |
   | [Day 21: Step Counter](2023/day_21/src/main.rs)                    |    2.00 ms |   0% |
-  | [Day 22: Sand Slabs](2023/day_22/src/main.rs)                      |  107.78 ms |  23% |
+  | [Day 22: Sand Slabs](2023/day_22/src/main.rs)                      |  107.78 ms |  22% |
+  | [Day 23: A Long Walk](2023/day_23/src/main.rs)                     |   52.11 ms |  10% |
 
 </details>
