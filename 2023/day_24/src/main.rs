@@ -1,4 +1,5 @@
 #![warn(clippy::all, clippy::pedantic, clippy::nursery)]
+#![allow(dead_code)]
 
 use hail_path::HailPath;
 
@@ -514,7 +515,7 @@ mod line {
             }
 
             let x = other.c.mul_add(self.dx, -(self.c * other.dx)) / det;
-            let y = self.c.mul_add(other.dy, -(other.c * self.dy)) / det;
+            let y = other.c.mul_add(self.dy, -(self.c * other.dy)) / det;
             Intersection::Point((x, y).into())
         }
 
