@@ -30,6 +30,122 @@ const fn part_two(_data: &str) -> usize {
     0
 }
 
+mod segments {
+    use std::{cmp::Ordering, collections::BinaryHeap};
+
+    use crate::{line_segment::LineSegment, point::Point};
+
+    type SegID = usize;
+
+    pub struct Events {
+        data: BinaryHeap<Event>,
+        last: Option<Event>,
+    }
+
+    pub struct Segments<const N: usize> {
+        data: [LineSegment; N],
+        sorted: [SegID; N],
+        active: usize,
+    }
+
+    impl<const N: usize> Segments<N> {
+        // pub fn process_event(&mut self, event: Event) {
+        //     match event {
+        //         Event::Start(p, s) =>
+        //     }
+        // }
+
+        fn find(&self, p: Point) -> usize {
+            fn find_inner(
+                p: Point,
+                search: &[SegID],
+                segments: &[LineSegment],
+                start_index: usize,
+            ) -> usize {
+                let mid_idx = search.len() / 2;
+                let seg_id = search[mid_idx];
+                let mid_value = segments[seg_id].point_at_x(p.x).unwrap().y;
+
+                if search.len() == 1 {
+                    if p.y > mid_value {
+                        return start_index + 1;
+                    }
+                    return start_index;
+                }
+                if search.len() == 2 && p.y > mid_value {
+                    return start_index + 2;
+                }
+
+                if p.y > mid_value {
+                    let idx = mid_idx + 1;
+                    find_inner(p, &search[idx..], segments, start_index + idx)
+                } else {
+                    let idx = mid_idx - 1;
+                    find_inner(p, &search[..idx], segments, start_index)
+                }
+            }
+
+            if self.active == 0 {
+                return 0;
+            }
+
+            find_inner(p, &self.sorted, &self.data, 0)
+        }
+
+        fn add(&mut self, segment: SegID, position: usize) {
+            (position..self.active)
+                .rev()
+                .for_each(|i| self.sorted[i + 1] = self.sorted[i]);
+            self.sorted[position] = segment;
+            self.active += 1;
+        }
+
+        fn del(&mut self, position: usize) {
+            (position..self.active).for_each(|i| self.sorted[i] = self.sorted[i + 1]);
+            self.active -= 1;
+        }
+
+        fn swap(&mut self, lower: usize) {
+            let (low, high) = self.sorted.split_at_mut(lower + 1);
+            core::mem::swap(&mut low[lower], &mut high[0]);
+        }
+    }
+
+    #[derive(Debug, Clone, Copy)]
+    enum Event {
+        Start(Point, SegID),
+        End(Point, SegID),
+        Intersection(Point, SegID, SegID),
+    }
+
+    impl Event {
+        const fn loc(&self) -> Point {
+            match self {
+                Self::Start(p, _) | Self::End(p, _) | Self::Intersection(p, _, _) => *p,
+            }
+        }
+    }
+
+    impl PartialOrd for Event {
+        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+            let a = self.loc();
+            let b = other.loc();
+            match b.x.partial_cmp(&a.x) {
+                Some(Ordering::Less) => Some(Ordering::Less),
+                Some(Ordering::Greater) => Some(Ordering::Greater),
+                Some(Ordering::Equal) => b.y.partial_cmp(&a.y),
+                None => None,
+            }
+        }
+    }
+
+    impl PartialEq for Event {
+        fn eq(&self, other: &Self) -> bool {
+            self.loc() == other.loc()
+        }
+    }
+}
+
 mod hail_path {
     use std::str::FromStr;
 
@@ -140,7 +256,7 @@ mod line_segment {
             }
         }
 
-        fn point_at_x(&self, x: f64) -> Option<Point> {
+        pub fn point_at_x(&self, x: f64) -> Option<Point> {
             if x < self.from.x || x > self.to.x {
                 return None;
             }
