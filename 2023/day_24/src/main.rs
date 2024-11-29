@@ -2,28 +2,29 @@
 #![allow(dead_code)]
 
 use crate::point::Point;
+use crate::segments::Solver;
 use hail_path::HailPath;
+use line_segment::LineSegment;
 
 pub fn main() {
     let data = include_str!("input.txt");
-    let tl = (7, 7).into();
-    let br = (27, 27).into();
+    let tl = (200_000_000_000_000.0, 200_000_000_000_000.0).into();
+    let br = (400_000_000_000_000.0, 400_000_000_000_000.0).into();
     println!("Part 1: {}", part_one::<300>(data, tl, br));
     println!("Part 2: {}", part_two(data));
 }
 
 fn part_one<const N: usize>(data: &str, tl: Point, br: Point) -> usize {
-    for l in data.lines() {
+    let mut segments = std::array::from_fn(|_| LineSegment::default());
+    for (s, l) in segments.iter_mut().zip(data.lines()) {
         let path: HailPath = l.parse().unwrap();
         let osl = path.to_osl();
-        println!("{:?}", osl.line);
-        let seg = osl.box_intersect(tl, br);
-        if seg.is_none() {
-            println!("{path:?} is not inside box");
-        } else {
-            println!("{path:?} gives {}", seg.unwrap());
-        }
+        *s = osl
+            .box_intersect(tl, br)
+            .expect("line crosses the target zone");
     }
+    let mut solver = Solver::<N>::new(segments);
+    solver.run();
     0
 }
 
@@ -477,6 +478,15 @@ mod line_segment {
         }
     }
 
+    impl Default for LineSegment {
+        fn default() -> Self {
+            Self {
+                from: Point::default(),
+                to: (1, 1).into(),
+                line: Line::default(),
+            }
+        }
+    }
     impl Display for LineSegment {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{} -> {}", self.from, self.to)?;
@@ -801,6 +811,19 @@ mod line {
         }
     }
 
+    impl Default for Line {
+        fn default() -> Self {
+            Self {
+                dx: 1.0,
+                dy: 1.0,
+                c: 0.0,
+                slope: Some(1.0),
+                y_intercept: Some(0.0),
+                intercept: 0.0,
+            }
+        }
+    }
+
     pub enum Intersection {
         Point(Point),
         Parallel,
@@ -854,6 +877,11 @@ mod point {
         }
     }
 
+    impl Default for Point {
+        fn default() -> Self {
+            Self { x: 0.0, y: 0.0 }
+        }
+    }
     impl From<(f64, f64)> for Point {
         fn from(value: (f64, f64)) -> Self {
             Self::new(value.0, value.1)
