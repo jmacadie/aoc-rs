@@ -6,6 +6,16 @@ use crate::segments::Solver;
 use hail_path::HailPath;
 use line_segment::LineSegment;
 
+const EPSILON: f64 = 0.000_001;
+
+fn is_zero(a: f64) -> bool {
+    a.abs() < EPSILON
+}
+
+fn equal(a: f64, b: f64) -> bool {
+    is_zero(a - b)
+}
+
 pub fn main() {
     let data = include_str!("input.txt");
     let tl = (200_000_000_000_000.0, 200_000_000_000_000.0).into();
@@ -23,9 +33,12 @@ fn part_one<const N: usize>(data: &str, tl: Point, br: Point) -> usize {
             .box_intersect(tl, br)
             .expect("line crosses the target zone");
     }
+    // for s in &segments {
+    // println!("{s}");
+    // }
+    // println!();
     let mut solver = Solver::<N>::new(segments);
-    solver.run();
-    0
+    solver.run()
 }
 
 const fn part_two(_data: &str) -> usize {
@@ -36,6 +49,7 @@ mod segments {
     use std::{cmp::Ordering, collections::BinaryHeap};
 
     use crate::{
+        equal,
         line_segment::{Intersection, LineSegment},
         point::Point,
     };
@@ -45,6 +59,7 @@ mod segments {
     pub struct Solver<const N: usize> {
         events: Events,
         segments: Segments<N>,
+        intersections: usize,
     }
 
     impl<const N: usize> Solver<N> {
@@ -59,16 +74,23 @@ mod segments {
                 active: [0; N],
                 active_count: 0,
             };
-            Self { events, segments }
+            Self {
+                events,
+                segments,
+                intersections: 0,
+            }
         }
 
-        pub fn run(&mut self) {
+        pub fn run(&mut self) -> usize {
             while let Some(e) = self.events.pop() {
                 match e {
                     Event::Start(p, seg_id) => {
-                        self.segments.add(seg_id, p);
-                        let next = self.segments.get_next_id(seg_id);
-                        let prev = self.segments.get_prev_id(seg_id);
+                        // println!();
+                        // println!(">>>>>>>>>>>>>>>>>>>>>>>");
+                        // println!("starting {seg_id} @ {p}");
+                        let sorted_idx = self.segments.add(seg_id, p);
+                        let next = self.segments.get_next_id(sorted_idx);
+                        let prev = self.segments.get_prev_id(sorted_idx);
                         if next.is_some() {
                             let next_id = next.unwrap();
                             let next_ls = self.segments.get(next_id);
@@ -89,8 +111,13 @@ mod segments {
                         }
                     }
                     Event::End(p, seg_id) => {
-                        let next = self.segments.get_next_id(seg_id);
-                        let prev = self.segments.get_prev_id(seg_id);
+                        // println!();
+                        // println!(">>>>>>>>>>>>>>>>>>>>>>>");
+                        // println!("ending {seg_id} @ {p}");
+                        let sorted_idx = self.segments.find(p);
+                        assert_eq!(self.segments.active[sorted_idx], seg_id);
+                        let next = self.segments.get_next_id(sorted_idx);
+                        let prev = self.segments.get_prev_id(sorted_idx);
                         if next.is_some() && prev.is_some() {
                             let next_id = next.unwrap();
                             let prev_id = prev.unwrap();
@@ -102,9 +129,13 @@ mod segments {
                                 }
                             }
                         }
-                        self.segments.del(seg_id, p);
+                        self.segments.del(sorted_idx);
                     }
                     Event::Intersection(p, s1, s2) => {
+                        // println!();
+                        // println!(">>>>>>>>>>>>>>>>>>>>>>>");
+                        // println!("intersection between {s1} and {s2} @ {p}");
+                        self.intersections += 1;
                         self.segments.swap(s1, p);
                         let next = self.segments.get_next_id(s1);
                         let prev = self.segments.get_prev_id(s2);
@@ -131,6 +162,7 @@ mod segments {
                     }
                 }
             }
+            self.intersections
         }
     }
 
@@ -212,22 +244,28 @@ mod segments {
                 let mid_idx = search.len() / 2;
                 let seg_id = search[mid_idx];
                 let mid_value = segments[seg_id].point_at_x(p.x).unwrap().y;
+                // println!("point:{p}, mid idx:{mid_idx}, mid seg_id:{seg_id}, mid value:{mid_value}, {search:?}");
 
                 if search.len() == 1 {
-                    if p.y > mid_value {
+                    if !equal(p.y, mid_value) && p.y > mid_value {
+                        // println!("FOUND: bigger");
                         return start_index + 1;
                     }
+                    // println!("FOUND: smaller or equal");
                     return start_index;
                 }
-                if search.len() == 2 && p.y > mid_value {
+                if search.len() == 2 && !equal(p.y, mid_value) && p.y > mid_value {
+                    // println!("FOUND: bigger");
                     return start_index + 2;
                 }
 
-                if p.y > mid_value {
+                if !equal(p.y, mid_value) && p.y > mid_value {
+                    // println!("bigger");
                     let idx = mid_idx + 1;
                     find_inner(p, &search[idx..], segments, start_index + idx)
                 } else {
-                    let idx = mid_idx - 1;
+                    // println!("smaller or equal");
+                    let idx = mid_idx;
                     find_inner(p, &search[..idx], segments, start_index)
                 }
             }
@@ -236,29 +274,29 @@ mod segments {
                 return 0;
             }
 
-            find_inner(p, &self.active, &self.data, 0)
+            find_inner(p, &self.active[..self.active_count], &self.data, 0)
         }
 
-        fn add(&mut self, segment: SegID, p: Point) {
+        fn add(&mut self, segment: SegID, p: Point) -> usize {
             let position = self.find(p);
             (position..self.active_count)
                 .rev()
                 .for_each(|i| self.active[i + 1] = self.active[i]);
             self.active[position] = segment;
             self.active_count += 1;
+            position
         }
 
-        fn del(&mut self, segment: SegID, p: Point) {
-            let position = self.find(p);
-            assert_eq!(self.active[position], segment); // Should be true?
+        fn del(&mut self, position: usize) {
             (position..self.active_count).for_each(|i| self.active[i] = self.active[i + 1]);
             self.active_count -= 1;
         }
 
-        fn swap(&mut self, lower_id: SegID, p: Point) {
+        fn swap(&mut self, lower_id: SegID, p: Point) -> usize {
             let lower = self.find(p);
             assert_eq!(self.active[lower], lower_id); // Should be true?
             self.active.swap(lower, lower + 1);
+            lower
         }
     }
 
@@ -386,7 +424,7 @@ mod hail_path {
 mod line_segment {
     use std::fmt::Display;
 
-    use num_traits::Zero;
+    use crate::equal;
 
     use super::line;
     use super::line::Line;
@@ -403,7 +441,7 @@ mod line_segment {
         pub fn new(from: Point, to: Point) -> Self {
             // Sort on construction so `from` always has the lower x value
             // or has the lower y value, if there is no slope
-            let (a, b) = match ((from.x - to.x).is_zero(), from.x - to.x, from.y - to.y) {
+            let (a, b) = match (equal(from.x, to.x), from.x - to.x, from.y - to.y) {
                 (true, _, i) if i < 0.0 => (from, to),
                 (true, _, i) if i > 0.0 => (to, from),
                 (false, i, _) if i < 0.0 => (from, to),
@@ -487,6 +525,7 @@ mod line_segment {
             }
         }
     }
+
     impl Display for LineSegment {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{} -> {}", self.from, self.to)?;
@@ -506,8 +545,7 @@ mod line_segment {
 mod one_sided_line {
     use std::fmt::Display;
 
-    use num_traits::Zero;
-
+    use crate::is_zero;
     use crate::line_segment::LineSegment;
 
     use super::line;
@@ -715,7 +753,7 @@ mod one_sided_line {
                     Slope::Decreasing
                 }
             }
-            if value.x.is_zero() {
+            if is_zero(value.x) {
                 dir_from_value(value.y)
             } else {
                 dir_from_value(value.x)
@@ -734,9 +772,8 @@ mod one_sided_line {
 }
 
 mod line {
-    use num_traits::Zero;
 
-    use crate::point::Point;
+    use crate::{equal, is_zero, point::Point};
 
     #[derive(Debug, Clone)]
     pub struct Line {
@@ -753,7 +790,7 @@ mod line {
             let dx = b.x - a.x;
             let dy = b.y - a.y;
             let c = a.x.mul_add(b.y, -(b.x * a.y));
-            let slope = if dx.is_zero() { None } else { Some(dy / dx) };
+            let slope = if is_zero(dx) { None } else { Some(dy / dx) };
             let y_intercept = slope.map(|s| a.x.mul_add(-s, a.y));
             let intercept = y_intercept.unwrap_or_else(|| a.x + a.y * dx / dy);
 
@@ -790,12 +827,12 @@ mod line {
 
             // a zero determinant means the lines have the same slope
             // they are either parallel or the same line
-            if det.is_zero() {
+            if is_zero(det) {
                 // This tests whether the y axis intercept is different
                 // If there is no y axis intercept, in the case of `x = ...` lines,
                 // then the x axis intercept is used instead
                 // If it is, these lines are parallel and will never intersect
-                if (self.intercept - other.intercept).is_zero() {
+                if equal(self.intercept, other.intercept) {
                     return Intersection::Parallel;
                 }
                 return Intersection::SameLine;
@@ -832,13 +869,14 @@ mod line {
 }
 
 mod point {
+    use crate::equal;
+    use crate::is_zero;
+
     use core::f64;
     use std::{
         fmt::Display,
         ops::{Add, Sub},
     };
-
-    use num_traits::Zero;
 
     #[derive(Debug, Clone, Copy)]
     pub struct Point {
@@ -859,7 +897,7 @@ mod point {
                 Neg,
             }
             fn sign(a: f64) -> Sign {
-                if a.is_zero() {
+                if is_zero(a) {
                     return Sign::Zero;
                 }
                 match a.signum() {
@@ -873,7 +911,7 @@ mod point {
 
     impl PartialEq for Point {
         fn eq(&self, other: &Self) -> bool {
-            (self.x - other.x).is_zero() && (self.y - other.y).is_zero()
+            equal(self.x, other.x) && equal(self.y, other.y)
         }
     }
 
@@ -934,7 +972,7 @@ mod tests {
         let data = include_str!("test.txt");
         let tl = (7, 7).into();
         let br = (27, 27).into();
-        assert_eq!(0, part_one::<5>(data, tl, br));
+        assert_eq!(2, part_one::<5>(data, tl, br));
     }
 
     #[test]
