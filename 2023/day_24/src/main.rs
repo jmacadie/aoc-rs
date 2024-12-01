@@ -13,7 +13,7 @@ fn is_zero(a: f64) -> bool {
 }
 
 fn equal(a: f64, b: f64) -> bool {
-    is_zero(a - b)
+    is_zero(a - b) || (a - b).abs() < a * 0.000_000_000_001
 }
 
 pub fn main() {
@@ -29,14 +29,17 @@ fn part_one<const N: usize>(data: &str, tl: Point, br: Point) -> usize {
     for (s, l) in segments.iter_mut().zip(data.lines()) {
         let path: HailPath = l.parse().unwrap();
         let osl = path.to_osl();
-        *s = osl
-            .box_intersect(tl, br)
-            .expect("line crosses the target zone");
+        let line = osl.box_intersect(tl, br);
+        if line.is_some() {
+            *s = osl
+                .box_intersect(tl, br)
+                .unwrap_or_else(|| panic!("{osl} crosses the target zone"));
+        }
     }
-    // for s in &segments {
-    // println!("{s}");
-    // }
-    // println!();
+    for s in &segments {
+        println!("{s}");
+    }
+    println!();
     let mut solver = Solver::<N>::new(segments);
     solver.run()
 }
@@ -65,10 +68,13 @@ mod segments {
     impl<const N: usize> Solver<N> {
         pub fn new(data: [LineSegment; N]) -> Self {
             let mut events = Events::new();
-            data.iter().enumerate().for_each(|(seg_id, segment)| {
-                events.push(Event::Start(segment.from, seg_id));
-                events.push(Event::End(segment.to, seg_id));
-            });
+            data.iter()
+                .enumerate()
+                .filter(|(_, segment)| segment.from != Point::default())
+                .for_each(|(seg_id, segment)| {
+                    events.push(Event::Start(segment.from, seg_id));
+                    events.push(Event::End(segment.to, seg_id));
+                });
             let segments = Segments::<N> {
                 data,
                 active: [0; N],
@@ -85,12 +91,9 @@ mod segments {
             while let Some(e) = self.events.pop() {
                 match e {
                     Event::Start(p, seg_id) => {
-                        // println!();
-                        // println!(">>>>>>>>>>>>>>>>>>>>>>>");
-                        // println!("starting {seg_id} @ {p}");
+                        println!("starting {seg_id} @ {p}");
                         let sorted_idx = self.segments.add(seg_id, p);
                         let next = self.segments.get_next_id(sorted_idx);
-                        let prev = self.segments.get_prev_id(sorted_idx);
                         if next.is_some() {
                             let next_id = next.unwrap();
                             let next_ls = self.segments.get(next_id);
@@ -100,6 +103,7 @@ mod segments {
                                 self.events.push(Event::Intersection(loc, seg_id, next_id));
                             }
                         }
+                        let prev = self.segments.get_prev_id(sorted_idx);
                         if prev.is_some() {
                             let prev_id = prev.unwrap();
                             let prev_ls = self.segments.get(prev_id);
@@ -111,9 +115,7 @@ mod segments {
                         }
                     }
                     Event::End(p, seg_id) => {
-                        // println!();
-                        // println!(">>>>>>>>>>>>>>>>>>>>>>>");
-                        // println!("ending {seg_id} @ {p}");
+                        println!("ending {seg_id} @ {p}");
                         let sorted_idx = self.segments.find(p);
                         assert_eq!(self.segments.active[sorted_idx], seg_id);
                         let next = self.segments.get_next_id(sorted_idx);
@@ -132,13 +134,10 @@ mod segments {
                         self.segments.del(sorted_idx);
                     }
                     Event::Intersection(p, s1, s2) => {
-                        // println!();
-                        // println!(">>>>>>>>>>>>>>>>>>>>>>>");
-                        // println!("intersection between {s1} and {s2} @ {p}");
+                        println!("intersection between {s1} and {s2} @ {p}");
                         self.intersections += 1;
                         self.segments.swap(s1, p);
                         let next = self.segments.get_next_id(s1);
-                        let prev = self.segments.get_prev_id(s2);
                         if next.is_some() {
                             let next_id = next.unwrap();
                             let next_ls = self.segments.get(next_id);
@@ -149,6 +148,7 @@ mod segments {
                                 }
                             }
                         }
+                        let prev = self.segments.get_prev_id(s2);
                         if prev.is_some() {
                             let prev_id = prev.unwrap();
                             let prev_ls = self.segments.get(prev_id);
@@ -244,27 +244,27 @@ mod segments {
                 let mid_idx = search.len() / 2;
                 let seg_id = search[mid_idx];
                 let mid_value = segments[seg_id].point_at_x(p.x).unwrap().y;
-                // println!("point:{p}, mid idx:{mid_idx}, mid seg_id:{seg_id}, mid value:{mid_value}, {search:?}");
+                println!("point:{p}, mid idx:{mid_idx}, mid seg_id:{seg_id}, mid value:{mid_value}, {search:?}");
 
                 if search.len() == 1 {
                     if !equal(p.y, mid_value) && p.y > mid_value {
-                        // println!("FOUND: bigger");
+                        println!("FOUND: bigger");
                         return start_index + 1;
                     }
-                    // println!("FOUND: smaller or equal");
+                    println!("FOUND: smaller or equal");
                     return start_index;
                 }
                 if search.len() == 2 && !equal(p.y, mid_value) && p.y > mid_value {
-                    // println!("FOUND: bigger");
+                    println!("FOUND: bigger");
                     return start_index + 2;
                 }
 
                 if !equal(p.y, mid_value) && p.y > mid_value {
-                    // println!("bigger");
+                    println!("bigger");
                     let idx = mid_idx + 1;
                     find_inner(p, &search[idx..], segments, start_index + idx)
                 } else {
-                    // println!("smaller or equal");
+                    println!("smaller or equal");
                     let idx = mid_idx;
                     find_inner(p, &search[..idx], segments, start_index)
                 }
@@ -733,7 +733,7 @@ mod one_sided_line {
 
     impl Display for OneSidedLine {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "{} -> ..., {}", self.from, self.direction)?;
+            write!(f, "{} -> , {}", self.from, self.direction)?;
             Ok(())
         }
     }
