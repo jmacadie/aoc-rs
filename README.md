@@ -26,6 +26,7 @@ They need to be re-written in the standard format and generally made less bad
 * 2021 - _not yet started_, although I do have [a python repo](https://github.com/jmacadie/AdventOfCode)
 * [2022](2022)
 * [2023](2023)
+* [2024](2024)
 
 In addition to the days themselves, this top-level folder contains a command line runner application that
 will time profile the days in a selected year.
@@ -271,5 +272,16 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   | [Day 21: Step Counter](2023/day_21/src/main.rs)                    |    2.00 ms |   0% |
   | [Day 22: Sand Slabs](2023/day_22/src/main.rs)                      |  107.78 ms |  22% |
   | [Day 23: A Long Walk](2023/day_23/src/main.rs)                     |   52.11 ms |  10% |
+
+</details>
+
+<details>
+  <summary>2023</summary>
+
+  **All Days: 107.80 μs** _part completed_
+
+  | Day | Runtime | Percentage of year |
+  |---|---|---|
+  |  [Day 1: Historian Hysteria](2024/day_01/src/main.rs)                     |  107.80 μs |  30% |
 
 </details>
