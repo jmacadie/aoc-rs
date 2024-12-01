@@ -134,9 +134,14 @@ fn pick_year() -> io::Result<Option<Year>> {
                     return Ok(Some(Year::Y2022));
                 }
             }
-            "9" | "2023" | "" => {
+            "9" | "2023" => {
                 if confirm_year("2023")? {
                     return Ok(Some(Year::Y2023));
+                }
+            }
+            "10" | "2024" | "" => {
+                if confirm_year("2024")? {
+                    return Ok(Some(Year::Y2024));
                 }
             }
             "h" | "help" => show_years(),
@@ -241,6 +246,7 @@ fn show_days(year: Year) {
         Year::Y2021 => show_days_inner(days::DAYS_2021.iter()),
         Year::Y2022 => show_days_inner(days::DAYS_2022.iter()),
         Year::Y2023 => show_days_inner(days::DAYS_2023.iter()),
+        Year::Y2024 => show_days_inner(days::DAYS_2024.iter()),
     };
     println!();
     println!("Type the list number, but NOT the day value");
@@ -279,10 +285,18 @@ fn show_years() {
 }
 
 fn show_year_inner(index: u8, year: Year) {
-    match days::count(year) {
-        0 => println!("{ANSI_GREY} {index}:   {year} (no days available){ANSI_RESET}"),
-        1 => println!(" {index}:   {year} (1 day available)"),
-        d => println!(" {index}:   {year} ({d} days available)"),
+    if index < 10 {
+        match days::count(year) {
+            0 => println!("{ANSI_GREY} {index}:   {year} (no days available){ANSI_RESET}"),
+            1 => println!(" {index}:   {year} (1 day available)"),
+            d => println!(" {index}:   {year} ({d} days available)"),
+        }
+    } else {
+        match days::count(year) {
+            0 => println!("{ANSI_GREY} {index}:  {year} (no days available){ANSI_RESET}"),
+            1 => println!(" {index}:  {year} (1 day available)"),
+            d => println!(" {index}:  {year} ({d} days available)"),
+        }
     }
 }
 
