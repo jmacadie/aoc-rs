@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-pub const YEARS: [Year; 9] = [
+pub const YEARS: [Year; 10] = [
     Year::Y2015,
     Year::Y2016,
     Year::Y2017,
@@ -10,6 +10,7 @@ pub const YEARS: [Year; 9] = [
     Year::Y2021,
     Year::Y2022,
     Year::Y2023,
+    Year::Y2024,
 ];
 
 #[derive(Debug, Clone, Copy)]
@@ -23,6 +24,7 @@ pub enum Year {
     Y2021,
     Y2022,
     Y2023,
+    Y2024,
 }
 
 impl Display for Year {
@@ -37,6 +39,7 @@ impl Display for Year {
             Self::Y2021 => write!(f, "2021")?,
             Self::Y2022 => write!(f, "2022")?,
             Self::Y2023 => write!(f, "2023")?,
+            Self::Y2024 => write!(f, "2024")?,
         }
         Ok(())
     }
@@ -53,6 +56,7 @@ pub fn count(year: Year) -> usize {
         Year::Y2021 => DAYS_2021.len(),
         Year::Y2022 => DAYS_2022.len(),
         Year::Y2023 => DAYS_2023.len(),
+        Year::Y2024 => DAYS_2024.len(),
     }
 }
 
@@ -67,8 +71,37 @@ pub fn get(year: Year, day: usize) -> (fn(), &'static str) {
         Year::Y2021 => DAYS_2021[day - 1],
         Year::Y2022 => DAYS_2022[day - 1],
         Year::Y2023 => DAYS_2023[day - 1],
+        Year::Y2024 => DAYS_2024[day - 1],
     }
 }
+
+pub const DAYS_2024: [(fn(), &str); 1] = [
+    (day_2024_01::main, "Day 1"),
+    // (day_2024_02::main, "Day 2"),
+    // (day_2024_03::main, "Day 3"),
+    // (day_2024_04::main, "Day 4"),
+    // (day_2024_05::main, "Day 5"),
+    // (day_2024_06::main, "Day 6"),
+    // (day_2024_07::main, "Day 7"),
+    // (day_2024_08::main, "Day 8"),
+    // (day_2024_09::main, "Day 9"),
+    // (day_2024_10::main, "Day 10"),
+    // (day_2024_11::main, "Day 11"),
+    // (day_2024_12::main, "Day 12"),
+    // (day_2024_13::main, "Day 13"),
+    // (day_2024_14::main, "Day 14"),
+    // (day_2024_15::main, "Day 15"),
+    // (day_2024_16::main, "Day 16"),
+    // (day_2024_17::main, "Day 17"),
+    // (day_2024_18::main, "Day 18"),
+    // (day_2024_19::main, "Day 19"),
+    // (day_2024_20::main, "Day 20"),
+    // (day_2024_21::main, "Day 21"),
+    // (day_2024_22::main, "Day 22"),
+    // (day_2024_23::main, "Day 23"),
+    // (day_2024_24::main, "Day 24"),
+    // (day_2024_25::main, "Day 25"),
+];
 
 pub const DAYS_2023: [(fn(), &str); 24] = [
     (day_2023_01::main, "Day 1"),
