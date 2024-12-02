@@ -278,10 +278,11 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2023</summary>
 
-  **All Days: 107.80 μs** _part completed_
+  **All Days: 358.90 μs** _part completed_
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
   |  [Day 1: Historian Hysteria](2024/day_01/src/main.rs)                     |  107.80 μs |  30% |
+  |  [Day 2: Red-Nosed Reports](2024/day_02/src/main.rs)                      |  251.10 μs |  69% |
 
 </details>
