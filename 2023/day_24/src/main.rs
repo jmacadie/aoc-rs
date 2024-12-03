@@ -91,6 +91,7 @@ mod segments {
             while let Some(e) = self.events.pop() {
                 match e {
                     Event::Start(p, seg_id) => {
+                        println!();
                         println!("starting {seg_id} @ {p}");
                         let sorted_idx = self.segments.add(seg_id, p);
                         let next = self.segments.get_next_id(sorted_idx);
@@ -115,6 +116,7 @@ mod segments {
                         }
                     }
                     Event::End(p, seg_id) => {
+                        println!();
                         println!("ending {seg_id} @ {p}");
                         let sorted_idx = self.segments.find(p);
                         assert_eq!(self.segments.active[sorted_idx], seg_id);
@@ -134,10 +136,12 @@ mod segments {
                         self.segments.del(sorted_idx);
                     }
                     Event::Intersection(p, s1, s2) => {
+                        println!();
                         println!("intersection between {s1} and {s2} @ {p}");
                         self.intersections += 1;
-                        self.segments.swap(s1, p);
-                        let next = self.segments.get_next_id(s1);
+                        let lower_idx = self.segments.swap(s1, p);
+                        let next = self.segments.get_next_id(lower_idx + 1);
+                        println!("{next:?}");
                         if next.is_some() {
                             let next_id = next.unwrap();
                             let next_ls = self.segments.get(next_id);
@@ -148,7 +152,8 @@ mod segments {
                                 }
                             }
                         }
-                        let prev = self.segments.get_prev_id(s2);
+                        let prev = self.segments.get_prev_id(lower_idx);
+                        println!("{prev:?}");
                         if prev.is_some() {
                             let prev_id = prev.unwrap();
                             let prev_ls = self.segments.get(prev_id);
@@ -274,6 +279,13 @@ mod segments {
                 return 0;
             }
 
+            let mut last = 0.0;
+            self.active[..self.active_count].iter().for_each(|seg| {
+                let curr = self.data[*seg].point_at_x(p.x).unwrap().y;
+                println!("{seg}\t{curr}");
+                assert!(curr > last - 1.0);
+                last = curr;
+            });
             find_inner(p, &self.active[..self.active_count], &self.data, 0)
         }
 
