@@ -40,7 +40,7 @@ fn part_one<const N: usize>(data: &str, tl: Point, br: Point) -> usize {
         println!("{s}");
     }
     println!();
-    let mut solver = Solver::<N>::new(segments);
+    let mut solver = Solver::<N>::new(&segments);
     solver.run()
 }
 
@@ -58,6 +58,7 @@ mod segments {
     };
 
     type SegID = usize;
+    type SortID = usize;
 
     pub struct Solver<const N: usize> {
         events: Events,
@@ -66,7 +67,7 @@ mod segments {
     }
 
     impl<const N: usize> Solver<N> {
-        pub fn new(data: [LineSegment; N]) -> Self {
+        pub fn new(data: &[LineSegment; N]) -> Self {
             let mut events = Events::new();
             data.iter()
                 .enumerate()
@@ -75,8 +76,9 @@ mod segments {
                     events.push(Event::Start(segment.from, seg_id));
                     events.push(Event::End(segment.to, seg_id));
                 });
+            let all = std::array::from_fn(|i| (data[i].clone(), None));
             let segments = Segments::<N> {
-                data,
+                all,
                 active: [0; N],
                 active_count: 0,
             };
@@ -114,11 +116,12 @@ mod segments {
                                 self.events.push(Event::Intersection(loc, prev_id, seg_id));
                             }
                         }
+                        self.segments.check_order(p);
                     }
                     Event::End(p, seg_id) => {
                         println!();
                         println!("ending {seg_id} @ {p}");
-                        let sorted_idx = self.segments.find(p);
+                        let sorted_idx = self.segments.get_pos(seg_id);
                         assert_eq!(self.segments.active[sorted_idx], seg_id);
                         let next = self.segments.get_next_id(sorted_idx);
                         let prev = self.segments.get_prev_id(sorted_idx);
@@ -134,13 +137,20 @@ mod segments {
                             }
                         }
                         self.segments.del(sorted_idx);
+                        self.segments.check_order(p);
                     }
                     Event::Intersection(p, s1, s2) => {
                         println!();
                         println!("intersection between {s1} and {s2} @ {p}");
                         self.intersections += 1;
-                        let lower_idx = self.segments.swap(s1, p);
-                        let next = self.segments.get_next_id(lower_idx + 1);
+                        let mut lower = self.segments.get_pos(s1);
+                        let mut upper = self.segments.get_pos(s2);
+                        if lower > upper {
+                            std::mem::swap(&mut lower, &mut upper);
+                        }
+                        assert_eq!(lower + 1, upper);
+                        self.segments.swap(lower, upper);
+                        let next = self.segments.get_next_id(upper);
                         println!("{next:?}");
                         if next.is_some() {
                             let next_id = next.unwrap();
@@ -152,7 +162,7 @@ mod segments {
                                 }
                             }
                         }
-                        let prev = self.segments.get_prev_id(lower_idx);
+                        let prev = self.segments.get_prev_id(lower);
                         println!("{prev:?}");
                         if prev.is_some() {
                             let prev_id = prev.unwrap();
@@ -164,6 +174,7 @@ mod segments {
                                 }
                             }
                         }
+                        self.segments.check_order(p);
                     }
                 }
             }
@@ -199,24 +210,40 @@ mod segments {
     }
 
     struct Segments<const N: usize> {
-        data: [LineSegment; N],
+        all: [(LineSegment, Option<SortID>); N],
         active: [SegID; N],
         active_count: usize,
     }
 
     impl<const N: usize> Segments<N> {
-        const fn get(&self, segment: SegID) -> &LineSegment {
-            &self.data[segment]
+        fn check_order(&self, p: Point) {
+            let mut last = 0.0;
+            self.active[..self.active_count].iter().for_each(|seg| {
+                let curr = self.all[*seg].0.point_at_x(p.x).unwrap().y;
+                println!("{seg}\t{curr}");
+                assert!(curr > last - 1.0);
+                last = curr;
+            });
         }
 
-        const fn get_prev_id(&self, sorted_idx: usize) -> Option<SegID> {
+        const fn get(&self, segment: SegID) -> &LineSegment {
+            &self.all[segment].0
+        }
+
+        const fn get_pos(&self, segment: SegID) -> usize {
+            self.all[segment]
+                .1
+                .expect("The segment has a position in the active array")
+        }
+
+        const fn get_prev_id(&self, sorted_idx: SortID) -> Option<SegID> {
             if sorted_idx == 0 {
                 return None;
             }
             Some(self.active[sorted_idx - 1])
         }
 
-        const fn get_prev(&self, sorted_idx: usize) -> Option<&LineSegment> {
+        const fn get_prev(&self, sorted_idx: SortID) -> Option<&LineSegment> {
             let id = self.get_prev_id(sorted_idx);
             if id.is_none() {
                 return None;
@@ -224,14 +251,14 @@ mod segments {
             Some(self.get(id.unwrap()))
         }
 
-        const fn get_next_id(&self, sorted_idx: usize) -> Option<SegID> {
+        const fn get_next_id(&self, sorted_idx: SortID) -> Option<SegID> {
             if (sorted_idx + 1) > self.active_count {
                 return None;
             }
             Some(self.active[sorted_idx + 1])
         }
 
-        const fn get_next(&self, sorted_idx: usize) -> Option<&LineSegment> {
+        const fn get_next(&self, sorted_idx: SortID) -> Option<&LineSegment> {
             let id = self.get_next_id(sorted_idx);
             if id.is_none() {
                 return None;
@@ -239,37 +266,31 @@ mod segments {
             Some(self.get(id.unwrap()))
         }
 
-        fn find(&self, p: Point) -> usize {
+        fn find(&self, p: Point) -> SortID {
             fn find_inner(
                 p: Point,
                 search: &[SegID],
-                segments: &[LineSegment],
-                start_index: usize,
-            ) -> usize {
+                segments: &[(LineSegment, Option<SortID>)],
+                start_index: SortID,
+            ) -> SortID {
                 let mid_idx = search.len() / 2;
                 let seg_id = search[mid_idx];
-                let mid_value = segments[seg_id].point_at_x(p.x).unwrap().y;
-                println!("point:{p}, mid idx:{mid_idx}, mid seg_id:{seg_id}, mid value:{mid_value}, {search:?}");
+                let mid_value = segments[seg_id].0.point_at_x(p.x).unwrap().y;
 
                 if search.len() == 1 {
                     if !equal(p.y, mid_value) && p.y > mid_value {
-                        println!("FOUND: bigger");
                         return start_index + 1;
                     }
-                    println!("FOUND: smaller or equal");
                     return start_index;
                 }
                 if search.len() == 2 && !equal(p.y, mid_value) && p.y > mid_value {
-                    println!("FOUND: bigger");
                     return start_index + 2;
                 }
 
                 if !equal(p.y, mid_value) && p.y > mid_value {
-                    println!("bigger");
                     let idx = mid_idx + 1;
                     find_inner(p, &search[idx..], segments, start_index + idx)
                 } else {
-                    println!("smaller or equal");
                     let idx = mid_idx;
                     find_inner(p, &search[..idx], segments, start_index)
                 }
@@ -279,36 +300,72 @@ mod segments {
                 return 0;
             }
 
-            let mut last = 0.0;
-            self.active[..self.active_count].iter().for_each(|seg| {
-                let curr = self.data[*seg].point_at_x(p.x).unwrap().y;
-                println!("{seg}\t{curr}");
-                assert!(curr > last - 1.0);
-                last = curr;
-            });
-            find_inner(p, &self.active[..self.active_count], &self.data, 0)
+            find_inner(p, &self.active[..self.active_count], &self.all, 0)
         }
 
-        fn add(&mut self, segment: SegID, p: Point) -> usize {
+        fn add(&mut self, segment: SegID, p: Point) -> SortID {
             let position = self.find(p);
-            (position..self.active_count)
-                .rev()
-                .for_each(|i| self.active[i + 1] = self.active[i]);
+            (position..self.active_count).rev().for_each(|i| {
+                self.increment(i);
+                self.active[i + 1] = self.active[i];
+            });
+            self.all[segment].1 = Some(position);
             self.active[position] = segment;
             self.active_count += 1;
+            // (0..self.active_count).for_each(|i| {
+            //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
+            // });
+            // (0..self.active_count).for_each(|i| {
+            //     assert_eq!(Some(i), self.all[self.active[i]].1);
+            // });
             position
         }
 
-        fn del(&mut self, position: usize) {
-            (position..self.active_count).for_each(|i| self.active[i] = self.active[i + 1]);
+        fn del(&mut self, position: SortID) {
+            assert!(self.all[self.active[position]].1.is_some());
+            self.all[self.active[position]].1 = None;
+            (position..self.active_count).for_each(|i| {
+                if i > position {
+                    self.decrement(i);
+                }
+                self.active[i] = self.active[i + 1];
+            });
             self.active_count -= 1;
+            // (0..self.active_count).for_each(|i| {
+            //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
+            // });
+            // (0..self.active_count).for_each(|i| {
+            //     assert_eq!(Some(i), self.all[self.active[i]].1);
+            // });
         }
 
-        fn swap(&mut self, lower_id: SegID, p: Point) -> usize {
-            let lower = self.find(p);
-            assert_eq!(self.active[lower], lower_id); // Should be true?
-            self.active.swap(lower, lower + 1);
-            lower
+        fn swap(&mut self, lower: SortID, upper: SortID) {
+            assert_eq!(lower + 1, upper); // Should be true?
+            self.increment(lower);
+            self.decrement(upper);
+            self.active.swap(lower, upper);
+            // (0..self.active_count).for_each(|i| {
+            //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
+            // });
+            // (0..self.active_count).for_each(|i| {
+            //     assert_eq!(Some(i), self.all[self.active[i]].1);
+            // });
+        }
+
+        fn increment(&mut self, location: SortID) {
+            if let Some(x) = self.all[self.active[location]].1.as_mut() {
+                *x += 1;
+            } else {
+                unreachable!();
+            };
+        }
+
+        fn decrement(&mut self, location: SortID) {
+            if let Some(x) = self.all[self.active[location]].1.as_mut() {
+                *x -= 1;
+            } else {
+                unreachable!();
+            };
         }
     }
 
@@ -442,7 +499,7 @@ mod line_segment {
     use super::line::Line;
     use super::point::Point;
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct LineSegment {
         pub from: Point,
         pub to: Point,
