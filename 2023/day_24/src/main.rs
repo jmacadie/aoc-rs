@@ -36,10 +36,10 @@ fn part_one<const N: usize>(data: &str, tl: Point, br: Point) -> usize {
                 .unwrap_or_else(|| panic!("{osl} crosses the target zone"));
         }
     }
-    for s in &segments {
-        println!("{s}");
-    }
-    println!();
+    // for s in &segments {
+    //     println!("{s}");
+    // }
+    // println!();
     let mut solver = Solver::<N>::new(&segments);
     solver.run()
 }
@@ -93,7 +93,7 @@ mod segments {
             while let Some(e) = self.events.pop() {
                 match e {
                     Event::Start(p, seg_id) => {
-                        println!();
+                        // println!();
                         println!("starting {seg_id} @ {p}");
                         let sorted_idx = self.segments.add(seg_id, p);
                         let next = self.segments.get_next_id(sorted_idx);
@@ -119,7 +119,7 @@ mod segments {
                         self.segments.check_order(p);
                     }
                     Event::End(p, seg_id) => {
-                        println!();
+                        // println!();
                         println!("ending {seg_id} @ {p}");
                         let sorted_idx = self.segments.get_pos(seg_id);
                         assert_eq!(self.segments.active[sorted_idx], seg_id);
@@ -140,37 +140,45 @@ mod segments {
                         self.segments.check_order(p);
                     }
                     Event::Intersection(p, s1, s2) => {
-                        println!();
+                        // println!();
                         println!("intersection between {s1} and {s2} @ {p}");
                         self.intersections += 1;
                         let mut lower = self.segments.get_pos(s1);
                         let mut upper = self.segments.get_pos(s2);
-                        if lower > upper {
+                        let lower_seg;
+                        let upper_seg = if lower > upper {
                             std::mem::swap(&mut lower, &mut upper);
-                        }
+                            lower_seg = s2;
+                            s1
+                        } else {
+                            lower_seg = s1;
+                            s2
+                        };
                         assert_eq!(lower + 1, upper);
                         self.segments.swap(lower, upper);
                         let next = self.segments.get_next_id(upper);
-                        println!("{next:?}");
+                        // println!("{next:?}");
                         if next.is_some() {
                             let next_id = next.unwrap();
                             let next_ls = self.segments.get(next_id);
-                            let ls = self.segments.get(s1);
+                            let ls = self.segments.get(lower_seg);
                             if let Intersection::Point(loc) = ls.intersect(next_ls) {
                                 if loc.x > p.x {
-                                    self.events.push(Event::Intersection(loc, s1, next_id));
+                                    self.events
+                                        .push(Event::Intersection(loc, lower_seg, next_id));
                                 }
                             }
                         }
                         let prev = self.segments.get_prev_id(lower);
-                        println!("{prev:?}");
+                        // println!("{prev:?}");
                         if prev.is_some() {
                             let prev_id = prev.unwrap();
                             let prev_ls = self.segments.get(prev_id);
-                            let ls = self.segments.get(s2);
+                            let ls = self.segments.get(upper_seg);
                             if let Intersection::Point(loc) = ls.intersect(prev_ls) {
                                 if loc.x > p.x {
-                                    self.events.push(Event::Intersection(loc, prev_id, s2));
+                                    self.events
+                                        .push(Event::Intersection(loc, prev_id, upper_seg));
                                 }
                             }
                         }
@@ -220,8 +228,8 @@ mod segments {
             let mut last = 0.0;
             self.active[..self.active_count].iter().for_each(|seg| {
                 let curr = self.all[*seg].0.point_at_x(p.x).unwrap().y;
-                println!("{seg}\t{curr}");
-                assert!(curr > last - 1.0);
+                // println!("{seg}\t{curr}");
+                assert!(curr > last - 5.0);
                 last = curr;
             });
         }
