@@ -31,6 +31,17 @@ fn part_one<const N: usize>(data: &str, tl: Point, br: Point) -> usize {
         let osl = path.to_osl();
         let line = osl.box_intersect(tl, br);
         if line.is_some() {
+            // let ls = line.unwrap();
+            // println!("{path:?}");
+            // println!("{osl}");
+            // println!("{ls}");
+            // for p in [ls.from, ls.to] {
+            //     let mul = (p.x - path.position.x) / path.velocity.x;
+            //     assert!(mul >= 0.0);
+            //     let calc_y = path.velocity.y.mul_add(mul, path.position.y);
+            //     println!("{calc_y:.3}, {:.3}", p.y);
+            //     assert!((path.velocity.y.mul_add(mul, path.position.y) - p.y).abs() < 5.0);
+            // }
             *s = osl
                 .box_intersect(tl, br)
                 .unwrap_or_else(|| panic!("{osl} crosses the target zone"));
@@ -90,6 +101,7 @@ mod segments {
         }
 
         pub fn run(&mut self) -> usize {
+            let mut last = Point::default();
             while let Some(e) = self.events.pop() {
                 match e {
                     Event::Start(p, seg_id) => {
@@ -117,6 +129,9 @@ mod segments {
                             }
                         }
                         self.segments.check_order(p);
+                        assert!(p.x >= last.x);
+                        assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
+                        last = p;
                     }
                     Event::End(p, seg_id) => {
                         // println!();
@@ -138,6 +153,9 @@ mod segments {
                         }
                         self.segments.del(sorted_idx);
                         self.segments.check_order(p);
+                        assert!(p.x >= last.x);
+                        assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
+                        last = p;
                     }
                     Event::Intersection(p, s1, s2) => {
                         // println!();
@@ -183,6 +201,9 @@ mod segments {
                             }
                         }
                         self.segments.check_order(p);
+                        assert!(p.x >= last.x);
+                        assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
+                        last = p;
                     }
                 }
             }
@@ -430,8 +451,8 @@ mod hail_path {
 
     #[derive(Debug)]
     pub struct HailPath {
-        position: Point3D,
-        velocity: Point3D,
+        pub position: Point3D,
+        pub velocity: Point3D,
     }
 
     impl FromStr for HailPath {
@@ -457,10 +478,10 @@ mod hail_path {
     }
 
     #[derive(Debug)]
-    struct Point3D {
-        x: f64,
-        y: f64,
-        z: f64,
+    pub struct Point3D {
+        pub x: f64,
+        pub y: f64,
+        pub z: f64,
     }
 
     impl Point3D {
@@ -949,7 +970,6 @@ mod point {
     use crate::equal;
     use crate::is_zero;
 
-    use core::f64;
     use std::{
         fmt::Display,
         ops::{Add, Sub},
