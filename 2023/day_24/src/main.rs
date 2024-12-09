@@ -18,7 +18,12 @@ fn part_one<const N: usize>(data: &str, min: i64, max: i64) -> usize {
     // for (s, l) in segments.iter_mut().zip(data.lines()) {
     for l in data.lines() {
         let path: HailPath = l.parse().unwrap();
-        path.to_ls(min.into(), max.into());
+        let ls = path.to_ls(min.into(), max.into());
+        if ls.is_none() {
+            println!("None ... {path}");
+        } else {
+            println!("{}", ls.unwrap());
+        }
     }
     // let mut solver = Solver::<N>::new(&segments);
     // solver.run()
@@ -411,7 +416,7 @@ const fn part_two(_data: &str) -> usize {
 // }
 
 mod hail_path {
-    use std::str::FromStr;
+    use std::{fmt::Display, str::FromStr};
 
     use crate::{
         line_segment::LineSegment,
@@ -449,7 +454,7 @@ mod hail_path {
                 Y,
             }
 
-            let test = |axis: Axis, bound: Rational| {
+            let box_intersect = |axis: Axis, bound: Rational| {
                 let (a, b, da, db) = match axis {
                     Axis::X => (
                         self.position.x,
@@ -467,9 +472,6 @@ mod hail_path {
                 let s = (bound - a) / da;
                 if s.sign() == Sign::Pos {
                     let computed = b + db * s;
-                    println!("({a}, {b}) -> ({da}, {db}) = {computed}");
-                    println!("{computed} is greater than {min}: {}", computed > min);
-                    println!("{computed} is less than {max}: {}", computed < max);
                     if computed >= min && computed <= max {
                         if axis == Axis::X {
                             Some((bound, computed).into())
@@ -484,18 +486,30 @@ mod hail_path {
                 }
             };
 
-            let left_side_intercept = test(Axis::X, min);
-            let right_side_intercept = test(Axis::X, max);
-            let top_side_intercept = test(Axis::Y, min);
-            let bottom_side_intercept = test(Axis::Y, max);
+            let left = box_intersect(Axis::X, min);
+            let right = box_intersect(Axis::X, max);
+            let top = box_intersect(Axis::Y, min);
+            let bottom = box_intersect(Axis::Y, max);
 
-            println!("{left_side_intercept:?}");
-            println!("{right_side_intercept:?}");
-            println!("{top_side_intercept:?}");
-            println!("{bottom_side_intercept:?}");
+            let (int_1, int_2) = [left, top, bottom, right].into_iter().fold(
+                (None, None),
+                |(a, b), intersection| match (intersection, a) {
+                    (None, _) => (a, b),
+                    (Some(x), None) => (Some(x), None),
+                    (Some(x), Some(_)) => (a, Some(x)),
+                },
+            );
 
-            left_side_intercept
-                .map(|p| LineSegment::new(p, self.velocity.to_2d(), self.position.to_2d()))
+            let int_1 = int_1?;
+            let int_2 = int_2.unwrap_or_else(|| self.position.to_2d());
+            Some(LineSegment::new(int_1, self.velocity.to_2d(), int_2))
+        }
+    }
+
+    impl Display for HailPath {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{}, 󰇂{}", self.position, self.velocity)?;
+            Ok(())
         }
     }
 
@@ -539,9 +553,18 @@ mod hail_path {
             Ok(Self { x, y, z })
         }
     }
+
+    impl Display for Point3D {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "({}, {}, {})", self.x, self.y, self.z)?;
+            Ok(())
+        }
+    }
 }
 
 mod line_segment {
+    use std::fmt::Display;
+
     use crate::{
         rational::{Rational, Sign},
         Point,
@@ -558,12 +581,20 @@ mod line_segment {
 
     impl LineSegment {
         pub fn new(from: Point, direction: Point, to: Point) -> Self {
-            let xdy = from.x * direction.y;
-            let ydx = from.y * direction.x;
+            let a = from.rationalise();
+            let b = to.rationalise();
+            let (a, b) = if a.x > b.x { (b, a) } else { (a, b) };
+            let d = if direction.x.sign() == Sign::Pos {
+                direction
+            } else {
+                -direction
+            };
+            let xdy = a.x * d.y;
+            let ydx = a.y * d.x;
             Self {
-                from,
-                direction,
-                to,
+                from: a,
+                direction: d,
+                to: b,
                 c1: xdy + ydx,
                 c2: xdy - ydx,
             }
@@ -606,6 +637,13 @@ mod line_segment {
             self.direction.y
         }
     }
+
+    impl Display for LineSegment {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{} -> {}, 󰇂{}", self.from, self.to, self.direction)?;
+            Ok(())
+        }
+    }
 }
 
 mod point {
@@ -613,7 +651,7 @@ mod point {
 
     use std::{
         fmt::Display,
-        ops::{Add, Sub},
+        ops::{Add, Neg, Sub},
     };
 
     #[derive(Debug, Clone, Copy)]
@@ -633,6 +671,13 @@ mod point {
         pub fn same_direction(self, other: Self) -> bool {
             self.x.sign() == other.x.sign() && self.y.sign() == other.y.sign()
         }
+
+        pub fn rationalise(self) -> Self {
+            Self {
+                x: self.x.rationalise(),
+                y: self.y.rationalise(),
+            }
+        }
     }
 
     impl PartialEq for Point {
@@ -649,6 +694,7 @@ mod point {
             }
         }
     }
+
     impl From<(i64, i64)> for Point {
         fn from(value: (i64, i64)) -> Self {
             Self::new(value.0, value.1)
@@ -686,9 +732,20 @@ mod point {
         }
     }
 
+    impl Neg for Point {
+        type Output = Self;
+
+        fn neg(self) -> Self::Output {
+            Self {
+                x: -self.x,
+                y: -self.y,
+            }
+        }
+    }
+
     impl Display for Point {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "({:.3}, {:.3})", self.x, self.y)?;
+            write!(f, "({}, {})", self.x, self.y)?;
             Ok(())
         }
     }
@@ -698,7 +755,7 @@ mod rational {
     use std::{
         fmt::Display,
         num::ParseIntError,
-        ops::{Add, Div, Mul, Sub},
+        ops::{Add, Div, Mul, Neg, Sub},
         str::FromStr,
     };
 
@@ -731,6 +788,36 @@ mod rational {
                 return Sign::Pos;
             }
             Sign::Neg
+        }
+
+        pub fn rationalise(self) -> Self {
+            if self.denominator == 1 {
+                return self;
+            }
+            if self.numerator % self.denominator == 0 {
+                return (self.numerator / self.denominator).into();
+            }
+            let mut n = self.numerator;
+            let mut d = self.denominator;
+            for &p in &[2, 3, 5, 7, 11, 13, 17, 19, 23] {
+                while (n % p == 0) && (d % p == 0) {
+                    n /= p;
+                    d /= p;
+                    if d == 1 {
+                        return n.into();
+                    }
+                }
+                if (n / p < p) || (d / p < p) {
+                    return Self {
+                        numerator: n,
+                        denominator: d,
+                    };
+                }
+            }
+            Self {
+                numerator: n,
+                denominator: d,
+            }
         }
     }
 
@@ -799,6 +886,17 @@ mod rational {
         }
     }
 
+    impl Neg for Rational {
+        type Output = Self;
+
+        fn neg(self) -> Self::Output {
+            Self {
+                numerator: -self.numerator,
+                denominator: self.denominator,
+            }
+        }
+    }
+
     impl FromStr for Rational {
         type Err = ParseIntError;
 
@@ -810,6 +908,7 @@ mod rational {
             })
         }
     }
+
     impl From<i64> for Rational {
         fn from(value: i64) -> Self {
             Self {
