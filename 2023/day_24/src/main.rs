@@ -2,452 +2,422 @@
 #![allow(dead_code)]
 
 use crate::point::Point;
-use crate::segments::Solver;
 use hail_path::HailPath;
-use line_segment::LineSegment;
-
-const EPSILON: f64 = 0.000_001;
-
-fn is_zero(a: f64) -> bool {
-    a.abs() < EPSILON
-}
-
-fn equal(a: f64, b: f64) -> bool {
-    is_zero(a - b) || (a - b).abs() < a * 0.000_000_000_001
-}
 
 pub fn main() {
     let data = include_str!("input.txt");
-    let tl = (200_000_000_000_000.0, 200_000_000_000_000.0).into();
-    let br = (400_000_000_000_000.0, 400_000_000_000_000.0).into();
-    println!("Part 1: {}", part_one::<300>(data, tl, br));
+    println!(
+        "Part 1: {}",
+        part_one::<300>(data, 200_000_000_000_000, 400_000_000_000_000)
+    );
     println!("Part 2: {}", part_two(data));
 }
 
-fn part_one<const N: usize>(data: &str, tl: Point, br: Point) -> usize {
-    let mut segments = std::array::from_fn(|_| LineSegment::default());
-    for (s, l) in segments.iter_mut().zip(data.lines()) {
+fn part_one<const N: usize>(data: &str, min: i64, max: i64) -> usize {
+    // let mut segments = std::array::from_fn(|_| LineSegment::default());
+    // for (s, l) in segments.iter_mut().zip(data.lines()) {
+    for l in data.lines() {
         let path: HailPath = l.parse().unwrap();
-        let osl = path.to_osl();
-        let line = osl.box_intersect(tl, br);
-        if line.is_some() {
-            // let ls = line.unwrap();
-            // println!("{path:?}");
-            // println!("{osl}");
-            // println!("{ls}");
-            // for p in [ls.from, ls.to] {
-            //     let mul = (p.x - path.position.x) / path.velocity.x;
-            //     assert!(mul >= 0.0);
-            //     let calc_y = path.velocity.y.mul_add(mul, path.position.y);
-            //     println!("{calc_y:.3}, {:.3}", p.y);
-            //     assert!((path.velocity.y.mul_add(mul, path.position.y) - p.y).abs() < 5.0);
-            // }
-            *s = osl
-                .box_intersect(tl, br)
-                .unwrap_or_else(|| panic!("{osl} crosses the target zone"));
-        }
+        path.to_ls(min.into(), max.into());
     }
-    // for s in &segments {
-    //     println!("{s}");
-    // }
-    // println!();
-    let mut solver = Solver::<N>::new(&segments);
-    solver.run()
+    // let mut solver = Solver::<N>::new(&segments);
+    // solver.run()
+    0
 }
 
 const fn part_two(_data: &str) -> usize {
     0
 }
 
-mod segments {
-    use std::{cmp::Ordering, collections::BinaryHeap};
-
-    use crate::{
-        equal,
-        line_segment::{Intersection, LineSegment},
-        point::Point,
-    };
-
-    type SegID = usize;
-    type SortID = usize;
-
-    pub struct Solver<const N: usize> {
-        events: Events,
-        segments: Segments<N>,
-        intersections: usize,
-    }
-
-    impl<const N: usize> Solver<N> {
-        pub fn new(data: &[LineSegment; N]) -> Self {
-            let mut events = Events::new();
-            data.iter()
-                .enumerate()
-                .filter(|(_, segment)| segment.from != Point::default())
-                .for_each(|(seg_id, segment)| {
-                    events.push(Event::Start(segment.from, seg_id));
-                    events.push(Event::End(segment.to, seg_id));
-                });
-            let all = std::array::from_fn(|i| (data[i].clone(), None));
-            let segments = Segments::<N> {
-                all,
-                active: [0; N],
-                active_count: 0,
-            };
-            Self {
-                events,
-                segments,
-                intersections: 0,
-            }
-        }
-
-        pub fn run(&mut self) -> usize {
-            let mut last = Point::default();
-            while let Some(e) = self.events.pop() {
-                match e {
-                    Event::Start(p, seg_id) => {
-                        // println!();
-                        println!("starting {seg_id} @ {p}");
-                        let sorted_idx = self.segments.add(seg_id, p);
-                        let next = self.segments.get_next_id(sorted_idx);
-                        if next.is_some() {
-                            let next_id = next.unwrap();
-                            let next_ls = self.segments.get(next_id);
-                            let ls = self.segments.get(seg_id);
-                            if let Intersection::Point(loc) = ls.intersect(next_ls) {
-                                assert!(loc.x > p.x);
-                                self.events.push(Event::Intersection(loc, seg_id, next_id));
-                            }
-                        }
-                        let prev = self.segments.get_prev_id(sorted_idx);
-                        if prev.is_some() {
-                            let prev_id = prev.unwrap();
-                            let prev_ls = self.segments.get(prev_id);
-                            let ls = self.segments.get(seg_id);
-                            if let Intersection::Point(loc) = ls.intersect(prev_ls) {
-                                assert!(loc.x > p.x);
-                                self.events.push(Event::Intersection(loc, prev_id, seg_id));
-                            }
-                        }
-                        self.segments.check_order(p);
-                        assert!(p.x >= last.x);
-                        assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
-                        last = p;
-                    }
-                    Event::End(p, seg_id) => {
-                        // println!();
-                        println!("ending {seg_id} @ {p}");
-                        let sorted_idx = self.segments.get_pos(seg_id);
-                        assert_eq!(self.segments.active[sorted_idx], seg_id);
-                        let next = self.segments.get_next_id(sorted_idx);
-                        let prev = self.segments.get_prev_id(sorted_idx);
-                        if next.is_some() && prev.is_some() {
-                            let next_id = next.unwrap();
-                            let prev_id = prev.unwrap();
-                            let next_ls = self.segments.get(next_id);
-                            let prev_ls = self.segments.get(prev_id);
-                            if let Intersection::Point(loc) = next_ls.intersect(prev_ls) {
-                                if loc.x > p.x {
-                                    self.events.push(Event::Intersection(loc, prev_id, next_id));
-                                }
-                            }
-                        }
-                        self.segments.del(sorted_idx);
-                        self.segments.check_order(p);
-                        assert!(p.x >= last.x);
-                        assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
-                        last = p;
-                    }
-                    Event::Intersection(p, s1, s2) => {
-                        // println!();
-                        println!("intersection between {s1} and {s2} @ {p}");
-                        self.intersections += 1;
-                        let mut lower = self.segments.get_pos(s1);
-                        let mut upper = self.segments.get_pos(s2);
-                        let lower_seg;
-                        let upper_seg = if lower > upper {
-                            std::mem::swap(&mut lower, &mut upper);
-                            lower_seg = s2;
-                            s1
-                        } else {
-                            lower_seg = s1;
-                            s2
-                        };
-                        assert_eq!(lower + 1, upper);
-                        self.segments.swap(lower, upper);
-                        let next = self.segments.get_next_id(upper);
-                        // println!("{next:?}");
-                        if next.is_some() {
-                            let next_id = next.unwrap();
-                            let next_ls = self.segments.get(next_id);
-                            let ls = self.segments.get(lower_seg);
-                            if let Intersection::Point(loc) = ls.intersect(next_ls) {
-                                if loc.x > p.x {
-                                    self.events
-                                        .push(Event::Intersection(loc, lower_seg, next_id));
-                                }
-                            }
-                        }
-                        let prev = self.segments.get_prev_id(lower);
-                        // println!("{prev:?}");
-                        if prev.is_some() {
-                            let prev_id = prev.unwrap();
-                            let prev_ls = self.segments.get(prev_id);
-                            let ls = self.segments.get(upper_seg);
-                            if let Intersection::Point(loc) = ls.intersect(prev_ls) {
-                                if loc.x > p.x {
-                                    self.events
-                                        .push(Event::Intersection(loc, prev_id, upper_seg));
-                                }
-                            }
-                        }
-                        self.segments.check_order(p);
-                        assert!(p.x >= last.x);
-                        assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
-                        last = p;
-                    }
-                }
-            }
-            self.intersections
-        }
-    }
-
-    struct Events {
-        priority_queue: BinaryHeap<Event>,
-        last: Option<Event>,
-    }
-
-    impl Events {
-        fn new() -> Self {
-            Self {
-                priority_queue: BinaryHeap::with_capacity(100),
-                last: None,
-            }
-        }
-
-        fn pop(&mut self) -> Option<Event> {
-            let mut value = self.priority_queue.pop();
-            while value.is_some() && value == self.last {
-                value = self.priority_queue.pop();
-            }
-            self.last = value;
-            value
-        }
-
-        fn push(&mut self, item: Event) {
-            self.priority_queue.push(item);
-        }
-    }
-
-    struct Segments<const N: usize> {
-        all: [(LineSegment, Option<SortID>); N],
-        active: [SegID; N],
-        active_count: usize,
-    }
-
-    impl<const N: usize> Segments<N> {
-        fn check_order(&self, p: Point) {
-            let mut last = 0.0;
-            self.active[..self.active_count].iter().for_each(|seg| {
-                let curr = self.all[*seg].0.point_at_x(p.x).unwrap().y;
-                // println!("{seg}\t{curr}");
-                assert!(curr > last - 5.0);
-                last = curr;
-            });
-        }
-
-        const fn get(&self, segment: SegID) -> &LineSegment {
-            &self.all[segment].0
-        }
-
-        const fn get_pos(&self, segment: SegID) -> usize {
-            self.all[segment]
-                .1
-                .expect("The segment has a position in the active array")
-        }
-
-        const fn get_prev_id(&self, sorted_idx: SortID) -> Option<SegID> {
-            if sorted_idx == 0 {
-                return None;
-            }
-            Some(self.active[sorted_idx - 1])
-        }
-
-        const fn get_prev(&self, sorted_idx: SortID) -> Option<&LineSegment> {
-            let id = self.get_prev_id(sorted_idx);
-            if id.is_none() {
-                return None;
-            }
-            Some(self.get(id.unwrap()))
-        }
-
-        const fn get_next_id(&self, sorted_idx: SortID) -> Option<SegID> {
-            if (sorted_idx + 1) > self.active_count {
-                return None;
-            }
-            Some(self.active[sorted_idx + 1])
-        }
-
-        const fn get_next(&self, sorted_idx: SortID) -> Option<&LineSegment> {
-            let id = self.get_next_id(sorted_idx);
-            if id.is_none() {
-                return None;
-            }
-            Some(self.get(id.unwrap()))
-        }
-
-        fn find(&self, p: Point) -> SortID {
-            fn find_inner(
-                p: Point,
-                search: &[SegID],
-                segments: &[(LineSegment, Option<SortID>)],
-                start_index: SortID,
-            ) -> SortID {
-                let mid_idx = search.len() / 2;
-                let seg_id = search[mid_idx];
-                let mid_value = segments[seg_id].0.point_at_x(p.x).unwrap().y;
-
-                if search.len() == 1 {
-                    if !equal(p.y, mid_value) && p.y > mid_value {
-                        return start_index + 1;
-                    }
-                    return start_index;
-                }
-                if search.len() == 2 && !equal(p.y, mid_value) && p.y > mid_value {
-                    return start_index + 2;
-                }
-
-                if !equal(p.y, mid_value) && p.y > mid_value {
-                    let idx = mid_idx + 1;
-                    find_inner(p, &search[idx..], segments, start_index + idx)
-                } else {
-                    let idx = mid_idx;
-                    find_inner(p, &search[..idx], segments, start_index)
-                }
-            }
-
-            if self.active_count == 0 {
-                return 0;
-            }
-
-            find_inner(p, &self.active[..self.active_count], &self.all, 0)
-        }
-
-        fn add(&mut self, segment: SegID, p: Point) -> SortID {
-            let position = self.find(p);
-            (position..self.active_count).rev().for_each(|i| {
-                self.increment(i);
-                self.active[i + 1] = self.active[i];
-            });
-            self.all[segment].1 = Some(position);
-            self.active[position] = segment;
-            self.active_count += 1;
-            // (0..self.active_count).for_each(|i| {
-            //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
-            // });
-            // (0..self.active_count).for_each(|i| {
-            //     assert_eq!(Some(i), self.all[self.active[i]].1);
-            // });
-            position
-        }
-
-        fn del(&mut self, position: SortID) {
-            assert!(self.all[self.active[position]].1.is_some());
-            self.all[self.active[position]].1 = None;
-            (position..self.active_count).for_each(|i| {
-                if i > position {
-                    self.decrement(i);
-                }
-                self.active[i] = self.active[i + 1];
-            });
-            self.active_count -= 1;
-            // (0..self.active_count).for_each(|i| {
-            //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
-            // });
-            // (0..self.active_count).for_each(|i| {
-            //     assert_eq!(Some(i), self.all[self.active[i]].1);
-            // });
-        }
-
-        fn swap(&mut self, lower: SortID, upper: SortID) {
-            assert_eq!(lower + 1, upper); // Should be true?
-            self.increment(lower);
-            self.decrement(upper);
-            self.active.swap(lower, upper);
-            // (0..self.active_count).for_each(|i| {
-            //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
-            // });
-            // (0..self.active_count).for_each(|i| {
-            //     assert_eq!(Some(i), self.all[self.active[i]].1);
-            // });
-        }
-
-        fn increment(&mut self, location: SortID) {
-            if let Some(x) = self.all[self.active[location]].1.as_mut() {
-                *x += 1;
-            } else {
-                unreachable!();
-            };
-        }
-
-        fn decrement(&mut self, location: SortID) {
-            if let Some(x) = self.all[self.active[location]].1.as_mut() {
-                *x -= 1;
-            } else {
-                unreachable!();
-            };
-        }
-    }
-
-    #[derive(Debug, Clone, Copy)]
-    enum Event {
-        Start(Point, SegID),
-        End(Point, SegID),
-        Intersection(Point, SegID, SegID),
-    }
-
-    impl Event {
-        const fn loc(&self) -> Point {
-            match self {
-                Self::Start(p, _) | Self::End(p, _) | Self::Intersection(p, _, _) => *p,
-            }
-        }
-    }
-
-    impl Ord for Event {
-        fn cmp(&self, other: &Self) -> Ordering {
-            let a = self.loc();
-            let b = other.loc();
-            match b.x.partial_cmp(&a.x) {
-                Some(Ordering::Less) => Ordering::Less,
-                Some(Ordering::Greater) => Ordering::Greater,
-                Some(Ordering::Equal) => {
-                    b.y.partial_cmp(&a.y)
-                        .expect("co-ordinates with comparable values")
-                }
-                None => unreachable!(),
-            }
-        }
-    }
-
-    impl PartialOrd for Event {
-        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-            Some(self.cmp(other))
-        }
-    }
-
-    impl Eq for Event {}
-
-    impl PartialEq for Event {
-        fn eq(&self, other: &Self) -> bool {
-            self.loc() == other.loc()
-        }
-    }
-}
+// mod segments {
+//     use std::{cmp::Ordering, collections::BinaryHeap};
+//
+//     use crate::{line_segment::LineSegment, point::Point};
+//
+//     type SegID = usize;
+//     type SortID = usize;
+//
+//     pub struct Solver<const N: usize> {
+//         events: Events,
+//         segments: Segments<N>,
+//         intersections: usize,
+//     }
+//
+//     impl<const N: usize> Solver<N> {
+//         pub fn new(data: &[LineSegment; N]) -> Self {
+//             let mut events = Events::new();
+//             data.iter()
+//                 .enumerate()
+//                 .filter(|(_, segment)| segment.from != Point::default())
+//                 .for_each(|(seg_id, segment)| {
+//                     events.push(Event::Start(segment.from, seg_id));
+//                     events.push(Event::End(segment.to, seg_id));
+//                 });
+//             let all = std::array::from_fn(|i| (data[i].clone(), None));
+//             let segments = Segments::<N> {
+//                 all,
+//                 active: [0; N],
+//                 active_count: 0,
+//             };
+//             Self {
+//                 events,
+//                 segments,
+//                 intersections: 0,
+//             }
+//         }
+//
+//         pub fn run(&mut self) -> usize {
+//             let mut last = Point::default();
+//             while let Some(e) = self.events.pop() {
+//                 match e {
+//                     Event::Start(p, seg_id) => {
+//                         // println!();
+//                         println!("starting {seg_id} @ {p}");
+//                         let sorted_idx = self.segments.add(seg_id, p);
+//                         let next = self.segments.get_next_id(sorted_idx);
+//                         if next.is_some() {
+//                             let next_id = next.unwrap();
+//                             let next_ls = self.segments.get(next_id);
+//                             let ls = self.segments.get(seg_id);
+//                             if let Intersection::Point(loc) = ls.intersect(next_ls) {
+//                                 assert!(loc.x > p.x);
+//                                 self.events.push(Event::Intersection(loc, seg_id, next_id));
+//                             }
+//                         }
+//                         let prev = self.segments.get_prev_id(sorted_idx);
+//                         if prev.is_some() {
+//                             let prev_id = prev.unwrap();
+//                             let prev_ls = self.segments.get(prev_id);
+//                             let ls = self.segments.get(seg_id);
+//                             if let Intersection::Point(loc) = ls.intersect(prev_ls) {
+//                                 assert!(loc.x > p.x);
+//                                 self.events.push(Event::Intersection(loc, prev_id, seg_id));
+//                             }
+//                         }
+//                         self.segments.check_order(p);
+//                         assert!(p.x >= last.x);
+//                         assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
+//                         last = p;
+//                     }
+//                     Event::End(p, seg_id) => {
+//                         // println!();
+//                         println!("ending {seg_id} @ {p}");
+//                         let sorted_idx = self.segments.get_pos(seg_id);
+//                         assert_eq!(self.segments.active[sorted_idx], seg_id);
+//                         let next = self.segments.get_next_id(sorted_idx);
+//                         let prev = self.segments.get_prev_id(sorted_idx);
+//                         if next.is_some() && prev.is_some() {
+//                             let next_id = next.unwrap();
+//                             let prev_id = prev.unwrap();
+//                             let next_ls = self.segments.get(next_id);
+//                             let prev_ls = self.segments.get(prev_id);
+//                             if let Intersection::Point(loc) = next_ls.intersect(prev_ls) {
+//                                 if loc.x > p.x {
+//                                     self.events.push(Event::Intersection(loc, prev_id, next_id));
+//                                 }
+//                             }
+//                         }
+//                         self.segments.del(sorted_idx);
+//                         self.segments.check_order(p);
+//                         assert!(p.x >= last.x);
+//                         assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
+//                         last = p;
+//                     }
+//                     Event::Intersection(p, s1, s2) => {
+//                         // println!();
+//                         println!("intersection between {s1} and {s2} @ {p}");
+//                         self.intersections += 1;
+//                         let mut lower = self.segments.get_pos(s1);
+//                         let mut upper = self.segments.get_pos(s2);
+//                         let lower_seg;
+//                         let upper_seg = if lower > upper {
+//                             std::mem::swap(&mut lower, &mut upper);
+//                             lower_seg = s2;
+//                             s1
+//                         } else {
+//                             lower_seg = s1;
+//                             s2
+//                         };
+//                         assert_eq!(lower + 1, upper);
+//                         self.segments.swap(lower, upper);
+//                         let next = self.segments.get_next_id(upper);
+//                         // println!("{next:?}");
+//                         if next.is_some() {
+//                             let next_id = next.unwrap();
+//                             let next_ls = self.segments.get(next_id);
+//                             let ls = self.segments.get(lower_seg);
+//                             if let Intersection::Point(loc) = ls.intersect(next_ls) {
+//                                 if loc.x > p.x {
+//                                     self.events
+//                                         .push(Event::Intersection(loc, lower_seg, next_id));
+//                                 }
+//                             }
+//                         }
+//                         let prev = self.segments.get_prev_id(lower);
+//                         // println!("{prev:?}");
+//                         if prev.is_some() {
+//                             let prev_id = prev.unwrap();
+//                             let prev_ls = self.segments.get(prev_id);
+//                             let ls = self.segments.get(upper_seg);
+//                             if let Intersection::Point(loc) = ls.intersect(prev_ls) {
+//                                 if loc.x > p.x {
+//                                     self.events
+//                                         .push(Event::Intersection(loc, prev_id, upper_seg));
+//                                 }
+//                             }
+//                         }
+//                         self.segments.check_order(p);
+//                         assert!(p.x >= last.x);
+//                         assert!((p.x - last.x).abs() > 5.0 || (p.y - last.y).abs() > 5.0);
+//                         last = p;
+//                     }
+//                 }
+//             }
+//             self.intersections
+//         }
+//     }
+//
+//     struct Events {
+//         priority_queue: BinaryHeap<Event>,
+//         last: Option<Event>,
+//     }
+//
+//     impl Events {
+//         fn new() -> Self {
+//             Self {
+//                 priority_queue: BinaryHeap::with_capacity(100),
+//                 last: None,
+//             }
+//         }
+//
+//         fn pop(&mut self) -> Option<Event> {
+//             let mut value = self.priority_queue.pop();
+//             while value.is_some() && value == self.last {
+//                 value = self.priority_queue.pop();
+//             }
+//             self.last = value;
+//             value
+//         }
+//
+//         fn push(&mut self, item: Event) {
+//             self.priority_queue.push(item);
+//         }
+//     }
+//
+//     struct Segments<const N: usize> {
+//         all: [(LineSegment, Option<SortID>); N],
+//         active: [SegID; N],
+//         active_count: usize,
+//     }
+//
+//     impl<const N: usize> Segments<N> {
+//         fn check_order(&self, p: Point) {
+//             let mut last = self.active[0];
+//             self.active[..self.active_count].iter().for_each(|seg| {
+//                 let curr = self.all[*seg].0.point_at_x(p.x).unwrap().y;
+//                 // println!("{seg}\t{curr}");
+//                 assert_eq!(curr, last);
+//                 last = curr;
+//             });
+//         }
+//
+//         const fn get(&self, segment: SegID) -> &LineSegment {
+//             &self.all[segment].0
+//         }
+//
+//         const fn get_pos(&self, segment: SegID) -> usize {
+//             self.all[segment]
+//                 .1
+//                 .expect("The segment has a position in the active array")
+//         }
+//
+//         const fn get_prev_id(&self, sorted_idx: SortID) -> Option<SegID> {
+//             if sorted_idx == 0 {
+//                 return None;
+//             }
+//             Some(self.active[sorted_idx - 1])
+//         }
+//
+//         const fn get_prev(&self, sorted_idx: SortID) -> Option<&LineSegment> {
+//             let id = self.get_prev_id(sorted_idx);
+//             if id.is_none() {
+//                 return None;
+//             }
+//             Some(self.get(id.unwrap()))
+//         }
+//
+//         const fn get_next_id(&self, sorted_idx: SortID) -> Option<SegID> {
+//             if (sorted_idx + 1) > self.active_count {
+//                 return None;
+//             }
+//             Some(self.active[sorted_idx + 1])
+//         }
+//
+//         const fn get_next(&self, sorted_idx: SortID) -> Option<&LineSegment> {
+//             let id = self.get_next_id(sorted_idx);
+//             if id.is_none() {
+//                 return None;
+//             }
+//             Some(self.get(id.unwrap()))
+//         }
+//
+//         fn find(&self, p: Point) -> SortID {
+//             fn find_inner(
+//                 p: Point,
+//                 search: &[SegID],
+//                 segments: &[(LineSegment, Option<SortID>)],
+//                 start_index: SortID,
+//             ) -> SortID {
+//                 let mid_idx = search.len() / 2;
+//                 let seg_id = search[mid_idx];
+//                 let mid_value = segments[seg_id].0.point_at_x(p.x).unwrap().y;
+//
+//                 if search.len() == 1 {
+//                     if p.y > mid_value {
+//                         return start_index + 1;
+//                     }
+//                     return start_index;
+//                 }
+//                 if search.len() == 2 && p.y > mid_value {
+//                     return start_index + 2;
+//                 }
+//
+//                 if p.y > mid_value {
+//                     let idx = mid_idx + 1;
+//                     find_inner(p, &search[idx..], segments, start_index + idx)
+//                 } else {
+//                     let idx = mid_idx;
+//                     find_inner(p, &search[..idx], segments, start_index)
+//                 }
+//             }
+//
+//             if self.active_count == 0 {
+//                 return 0;
+//             }
+//
+//             find_inner(p, &self.active[..self.active_count], &self.all, 0)
+//         }
+//
+//         fn add(&mut self, segment: SegID, p: Point) -> SortID {
+//             let position = self.find(p);
+//             (position..self.active_count).rev().for_each(|i| {
+//                 self.increment(i);
+//                 self.active[i + 1] = self.active[i];
+//             });
+//             self.all[segment].1 = Some(position);
+//             self.active[position] = segment;
+//             self.active_count += 1;
+//             // (0..self.active_count).for_each(|i| {
+//             //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
+//             // });
+//             // (0..self.active_count).for_each(|i| {
+//             //     assert_eq!(Some(i), self.all[self.active[i]].1);
+//             // });
+//             position
+//         }
+//
+//         fn del(&mut self, position: SortID) {
+//             assert!(self.all[self.active[position]].1.is_some());
+//             self.all[self.active[position]].1 = None;
+//             (position..self.active_count).for_each(|i| {
+//                 if i > position {
+//                     self.decrement(i);
+//                 }
+//                 self.active[i] = self.active[i + 1];
+//             });
+//             self.active_count -= 1;
+//             // (0..self.active_count).for_each(|i| {
+//             //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
+//             // });
+//             // (0..self.active_count).for_each(|i| {
+//             //     assert_eq!(Some(i), self.all[self.active[i]].1);
+//             // });
+//         }
+//
+//         fn swap(&mut self, lower: SortID, upper: SortID) {
+//             assert_eq!(lower + 1, upper); // Should be true?
+//             self.increment(lower);
+//             self.decrement(upper);
+//             self.active.swap(lower, upper);
+//             // (0..self.active_count).for_each(|i| {
+//             //     println!("{i} - {}, {:?}", self.active[i], self.all[self.active[i]]);
+//             // });
+//             // (0..self.active_count).for_each(|i| {
+//             //     assert_eq!(Some(i), self.all[self.active[i]].1);
+//             // });
+//         }
+//
+//         fn increment(&mut self, location: SortID) {
+//             if let Some(x) = self.all[self.active[location]].1.as_mut() {
+//                 *x += 1;
+//             } else {
+//                 unreachable!();
+//             };
+//         }
+//
+//         fn decrement(&mut self, location: SortID) {
+//             if let Some(x) = self.all[self.active[location]].1.as_mut() {
+//                 *x -= 1;
+//             } else {
+//                 unreachable!();
+//             };
+//         }
+//     }
+//
+//     #[derive(Debug, Clone, Copy)]
+//     enum Event {
+//         Start(Point, SegID),
+//         End(Point, SegID),
+//         Intersection(Point, SegID, SegID),
+//     }
+//
+//     impl Event {
+//         const fn loc(&self) -> Point {
+//             match self {
+//                 Self::Start(p, _) | Self::End(p, _) | Self::Intersection(p, _, _) => *p,
+//             }
+//         }
+//     }
+//
+//     impl Ord for Event {
+//         fn cmp(&self, other: &Self) -> Ordering {
+//             let a = self.loc();
+//             let b = other.loc();
+//             match b.x.partial_cmp(&a.x) {
+//                 Some(Ordering::Less) => Ordering::Less,
+//                 Some(Ordering::Greater) => Ordering::Greater,
+//                 Some(Ordering::Equal) => {
+//                     b.y.partial_cmp(&a.y)
+//                         .expect("co-ordinates with comparable values")
+//                 }
+//                 None => unreachable!(),
+//             }
+//         }
+//     }
+//
+//     impl PartialOrd for Event {
+//         fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//             Some(self.cmp(other))
+//         }
+//     }
+//
+//     impl Eq for Event {}
+//
+//     impl PartialEq for Event {
+//         fn eq(&self, other: &Self) -> bool {
+//             self.loc() == other.loc()
+//         }
+//     }
+// }
 
 mod hail_path {
     use std::str::FromStr;
 
-    use crate::{one_sided_line::OneSidedLine, point::Point};
+    use crate::{
+        line_segment::LineSegment,
+        point::Point,
+        rational::{Rational, Sign},
+    };
 
     #[derive(Debug)]
     pub struct HailPath {
@@ -472,21 +442,73 @@ mod hail_path {
     }
 
     impl HailPath {
-        pub fn to_osl(&self) -> OneSidedLine {
-            OneSidedLine::new(self.position.to_2d(), self.velocity.to_2d())
+        pub fn to_ls(&self, min: Rational, max: Rational) -> Option<LineSegment> {
+            #[derive(PartialEq, Eq)]
+            enum Axis {
+                X,
+                Y,
+            }
+
+            let test = |axis: Axis, bound: Rational| {
+                let (a, b, da, db) = match axis {
+                    Axis::X => (
+                        self.position.x,
+                        self.position.y,
+                        self.velocity.x,
+                        self.velocity.y,
+                    ),
+                    Axis::Y => (
+                        self.position.y,
+                        self.position.x,
+                        self.velocity.y,
+                        self.velocity.x,
+                    ),
+                };
+                let s = (bound - a) / da;
+                if s.sign() == Sign::Pos {
+                    let computed = b + db * s;
+                    println!("({a}, {b}) -> ({da}, {db}) = {computed}");
+                    println!("{computed} is greater than {min}: {}", computed > min);
+                    println!("{computed} is less than {max}: {}", computed < max);
+                    if computed >= min && computed <= max {
+                        if axis == Axis::X {
+                            Some((bound, computed).into())
+                        } else {
+                            Some((computed, bound).into())
+                        }
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                }
+            };
+
+            let left_side_intercept = test(Axis::X, min);
+            let right_side_intercept = test(Axis::X, max);
+            let top_side_intercept = test(Axis::Y, min);
+            let bottom_side_intercept = test(Axis::Y, max);
+
+            println!("{left_side_intercept:?}");
+            println!("{right_side_intercept:?}");
+            println!("{top_side_intercept:?}");
+            println!("{bottom_side_intercept:?}");
+
+            left_side_intercept
+                .map(|p| LineSegment::new(p, self.velocity.to_2d(), self.position.to_2d()))
         }
     }
 
     #[derive(Debug)]
     pub struct Point3D {
-        pub x: f64,
-        pub y: f64,
-        pub z: f64,
+        pub x: Rational,
+        pub y: Rational,
+        pub z: Rational,
     }
 
     impl Point3D {
-        const fn to_2d(&self) -> Point {
-            Point::new(self.x, self.y)
+        fn to_2d(&self) -> Point {
+            (self.x, self.y).into()
         }
     }
 
@@ -520,455 +542,74 @@ mod hail_path {
 }
 
 mod line_segment {
-    use std::fmt::Display;
+    use crate::{
+        rational::{Rational, Sign},
+        Point,
+    };
 
-    use crate::equal;
-
-    use super::line;
-    use super::line::Line;
-    use super::point::Point;
-
-    #[derive(Debug, Clone)]
+    #[derive(Clone, Debug)]
     pub struct LineSegment {
-        pub from: Point,
-        pub to: Point,
-        pub line: Line,
+        from: Point,
+        direction: Point,
+        to: Point,
+        c1: Rational,
+        c2: Rational,
     }
 
     impl LineSegment {
-        pub fn new(from: Point, to: Point) -> Self {
-            // Sort on construction so `from` always has the lower x value
-            // or has the lower y value, if there is no slope
-            let (a, b) = match (equal(from.x, to.x), from.x - to.x, from.y - to.y) {
-                (true, _, i) if i < 0.0 => (from, to),
-                (true, _, i) if i > 0.0 => (to, from),
-                (false, i, _) if i < 0.0 => (from, to),
-                (false, i, _) if i > 0.0 => (to, from),
-                _ => unreachable!(),
-            };
-            let line = Line::from_points(a, b);
-            Self {
-                from: a,
-                to: b,
-                line,
-            }
-        }
-
-        pub fn point_at_x(&self, x: f64) -> Option<Point> {
-            if x < self.from.x || x > self.to.x {
-                return None;
-            }
-            self.line.point_at_x(x)
-        }
-
-        fn on_line(&self, p: Point) -> bool {
-            self.line.on_line(p) && self.on_line_unchecked(p)
-        }
-
-        pub fn on_line_unchecked(&self, p: Point) -> bool {
-            match self.line.slope {
-                Some(_) => p.x >= self.from.x && p.x <= self.to.x,
-                None => p.y >= self.from.y && p.y <= self.to.y,
-            }
-        }
-
-        pub fn intersect(&self, other: &Self) -> Intersection {
-            match (self.line.intersect(&other.line), self.line.slope) {
-                (line::Intersection::Parallel, _) => Intersection::Parallel,
-                (line::Intersection::Point(p), _) => {
-                    if self.on_line_unchecked(p) && other.on_line_unchecked(p) {
-                        Intersection::Point(p)
-                    } else {
-                        Intersection::None
-                    }
-                }
-                (line::Intersection::SameLine, Some(_)) => {
-                    if self.from.x > other.to.x || other.from.x > self.to.x {
-                        Intersection::SameLineNoOverlap
-                    } else {
-                        let from = self.from.x.max(other.from.x);
-                        let to = self.to.x.min(other.to.x);
-                        let from = self
-                            .line
-                            .point_at_x(from)
-                            .expect("from line has a valid x co-ordinate");
-                        let to = self
-                            .line
-                            .point_at_x(to)
-                            .expect("to line has a valid x co-ordinate");
-                        Intersection::SameLineOverlapping(Self::new(from, to))
-                    }
-                }
-                (line::Intersection::SameLine, None) => {
-                    if self.from.y > other.to.y || other.from.y > self.to.y {
-                        Intersection::SameLineNoOverlap
-                    } else {
-                        let from = self.from.y.max(other.from.y);
-                        let to = self.to.y.min(other.to.y);
-                        let from = Point::new(self.from.x, from);
-                        let to = Point::new(self.from.x, to);
-                        Intersection::SameLineOverlapping(Self::new(from, to))
-                    }
-                }
-            }
-        }
-    }
-
-    impl Default for LineSegment {
-        fn default() -> Self {
-            Self {
-                from: Point::default(),
-                to: (1, 1).into(),
-                line: Line::default(),
-            }
-        }
-    }
-
-    impl Display for LineSegment {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "{} -> {}", self.from, self.to)?;
-            Ok(())
-        }
-    }
-
-    pub enum Intersection {
-        Point(Point),
-        None,
-        Parallel,
-        SameLineNoOverlap,
-        SameLineOverlapping(LineSegment),
-    }
-}
-
-mod one_sided_line {
-    use std::fmt::Display;
-
-    use crate::is_zero;
-    use crate::line_segment::LineSegment;
-
-    use super::line;
-    use super::line::Line;
-    use super::point::Point;
-
-    #[derive(Debug, Clone)]
-    pub struct OneSidedLine {
-        from: Point,
-        direction: Point,
-        pub line: Line,
-        slope: Slope,
-    }
-
-    impl OneSidedLine {
-        pub fn new(from: Point, direction: Point) -> Self {
-            let to = from + direction;
-            let line = Line::from_points(from, to);
+        pub fn new(from: Point, direction: Point, to: Point) -> Self {
+            let xdy = from.x * direction.y;
+            let ydx = from.y * direction.x;
             Self {
                 from,
                 direction,
-                line,
-                slope: direction.into(),
+                to,
+                c1: xdy + ydx,
+                c2: xdy - ydx,
             }
         }
 
-        fn on_line(&self, p: Point) -> bool {
-            self.line.on_line(p) && self.on_line_unchecked(p)
-        }
-
-        fn on_line_unchecked(&self, p: Point) -> bool {
-            self.direction.same_direction(p - self.from)
-        }
-
-        pub fn box_intersect(&self, top_left: Point, bottom_right: Point) -> Option<LineSegment> {
-            let top_right = Point::new(bottom_right.x, top_left.y);
-            let bottom_left = Point::new(top_left.x, bottom_right.y);
-            let top = LineSegment::new(top_left, top_right);
-            let bottom = LineSegment::new(bottom_left, bottom_right);
-            let right = LineSegment::new(bottom_right, top_right);
-            let left = LineSegment::new(bottom_left, top_left);
-
-            let (int_1, int_2): (Option<Point>, Option<Point>) = [top, bottom, right, left]
-                .iter()
-                .fold((None, None), |intersections, side| {
-                    match self.intersect(side) {
-                        Intersection::Point(p) => {
-                            match (intersections.0.is_none(), intersections.1.is_none()) {
-                                (true, _) => (Some(p), None),
-                                (false, true) => (intersections.0, Some(p)),
-                                (false, false) => unreachable!(),
-                            }
-                        }
-                        Intersection::None | Intersection::Parallel => intersections,
-                        _ => unreachable!(),
-                    }
-                });
-            match (int_1.is_none(), int_2.is_none()) {
-                (true, _) => None,
-                (false, true) => Some(LineSegment::new(self.from, int_1.unwrap())),
-                (false, false) => Some(LineSegment::new(int_1.unwrap(), int_2.unwrap())),
+        pub fn intersect(&self, other: &Self) -> Option<Point> {
+            let det = self.dx() * other.dy() - self.dy() * other.dx();
+            let int_x = self.dx() * other.c1 - other.dx() * self.c1;
+            let int_x = int_x / det;
+            if self.x_in_range(int_x) && other.x_in_range(int_x) {
+                let int_y = self.dy() * other.c2 - other.dy() * self.c2;
+                let int_y = int_y / det;
+                return Some((int_x, int_y).into());
             }
+            None
         }
 
-        pub fn intersect(&self, other: &LineSegment) -> Intersection {
-            match (self.line.intersect(&other.line), self.line.slope) {
-                (line::Intersection::Parallel, _) => Intersection::Parallel,
-                (line::Intersection::Point(p), _) => {
-                    if self.on_line_unchecked(p) && other.on_line_unchecked(p) {
-                        Intersection::Point(p)
-                    } else {
-                        Intersection::None
-                    }
-                }
-                (line::Intersection::SameLine, Some(_)) => {
-                    if (other.to.x < self.from.x && self.slope == Slope::Increasing)
-                        || (other.from.x > self.from.x && self.slope == Slope::Decreasing)
-                    {
-                        Intersection::SameLineNoOverlap
-                    } else if other.from.x < self.from.x && self.slope == Slope::Increasing {
-                        Intersection::SameLineOverlappingLimited(LineSegment::new(
-                            self.from, other.to,
-                        ))
-                    } else if other.to.x > self.from.x && self.slope == Slope::Decreasing {
-                        Intersection::SameLineOverlappingLimited(LineSegment::new(
-                            other.from, self.from,
-                        ))
-                    } else {
-                        Intersection::SameLineOverlappingLimited(LineSegment::new(
-                            other.from, other.to,
-                        ))
-                    }
-                }
-                (line::Intersection::SameLine, None) => {
-                    if (other.to.y < self.from.y && self.slope == Slope::Increasing)
-                        || (other.from.y > self.from.y && self.slope == Slope::Decreasing)
-                    {
-                        Intersection::SameLineNoOverlap
-                    } else if other.from.y < self.from.y && self.slope == Slope::Increasing {
-                        Intersection::SameLineOverlappingLimited(LineSegment::new(
-                            self.from, other.to,
-                        ))
-                    } else if other.to.y < self.from.y && self.slope == Slope::Decreasing {
-                        Intersection::SameLineOverlappingLimited(LineSegment::new(
-                            other.from, self.from,
-                        ))
-                    } else {
-                        Intersection::SameLineOverlappingLimited(LineSegment::new(
-                            other.from, other.to,
-                        ))
-                    }
-                }
-            }
-        }
-
-        fn intersect_osl(&self, other: &Self) -> Intersection {
-            match (self.line.intersect(&other.line), self.line.slope) {
-                (line::Intersection::Parallel, _) => Intersection::Parallel,
-                (line::Intersection::Point(p), _) => {
-                    if self.on_line_unchecked(p) && other.on_line_unchecked(p) {
-                        Intersection::Point(p)
-                    } else {
-                        Intersection::None
-                    }
-                }
-                (line::Intersection::SameLine, Some(_)) => {
-                    if self.slope == Slope::Increasing && other.slope == Slope::Increasing {
-                        let line = if self.from.x > other.from.x {
-                            self.clone()
-                        } else {
-                            other.clone()
-                        };
-                        Intersection::SameLineOverlappingUnlimited(line)
-                    } else if self.slope == Slope::Decreasing && other.slope == Slope::Decreasing {
-                        let line = if self.from.x < other.from.x {
-                            self.clone()
-                        } else {
-                            other.clone()
-                        };
-                        Intersection::SameLineOverlappingUnlimited(line)
-                    } else if (self.slope == Slope::Increasing
-                        && other.slope == Slope::Decreasing
-                        && self.from.x < other.from.x)
-                        || (self.slope == Slope::Decreasing
-                            && other.slope == Slope::Increasing
-                            && self.from.x > other.from.x)
-                    {
-                        let line = LineSegment::new(self.from, other.from);
-                        Intersection::SameLineOverlappingLimited(line)
-                    } else {
-                        Intersection::SameLineNoOverlap
-                    }
-                }
-                (line::Intersection::SameLine, None) => {
-                    if self.slope == Slope::Increasing && other.slope == Slope::Increasing {
-                        let line = if self.from.y > other.from.y {
-                            self.clone()
-                        } else {
-                            other.clone()
-                        };
-                        Intersection::SameLineOverlappingUnlimited(line)
-                    } else if self.slope == Slope::Decreasing && other.slope == Slope::Decreasing {
-                        let line = if self.from.y < other.from.y {
-                            self.clone()
-                        } else {
-                            other.clone()
-                        };
-                        Intersection::SameLineOverlappingUnlimited(line)
-                    } else if (self.slope == Slope::Increasing
-                        && other.slope == Slope::Decreasing
-                        && self.from.y < other.from.y)
-                        || (self.slope == Slope::Decreasing
-                            && other.slope == Slope::Increasing
-                            && self.from.y > other.from.y)
-                    {
-                        let line = LineSegment::new(self.from, other.from);
-                        Intersection::SameLineOverlappingLimited(line)
-                    } else {
-                        Intersection::SameLineNoOverlap
-                    }
-                }
-            }
-        }
-    }
-
-    impl Display for OneSidedLine {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "{} -> , {}", self.from, self.direction)?;
-            Ok(())
-        }
-    }
-
-    #[derive(Debug, Clone, PartialEq, Eq)]
-    enum Slope {
-        Increasing,
-        Decreasing,
-    }
-
-    impl From<Point> for Slope {
-        fn from(value: Point) -> Self {
-            fn dir_from_value(a: f64) -> Slope {
-                if a.signum() > 0.0 {
-                    Slope::Increasing
-                } else {
-                    Slope::Decreasing
-                }
-            }
-            if is_zero(value.x) {
-                dir_from_value(value.y)
+        pub fn x_in_range(&self, x: Rational) -> bool {
+            if self.direction.x.sign() == Sign::Pos {
+                x >= self.from.x && x <= self.to.x
             } else {
-                dir_from_value(value.x)
-            }
-        }
-    }
-
-    pub enum Intersection {
-        Point(Point),
-        None,
-        Parallel,
-        SameLineNoOverlap,
-        SameLineOverlappingLimited(LineSegment),
-        SameLineOverlappingUnlimited(OneSidedLine),
-    }
-}
-
-mod line {
-
-    use crate::{equal, is_zero, point::Point};
-
-    #[derive(Debug, Clone)]
-    pub struct Line {
-        dx: f64,
-        dy: f64,
-        c: f64,
-        pub slope: Option<f64>,
-        y_intercept: Option<f64>,
-        intercept: f64,
-    }
-
-    impl Line {
-        pub fn from_points(a: Point, b: Point) -> Self {
-            let dx = b.x - a.x;
-            let dy = b.y - a.y;
-            let c = a.x.mul_add(b.y, -(b.x * a.y));
-            let slope = if is_zero(dx) { None } else { Some(dy / dx) };
-            let y_intercept = slope.map(|s| a.x.mul_add(-s, a.y));
-            let intercept = y_intercept.unwrap_or_else(|| a.x + a.y * dx / dy);
-
-            Self {
-                dx,
-                dy,
-                c,
-                slope,
-                y_intercept,
-                intercept,
+                x >= self.to.x && x <= self.from.x
             }
         }
 
-        pub fn point_at_x(&self, x: f64) -> Option<Point> {
-            // If the line has no slope then the line is of the
-            // form `x = ...` and has no meaningful point at a given x co-ordinate
-            self.slope.map(|_| self.point_at_x_unchecked(x))
-        }
-
-        fn point_at_x_unchecked(&self, x: f64) -> Point {
-            let y = x.mul_add(
-                self.slope.expect("this is not just an 'x =' line"),
-                self.y_intercept.expect("there is a y value for {x}"),
-            );
-            (x, y).into()
-        }
-
-        fn determinant(&self, other: &Self) -> f64 {
-            self.dx.mul_add(other.dy, -(self.dy * other.dx))
-        }
-
-        pub fn intersect(&self, other: &Self) -> Intersection {
-            let det = self.determinant(other);
-
-            // a zero determinant means the lines have the same slope
-            // they are either parallel or the same line
-            if is_zero(det) {
-                // This tests whether the y axis intercept is different
-                // If there is no y axis intercept, in the case of `x = ...` lines,
-                // then the x axis intercept is used instead
-                // If it is, these lines are parallel and will never intersect
-                if equal(self.intercept, other.intercept) {
-                    return Intersection::Parallel;
-                }
-                return Intersection::SameLine;
+        pub fn point_at_x(&self, x: Rational) -> Option<Point> {
+            if !self.x_in_range(x) {
+                return None;
             }
-
-            let x = other.c.mul_add(self.dx, -(self.c * other.dx)) / det;
-            let y = other.c.mul_add(self.dy, -(self.c * other.dy)) / det;
-            Intersection::Point((x, y).into())
+            let s = (x - self.from.x) / self.dx();
+            let y = self.from.y + s * self.dy();
+            Some((x, y).into())
         }
 
-        pub fn on_line(&self, p: Point) -> bool {
-            self.point_at_x(p.x).map_or(false, |pl| pl == p)
+        pub const fn dx(&self) -> Rational {
+            self.direction.x
         }
-    }
 
-    impl Default for Line {
-        fn default() -> Self {
-            Self {
-                dx: 1.0,
-                dy: 1.0,
-                c: 0.0,
-                slope: Some(1.0),
-                y_intercept: Some(0.0),
-                intercept: 0.0,
-            }
+        pub const fn dy(&self) -> Rational {
+            self.direction.y
         }
-    }
-
-    pub enum Intersection {
-        Point(Point),
-        Parallel,
-        SameLine,
     }
 }
 
 mod point {
-    use crate::equal;
-    use crate::is_zero;
+    use crate::rational::Rational;
 
     use std::{
         fmt::Display,
@@ -977,55 +618,49 @@ mod point {
 
     #[derive(Debug, Clone, Copy)]
     pub struct Point {
-        pub x: f64,
-        pub y: f64,
+        pub x: Rational,
+        pub y: Rational,
     }
 
     impl Point {
-        pub const fn new(x: f64, y: f64) -> Self {
-            Self { x, y }
+        pub const fn new(x: i64, y: i64) -> Self {
+            Self {
+                x: Rational::new(x, 1),
+                y: Rational::new(y, 1),
+            }
         }
 
         pub fn same_direction(self, other: Self) -> bool {
-            #[derive(PartialEq, Eq)]
-            enum Sign {
-                Pos,
-                Zero,
-                Neg,
-            }
-            fn sign(a: f64) -> Sign {
-                if is_zero(a) {
-                    return Sign::Zero;
-                }
-                match a.signum() {
-                    x if x > 0.0 => Sign::Pos,
-                    _ => Sign::Neg,
-                }
-            }
-            sign(self.x) == sign(other.x) && sign(self.y) == sign(other.y)
+            self.x.sign() == other.x.sign() && self.y.sign() == other.y.sign()
         }
     }
 
     impl PartialEq for Point {
         fn eq(&self, other: &Self) -> bool {
-            equal(self.x, other.x) && equal(self.y, other.y)
+            self.x == other.x && self.y == other.y
         }
     }
 
     impl Default for Point {
         fn default() -> Self {
-            Self { x: 0.0, y: 0.0 }
+            Self {
+                x: 0.into(),
+                y: 0.into(),
+            }
         }
     }
-    impl From<(f64, f64)> for Point {
-        fn from(value: (f64, f64)) -> Self {
+    impl From<(i64, i64)> for Point {
+        fn from(value: (i64, i64)) -> Self {
             Self::new(value.0, value.1)
         }
     }
 
-    impl From<(i32, i32)> for Point {
-        fn from(value: (i32, i32)) -> Self {
-            Self::new(value.0.into(), value.1.into())
+    impl From<(Rational, Rational)> for Point {
+        fn from(value: (Rational, Rational)) -> Self {
+            Self {
+                x: value.0,
+                y: value.1,
+            }
         }
     }
 
@@ -1059,6 +694,178 @@ mod point {
     }
 }
 
+mod rational {
+    use std::{
+        fmt::Display,
+        num::ParseIntError,
+        ops::{Add, Div, Mul, Sub},
+        str::FromStr,
+    };
+
+    #[derive(Debug, Clone, Copy)]
+    pub struct Rational {
+        numerator: i64,
+        denominator: i64,
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum Sign {
+        Pos,
+        Zero,
+        Neg,
+    }
+
+    impl Rational {
+        pub const fn new(numerator: i64, denominator: i64) -> Self {
+            Self {
+                numerator,
+                denominator,
+            }
+        }
+
+        pub const fn sign(self) -> Sign {
+            if self.numerator == 0 {
+                return Sign::Zero;
+            }
+            if self.numerator.is_positive() == self.denominator.is_positive() {
+                return Sign::Pos;
+            }
+            Sign::Neg
+        }
+    }
+
+    impl Add for Rational {
+        type Output = Self;
+
+        fn add(self, rhs: Self) -> Self::Output {
+            if self.denominator == rhs.denominator {
+                Self {
+                    numerator: self.numerator + rhs.numerator,
+                    denominator: self.denominator,
+                }
+            } else {
+                Self {
+                    numerator: self.numerator * rhs.denominator + self.denominator * rhs.numerator,
+                    denominator: self.denominator * rhs.denominator,
+                }
+            }
+        }
+    }
+
+    impl Sub for Rational {
+        type Output = Self;
+
+        fn sub(self, rhs: Self) -> Self::Output {
+            if self.denominator == rhs.denominator {
+                Self {
+                    numerator: self.numerator - rhs.numerator,
+                    denominator: self.denominator,
+                }
+            } else {
+                Self {
+                    numerator: self.numerator * rhs.denominator - self.denominator * rhs.numerator,
+                    denominator: self.denominator * rhs.denominator,
+                }
+            }
+        }
+    }
+
+    impl Mul for Rational {
+        type Output = Self;
+
+        fn mul(self, rhs: Self) -> Self::Output {
+            Self {
+                numerator: self.numerator * rhs.numerator,
+                denominator: self.denominator * rhs.denominator,
+            }
+        }
+    }
+
+    impl Div for Rational {
+        type Output = Self;
+
+        fn div(self, rhs: Self) -> Self::Output {
+            if rhs.numerator.is_negative() {
+                Self {
+                    numerator: -self.numerator * rhs.denominator,
+                    denominator: -self.denominator * rhs.numerator,
+                }
+            } else {
+                Self {
+                    numerator: self.numerator * rhs.denominator,
+                    denominator: self.denominator * rhs.numerator,
+                }
+            }
+        }
+    }
+
+    impl FromStr for Rational {
+        type Err = ParseIntError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let numerator = s.parse()?;
+            Ok(Self {
+                numerator,
+                denominator: 1,
+            })
+        }
+    }
+    impl From<i64> for Rational {
+        fn from(value: i64) -> Self {
+            Self {
+                numerator: value,
+                denominator: 1,
+            }
+        }
+    }
+
+    impl Ord for Rational {
+        fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+            if self.sign() == Sign::Pos && other.sign() != Sign::Pos {
+                return std::cmp::Ordering::Greater;
+            }
+            if self.sign() == Sign::Neg && other.sign() != Sign::Neg {
+                return std::cmp::Ordering::Less;
+            }
+            if self.denominator == other.denominator {
+                return self.numerator.cmp(&other.numerator);
+            }
+            (self.numerator * other.denominator).cmp(&(self.denominator * other.numerator))
+        }
+    }
+
+    impl PartialOrd for Rational {
+        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+            Some(self.cmp(other))
+        }
+    }
+
+    impl PartialEq for Rational {
+        fn eq(&self, other: &Self) -> bool {
+            self.numerator * other.denominator == self.denominator * other.numerator
+        }
+    }
+
+    impl Eq for Rational {}
+
+    impl Display for Rational {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            if self.denominator == 1 {
+                write!(f, "{}", self.numerator)?;
+            } else {
+                let int = self.numerator / self.denominator;
+                let res = self.numerator % self.denominator;
+                if res == 0 {
+                    write!(f, "{int}")?;
+                } else {
+                    write!(f, "{}.{}/{}", int, res, self.denominator)?;
+                }
+            }
+            Ok(())
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -1067,9 +874,7 @@ mod tests {
     #[test]
     fn one() {
         let data = include_str!("test.txt");
-        let tl = (7, 7).into();
-        let br = (27, 27).into();
-        assert_eq!(2, part_one::<5>(data, tl, br));
+        assert_eq!(2, part_one::<5>(data, 7, 27));
     }
 
     #[test]
