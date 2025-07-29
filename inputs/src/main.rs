@@ -50,17 +50,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn in_aoc_repo() -> Result<bool, Box<dyn Error>> {
-    const REMOTE: &str = "origin\tgit@github.com:jmacadie/aoc-rs.git (fetch)";
+    const REMOTE_SSH: &str = "origin\tgit@github.com:jmacadie/aoc-rs.git (fetch)";
+    const REMOTE_HTTPS: &str = "origin\thttps://github.com/jmacadie/aoc-rs.git (fetch)";
     let cmd = Command::new("git").args(["remote", "-v"]).output()?;
     if !cmd.status.success() {
         return Ok(false);
     }
     let out = String::from_utf8(cmd.stdout)?;
-    if out.lines().next().unwrap_or("") == REMOTE {
-        Ok(true)
-    } else {
-        Ok(false)
-    }
+    let first_remote = out.lines().next().unwrap_or("");
+    Ok(first_remote == REMOTE_SSH || first_remote == REMOTE_HTTPS)
 }
 
 fn root_dir() -> Result<String, Box<dyn Error>> {
@@ -71,7 +69,7 @@ fn root_dir() -> Result<String, Box<dyn Error>> {
         return Ok(String::from("Not a git directory"));
     }
     let mut result = cmd.stdout.as_slice();
-    while result.ends_with(&[b'\n']) || result.ends_with(&[b'\r']) {
+    while result.ends_with(b"\n") || result.ends_with(b"\r") {
         (_, result) = result.split_last().unwrap();
     }
     Ok(String::from_utf8(result.to_vec())?)
