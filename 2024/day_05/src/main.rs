@@ -11,11 +11,8 @@ pub fn main() {
 
 fn part_one(data: &'static str) -> usize {
     let (rules, _pages) = data.split_once("\n\n").unwrap();
-    let mut r = Rules::new();
-    r.add_rules(rules);
-    println!("{r}");
-    let x = r.find_sort_order();
-    println!("{x:?}");
+    let r = Rules::new(rules);
+    println!("{r:?}");
     0
 }
 
@@ -25,50 +22,53 @@ const fn part_two(_data: &str) -> usize {
 
 #[derive(Debug)]
 struct Rules {
-    pages: [Page; 100],
+    order: Vec<usize>,
 }
 
 impl Rules {
-    fn new() -> Self {
-        let pages = std::array::from_fn(|_| Page::new());
-        Self { pages }
+    fn new(input: &'static str) -> Self {
+        let pages = Self::add_rules(input);
+        let order = Self::find_sort_order(&pages);
+        Self { order }
     }
 
-    fn add_rules(&mut self, input: &'static str) {
+    fn add_rules(input: &'static str) -> [Page; 100] {
+        let mut pages = std::array::from_fn(|_| Page::new());
+
         // Process each line
         input.lines().for_each(|l| {
             let (b, a) = l.split_once('|').unwrap();
             let before = b.parse::<u8>().unwrap();
             let after = a.parse::<u8>().unwrap();
-            let b_page: &mut Page = &mut self.pages[usize::from(before)];
+            let b_page: &mut Page = &mut pages[usize::from(before)];
             b_page.add_after(after);
-            let a_page: &mut Page = &mut self.pages[usize::from(after)];
+            let a_page: &mut Page = &mut pages[usize::from(after)];
             a_page.add_before(before);
         });
 
         // Sort the arrays, for faster searching later
-        for p in self
-            .pages
+        for p in pages
             .iter_mut()
             .filter(|p| p.before_count > 0 || p.after_count > 0)
         {
             p.before[..p.before_count].sort_unstable();
             p.after[..p.after_count].sort_unstable();
         }
+
+        pages
     }
 
-    fn find_sort_order(&self) -> Vec<usize> {
+    fn find_sort_order(pages: &[Page]) -> Vec<usize> {
         let mut first_half = Vec::with_capacity(25);
         let mut second_half = Vec::with_capacity(24);
-        let start_page = self
-            .pages
+        let start_page = pages
             .iter()
             .position(|p| p.before_count > 0 || p.after_count > 0)
             .unwrap();
         let mut current = start_page;
         loop {
             first_half.push(current);
-            let (first, second) = self.find_next_page(current);
+            let (first, second) = Self::find_next_page(current, pages);
             if second == start_page {
                 break;
             }
@@ -80,31 +80,17 @@ impl Rules {
         first_half
     }
 
-    fn find_next_page(&self, start: usize) -> (usize, usize) {
-        let this_page = &self.pages[start];
+    fn find_next_page(start: usize, pages: &[Page]) -> (usize, usize) {
+        let this_page = &pages[start];
         this_page
             .after
             .iter()
             .map(|&idx| {
                 let idxu = usize::from(idx);
-                (idxu, this_page.one_diff(&self.pages[idxu]))
+                (idxu, this_page.one_diff(&pages[idxu]))
             })
             .find(|(_, x)| *x > 0)
             .unwrap()
-    }
-}
-
-impl Display for Rules {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for (i, p) in self
-            .pages
-            .iter()
-            .enumerate()
-            .filter(|(_, p)| p.before_count > 0 || p.after_count > 0)
-        {
-            writeln!(f, "{i}: {p}")?;
-        }
-        Ok(())
     }
 }
 
