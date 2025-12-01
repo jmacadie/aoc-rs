@@ -26,7 +26,7 @@ impl Module {
         }
     }
 
-    pub fn iter(&self) -> std::slice::Iter<Idx> {
+    pub fn iter(&self) -> std::slice::Iter<'_, Idx> {
         self.outputs.iter()
     }
 
