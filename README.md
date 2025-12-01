@@ -27,6 +27,7 @@ They need to be re-written in the standard format and generally made less bad
 * [2022](2022)
 * [2023](2023)
 * [2024](2024)
+* [2025](2025)
 
 In addition to the days themselves, this top-level folder contains a command line runner application that
 will time profile the days in a selected year.
@@ -276,7 +277,7 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 </details>
 
 <details>
-  <summary>2023</summary>
+  <summary>2024</summary>
 
   **All Days: 358.90 μs** _part completed_
 
@@ -284,5 +285,16 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
   |---|---|---|
   |  [Day 1: Historian Hysteria](2024/day_01/src/main.rs)                     |  107.80 μs |  30% |
   |  [Day 2: Red-Nosed Reports](2024/day_02/src/main.rs)                      |  251.10 μs |  69% |
+
+</details>
+
+<details>
+  <summary>2025</summary>
+
+  **All Days: 358.90 μs** _part completed_
+
+  | Day | Runtime | Percentage of year |
+  |---|---|---|
+  |  [Day 1: Secret Entrance](2025/day_01/src/main.rs)                     |  116.94 μs | 100% |
 
 </details>
