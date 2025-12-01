@@ -6,11 +6,11 @@ pub fn main() {
     println!("Part 2: {}", part_two(data));
 }
 
-fn part_one(_data: &str) -> usize {
+const fn part_one(_data: &str) -> usize {
     0
 }
 
-fn part_two(_data: &str) -> usize {
+const fn part_two(_data: &str) -> usize {
     0
 }
 

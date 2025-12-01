@@ -139,9 +139,14 @@ fn pick_year() -> io::Result<Option<Year>> {
                     return Ok(Some(Year::Y2023));
                 }
             }
-            "10" | "2024" | "" => {
+            "10" | "2024" => {
                 if confirm_year("2024")? {
                     return Ok(Some(Year::Y2024));
+                }
+            }
+            "11" | "2025" | "" => {
+                if confirm_year("2025")? {
+                    return Ok(Some(Year::Y2025));
                 }
             }
             "h" | "help" => show_years(),
@@ -247,6 +252,7 @@ fn show_days(year: Year) {
         Year::Y2022 => show_days_inner(days::DAYS_2022.iter()),
         Year::Y2023 => show_days_inner(days::DAYS_2023.iter()),
         Year::Y2024 => show_days_inner(days::DAYS_2024.iter()),
+        Year::Y2025 => show_days_inner(days::DAYS_2025.iter()),
     };
     println!();
     println!("Type the list number, but NOT the day value");
