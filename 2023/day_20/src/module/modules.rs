@@ -45,7 +45,7 @@ impl<const N: usize> Index<usize> for Modules<N> {
 }
 
 impl<const N: usize> Modules<N> {
-    pub fn iter(&self) -> Iter<Module> {
+    pub fn iter(&self) -> Iter<'_, Module> {
         self.data.iter()
     }
 

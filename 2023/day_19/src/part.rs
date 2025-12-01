@@ -58,7 +58,7 @@ pub struct Iter<'a> {
 }
 
 impl Part {
-    pub const fn iter(&self) -> Iter {
+    pub const fn iter(&self) -> Iter<'_> {
         Iter {
             part: self,
             index: 0,
