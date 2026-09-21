@@ -129,6 +129,7 @@ fn parse_input<const R: usize, const C: usize>(data: &str) -> (Map<u8, R, C>, Po
 
 type Map<T, const R: usize, const C: usize> = [[T; C]; R];
 
+#[allow(unused)]
 trait Printable {
     fn print(&self);
 }
