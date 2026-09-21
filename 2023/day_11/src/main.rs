@@ -1,7 +1,5 @@
 #![warn(clippy::all, clippy::pedantic, clippy::nursery)]
 
-use std::usize;
-
 use itertools::Itertools;
 
 pub fn main() {
@@ -94,7 +92,7 @@ impl Sky {
 }
 
 const fn manhatten_distance(a: Point, b: Point) -> usize {
-    let dist = if a.0 > b.0 { a.0 - b.0 } else { b.0 - a.0 };
+    let dist = a.0.abs_diff(b.0);
     if a.1 > b.1 {
         dist + a.1 - b.1
     } else {
