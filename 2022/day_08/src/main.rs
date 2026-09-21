@@ -1,5 +1,3 @@
-use std::fmt::{self, Display, Formatter};
-
 pub fn main() {
     let data = include_str!("input.txt");
     let (map, size) = get_map(data);
@@ -9,10 +7,7 @@ pub fn main() {
 }
 
 fn part_one(visible: &Map<bool>) -> usize {
-    visible.iter()
-        .flatten()
-        .filter(|&b| *b)
-        .count()
+    visible.iter().flatten().filter(|&b| *b).count()
 }
 
 fn part_two(map: &Map<u8>, visible: &Map<bool>, size: usize, lim: u8) -> u64 {
@@ -31,24 +26,6 @@ fn part_two(map: &Map<u8>, visible: &Map<bool>, size: usize, lim: u8) -> u64 {
 }
 
 type Map<T> = [[T; 99]; 99];
-
-struct MapWrap<T>(Map<T>);
-
-impl Display for MapWrap<bool> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        for row in self.0 {
-            for elem in row {
-                if elem {
-                    write!(f, "#")?;
-                } else {
-                    write!(f, ".")?;
-                }
-            }
-            writeln!(f)?;
-        }
-        Ok(())
-    }
-}
 
 fn get_map(data: &str) -> (Map<u8>, usize) {
     let mut map: Map<u8> = [[0; 99]; 99];
