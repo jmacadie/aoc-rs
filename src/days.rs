@@ -80,7 +80,7 @@ pub fn get(year: Year, day: usize) -> (fn(), &'static str) {
     }
 }
 
-pub const DAYS_2025: [(fn(), &str); 10] = [
+pub const DAYS_2025: [(fn(), &str); 11] = [
     (day_2025_01::main, "Day 1"),
     (day_2025_02::main, "Day 2"),
     (day_2025_03::main, "Day 3"),
@@ -91,21 +91,8 @@ pub const DAYS_2025: [(fn(), &str); 10] = [
     (day_2025_08::main, "Day 8"),
     (day_2025_09::main, "Day 9"),
     (day_2025_10::main, "Day 10"),
-    // (day_2025_11::main, "Day 11"),
+    (day_2025_11::main, "Day 11"),
     // (day_2025_12::main, "Day 12"),
-    // (day_2025_13::main, "Day 13"),
-    // (day_2025_14::main, "Day 14"),
-    // (day_2025_15::main, "Day 15"),
-    // (day_2025_16::main, "Day 16"),
-    // (day_2025_17::main, "Day 17"),
-    // (day_2025_18::main, "Day 18"),
-    // (day_2025_19::main, "Day 19"),
-    // (day_2025_20::main, "Day 20"),
-    // (day_2025_21::main, "Day 21"),
-    // (day_2025_22::main, "Day 22"),
-    // (day_2025_23::main, "Day 23"),
-    // (day_2025_24::main, "Day 24"),
-    // (day_2025_25::main, "Day 25"),
 ];
 
 pub const DAYS_2024: [(fn(), &str); 6] = [
