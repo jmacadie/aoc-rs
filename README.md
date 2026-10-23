@@ -291,10 +291,21 @@ Stats generated on an Azure VM running Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.
 <details>
   <summary>2025</summary>
 
-  **All Days: 358.90 μs** _part completed_
+  **All Days:  40.75 ms**
 
   | Day | Runtime | Percentage of year |
   |---|---|---|
-  |  [Day 1: Secret Entrance](2025/day_01/src/main.rs)                     |  116.94 μs | 100% |
+  |  [Day 1: Secret Entrance](2025/day_01/src/main.rs)      | 313.54 μs |  0% |
+  |  [Day 2: Gift Shop](2025/day_02/src/main.rs)            |  62.42 μs |  0% |
+  |  [Day 3: Lobby](2025/day_03/src/main.rs)                | 415.25 μs |  1% |
+  |  [Day 4: Printing Department](2025/day_04/src/main.rs)  |   2.86 ms |  7% |
+  |  [Day 5: Cafeteria](2025/day_05/src/main.rs)            |  52.69 μs |  0% |
+  |  [Day 6: Trash Compactor](2025/day_06/src/main.rs)      |   2.64 ms |  6% |
+  |  [Day 7: Laboritories](2025/day_07/src/main.rs)         |  32.85 μs |  0% |
+  |  [Day 8: Playground](2025/day_08/src/main.rs)           |  14.90 ms | 36% |
+  |  [Day 9: Movie Theatre](2025/day_09/src/main.rs)        |   5.08 ms | 12% |
+  | [Day 10: Factory](2025/day_10/src/main.rs)              |   7.76 ms | 19% |
+  | [Day 11: Reactor](2025/day_11/src/main.rs)              |   6.63 ms | 16% |
+  | [Day 12: Christmas Tree Farm](2025/day_12/src/main.rs)  | 410.00 ns |  0% |
 
 </details>
